@@ -1,159 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5 import uic
+from socket import *
+import threading
+
+#UI파일 연결
+#단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
+form_class = uic.loadUiType("teacher.ui")[0]
+
+#화면을 띄우는데 사용되는 Class 선언
+class WindowClass(QMainWindow, form_class) :
+    def __init__(self,ip,port) :
+        super().__init__()
+        self.setupUi(self)
+
+        self.initialize_socket(ip,port)
+
+        self.entrance_btn.clicked.connect(self.main)    # 입장버튼 누르면 메인화면 들어감
+
+        self.stackedWidget.setCurrentIndex(0)
+
+    def initialize_socket(self,ip,port):
+        ip=input('ip입력')
+        port=int(input('port입력'))
+        self.client_socket=socket(AF_INET,SOCK_STREAM)
+        self.client_socket.connect((ip,port))
+
+    def main(self):
+        self.stackedWidget.setCurrentIndex(1)
+
+    def receive_message(self,socket):
+        while True:
+            try:
+                buf=socket.recv(256)
+                if not buf:
+                    break
+            except Exception as e:
+                print(e)
+            else:
+                recv_data=buf.decode()
+                print(recv_data)
+
+
+
+if __name__ == "__main__" :
+    app = QApplication(sys.argv)        #QApplication : 프로그램을 실행시켜주는 클래스
+    myWindow = WindowClass()            #WindowClass의 인스턴스 생성
+    myWindow.show()                     #프로그램 화면을 보여주는 코드
+    app.exec_()                         #프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
 
 
 
