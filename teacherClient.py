@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from socket import *
 import threading
+import json
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -10,24 +11,42 @@ form_class = uic.loadUiType("teacher.ui")[0]
 
 #화면을 띄우는데 사용되는 Class 선언
 class WindowClass(QMainWindow, form_class) :
-    def __init__(self,ip,port) :
+    def __init__(self) :
         super().__init__()
         self.setupUi(self)
 
-        self.initialize_socket(ip,port)
+        self.initialize_socket()
 
         self.entrance_btn.clicked.connect(self.main)    # 입장버튼 누르면 메인화면 들어감
+        self.update_btn.clicked.connect(self.update)    # 출제완료버튼 눌렀을 때
 
         self.stackedWidget.setCurrentIndex(0)
 
-    def initialize_socket(self,ip,port):
+    # 소켓생성 및 서버와 연결
+    def initialize_socket(self):
         ip=input('ip입력')
         port=int(input('port입력'))
         self.client_socket=socket(AF_INET,SOCK_STREAM)
         self.client_socket.connect((ip,port))
 
+    # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
         self.stackedWidget.setCurrentIndex(1)
+
+    # 출제완료 버튼 눌렀을 때
+    def update(self):
+        # 문제update 탭
+        up_field=self.update_comboBox.currentText()
+        up_title=self.update_title.text()
+        up_content=self.update_content.toPlainText()
+        up_answer=self.update_answer.text()
+        if up_field =='선택' or up_title or up_content or up_answer == '':
+            QMessageBox.information(self,'알림','분야, 제목, 내용, 정답 입력요망')
+
+        else:
+            update=['update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
+            print(update)
+
 
     def receive_message(self,socket):
         while True:
@@ -47,6 +66,9 @@ if __name__ == "__main__" :
     app = QApplication(sys.argv)        #QApplication : 프로그램을 실행시켜주는 클래스
     myWindow = WindowClass()            #WindowClass의 인스턴스 생성
     myWindow.show()                     #프로그램 화면을 보여주는 코드
+    Thread=threading.Thread(target=myWindow.receive_message, args=(myWindow.client_socket,))
+    Thread.daemon=True
+    Thread.start()
     app.exec_()                         #프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
 
 

@@ -193,13 +193,36 @@
         <property name="geometry">
          <rect>
           <x>530</x>
-          <y>390</y>
+          <y>430</y>
           <width>75</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
          <string>출제완료</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="update_answer">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>390</y>
+          <width>371</width>
+          <height>31</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>400</y>
+          <width>56</width>
+          <height>12</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>정답 :</string>
         </property>
        </widget>
       </widget>
