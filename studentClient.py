@@ -57,20 +57,34 @@ class StudentClient(QWidget, student_ui):
         self.listen_thread()
         self.clPage.setCurrentIndex(0)
         self.account = ''
+        # 탭과 일치하는 퀴즈 목록
         self.questions = None
+        # 퀴즈 테이블에서 선택한 셀의 row값
+        self.row = 0
+        # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
+        # QnA 페이지 이동
         self.goQnA.clicked.connect(self.go_qna)
+        # 퀴즈 페이지 이동
         self.goQuiz.clicked.connect(self.go_quiz)
+        # 상담 페이지 이동
         self.goConsulting.clicked.connect(self.go_consult)
+        # 로그인 / 로그아웃
         self.logIn.clicked.connect(self.log_in)
         self.studentName.returnPressed.connect(self.log_in)
         self.logOut.clicked.connect(self.log_out)
+        # 메인 페이지로 이동
         self.goMain.clicked.connect(self.go_main)
         self.goMain_2.clicked.connect(self.go_main)
         self.goMain_3.clicked.connect(self.go_main)
         self.goMain_4.clicked.connect(self.go_main)
+        # 퀴즈 목록 가져오기
         self.showQuestions.clicked.connect(self.show_quiz)
+        # 퀴즈 선택하기
         self.questionList.cellClicked.connect(self.cell_click)
+        # 답 제출
+        self.sendAnswer.clicked.connect(self.answer)
+        self.answerText.returnPressed.connect(self.answer)
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -120,10 +134,21 @@ class StudentClient(QWidget, student_ui):
 
     # 테이블에서 셀 클릭했을 때 퀴즈 내용 출력하기
     def cell_click(self, row):
+        self.row = row
         self.quizText.clear()
         self.answerText.clear()
         self.quizText.append(self.questions[row][1] + "\n")
         self.quizText.append(self.questions[row][2])
+
+    # 정답 제출
+    def answer(self):
+        # 답이 맞으면
+        if self.answerText.text() == self.questions[self.row][3]:
+            int(self.score.text()) + 10
+            self.exact.setText("정답!")
+        # 답이 틀리면
+        else:
+            self.exact.setText("땡!!")
 
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
