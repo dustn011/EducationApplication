@@ -31,7 +31,7 @@ def api_test():
 
     # <response> 속 <body> 속 <items> 속 <item> 의 각 요소들
     # response 딕셔너리의 body 딕셔너리의 items 딕셔너리의 item 딕셔너리의 각 key 요소들의 value값을 가져왔음
-    for item in json_obj['response']['body']['items']['item']:
+    for item in diction['response']['body']['items']['item']:
         # print(item)
         print(item['imgUrl'], item['insctFamilyNm'], item['insctOfnmScnm'],
               item['insctPcmtt'], item['insctPilbkNo'], item['insctofnmkrlngnm'])
