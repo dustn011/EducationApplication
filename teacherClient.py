@@ -35,31 +35,40 @@ class WindowClass(QMainWindow, form_class) :
 
     # 출제완료 버튼 눌렀을 때
     def update(self):
-        # 문제update 탭
         up_field=self.update_comboBox.currentText()
-        up_title=self.update_title.text()
-        up_content=self.update_content.toPlainText()
-        up_answer=self.update_answer.text()
-        if up_field =='선택' or up_title or up_content or up_answer == '':
-            QMessageBox.information(self,'알림','분야, 제목, 내용, 정답 입력요망')
-
+        up_title=self.update_title.text().strip()
+        up_content=self.update_content.toPlainText().strip()
+        up_answer=self.update_answer.text().strip()
+        if up_field == '선택' :
+            self.update_label.setText('분야 입력요망')
+        elif up_title == '':
+            self.update_title_label.setText('제목 입력요망')
+        elif up_content == '':
+            self.update_content_label.setText('내용 입력요망')
+        elif up_answer == '':
+            self.update_answer_label.setText('정답입력요망')
         else:
-            update=['update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
-            print(update)
-
+            self.update_label.setText('')
+            self.update_title_label.setText('')
+            self.update_content_label.setText('')
+            self.update_answer_label.setText('')
+            self.update_title.clear()
+            self.update_content.clear()
+            self.update_answer.clear()
+            update=['teacher_update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
+            self.client_socket.send((json.dumps(update)).encode())
 
     def receive_message(self,socket):
         while True:
             try:
-                buf=socket.recv(256)
+                buf=socket.recv(9999)
                 if not buf:
                     break
             except Exception as e:
                 print(e)
             else:
                 recv_data=buf.decode()
-                print(recv_data)
-
+                # print(recv_data)
 
 
 if __name__ == "__main__" :

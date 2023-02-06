@@ -81,7 +81,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -225,6 +225,58 @@
          <string>정답 :</string>
         </property>
        </widget>
+       <widget class="QLabel" name="update_label">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>110</y>
+          <width>101</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="update_content_label">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>350</y>
+          <width>111</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="update_answer_label">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>400</y>
+          <width>111</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+       <widget class="QLabel" name="update_title_label">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>150</y>
+          <width>111</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -267,8 +319,8 @@
        <widget class="QLabel" name="label_4">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>163</y>
+          <x>440</x>
+          <y>230</y>
           <width>56</width>
           <height>12</height>
          </rect>
@@ -280,10 +332,10 @@
        <widget class="QTextEdit" name="QA_answer">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>333</y>
+          <x>440</x>
+          <y>360</y>
           <width>301</width>
-          <height>121</height>
+          <height>91</height>
          </rect>
         </property>
        </widget>
@@ -303,8 +355,8 @@
        <widget class="QLabel" name="label_3">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>93</y>
+          <x>440</x>
+          <y>100</y>
           <width>56</width>
           <height>12</height>
          </rect>
@@ -316,8 +368,8 @@
        <widget class="QLabel" name="label_2">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>313</y>
+          <x>440</x>
+          <y>340</y>
           <width>56</width>
           <height>12</height>
          </rect>
@@ -329,8 +381,8 @@
        <widget class="QLineEdit" name="QA_title">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>113</y>
+          <x>440</x>
+          <y>120</y>
           <width>301</width>
           <height>31</height>
          </rect>
@@ -339,10 +391,33 @@
        <widget class="QTextEdit" name="QA_1">
         <property name="geometry">
          <rect>
-          <x>435</x>
-          <y>183</y>
+          <x>440</x>
+          <y>250</y>
           <width>301</width>
-          <height>111</height>
+          <height>81</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>160</y>
+          <width>56</width>
+          <height>12</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>작성자 :</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="QA_man">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>180</y>
+          <width>301</width>
+          <height>31</height>
          </rect>
         </property>
        </widget>
