@@ -4,25 +4,40 @@ import xmltodict
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import sys
-# from bs4 import BeautifulSoup ?
+from socket import *
+from threading import *
 
-# 인증키 저장
-key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
 
-# 인증키 정보가 들어간 url 저장
-url = f'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey={key}'
+def api_test():
+    # API
+    # 인증키 저장
+    key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
 
-content = requests.get(url).content                     # request 모듈을 이용해서 정보 가져오기(byte형태로 가져와지는듯)
-diction = xmltodict.parse(content)                      # xmltodict 모듈을 이용해서 딕셔너리화 & 한글화
-jsonString = json.dumps(diction, ensure_ascii=False)    # json.dumps를 이용해서 문자열화(데이터를 보낼때 이렇게 바꿔주면 될듯)
-jsonObj = json.loads(jsonString)                        # 데이터 불러올 때(딕셔너리 형태로 받아옴)
+    # 인증키 정보가 들어간 url 저장 (요청)
+    url = f'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey={key}'
 
-for item in jsonObj['response']['body']['items']['item']:
-    # print(item)
-    print(item['imgUrl'], item['insctFamilyNm'], item['insctOfnmScnm'],
-          item['insctPcmtt'], item['insctPilbkNo'], item['insctofnmkrlngnm'])
+    # request 모듈을 이용해서 정보 가져오기(byte형태로 가져와지는듯)
+    content = requests.get(url).content
+    # xmltodict 모듈을 이용해서 딕셔너리화 & 한글화
+    diction = xmltodict.parse(content)
+    print(diction)
+    # json.dumps를 이용해서 문자열화(데이터를 보낼때 이렇게 바꿔주면 될듯)
+    json_string = json.dumps(diction, ensure_ascii=False)
+    # 데이터 불러올 때(딕셔너리 형태로 받아옴)
+    json_obj = json.loads(json_string)
+    print(json_obj)
+    # diction 과 json_obj의 차이점이 뭔지 모르겠다
+    # print 결과는 똑같아 보이는데
 
-# 아 벌써 힘들다
+    # <response> 속 <body> 속 <items> 속 <item> 의 각 요소들
+    # response 딕셔너리의 body 딕셔너리의 items 딕셔너리의 item 딕셔너리의 각 key 요소들의 value값을 가져왔음
+    for item in json_obj['response']['body']['items']['item']:
+        # print(item)
+        print(item['imgUrl'], item['insctFamilyNm'], item['insctOfnmScnm'],
+              item['insctPcmtt'], item['insctPilbkNo'], item['insctofnmkrlngnm'])
+
+    # 아 벌써 힘들다
+
 
 student_ui = uic.loadUiType("studentUi.ui")[0]
 
@@ -34,6 +49,8 @@ class StudentClient(QWidget, student_ui):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.client_socket = None
+        # self.initialize_socket('ip', 'port')
         self.clPage.setCurrentIndex(5)
         self.account = ''
         self.goStudy.clicked.connect(self.go_study)
@@ -47,6 +64,13 @@ class StudentClient(QWidget, student_ui):
         self.goMain_2.clicked.connect(self.go_main)
         self.goMain_3.clicked.connect(self.go_main)
         self.goMain_4.clicked.connect(self.go_main)
+
+    def initialize_socket(self, ip, port):
+        # TCP socket을 생성하고 server와 연결
+        self.client_socket = socket(AF_INET, SOCK_STREAM)
+        remote_ip = ip
+        remote_port = port
+        self.client_socket.connect((remote_ip, remote_port))
 
     def go_study(self):
         self.clPage.setCurrentIndex(1)
@@ -74,7 +98,11 @@ class StudentClient(QWidget, student_ui):
 
 
 if __name__ == "__main__":
+    api_test()
     app = QApplication(sys.argv)
     studentCl = StudentClient()
     studentCl.show()
     app.exec_()
+    
+# 질문 / 학생 / 제목 / 질문 내용
+# 답변 / 학생 / 제목 / 답변 내용
