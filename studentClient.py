@@ -105,14 +105,14 @@ class StudentClient(QWidget, student_ui):
         self.quizText.clear()
         self.answerText.clear()
         self.exact.clear()
-        self.quizText.append(self.questions[row][1] + "\n")
-        self.quizText.append(self.questions[row][2])
+        self.quizText.append(self.questions[row][2] + "\n")
+        self.quizText.append(self.questions[row][3])
 
     # 정답 제출
     def answer(self):
         if self.questionList.item(self.row, 1).text() == "해결 안됨":
             # 답이 맞으면
-            if self.answerText.text() == self.questions[self.row][3]:
+            if self.answerText.text() == self.questions[self.row][4]:
                 self.score.setText(str(int(self.score.text()) + 10))
                 self.exact.setText("정답!")
             # 답이 틀리면
@@ -151,7 +151,7 @@ class StudentClient(QWidget, student_ui):
                         for col in range(2):
                             # 제목 칸에 제목 넣기
                             if col == 0:
-                                self.questionList.setItem(row, col, QTableWidgetItem("%s" % self.questions[row][1]))
+                                self.questionList.setItem(row, col, QTableWidgetItem("%s" % self.questions[row][2]))
                             # 해결 여부 넣기 (임시로 탭 '해결 안됨'으로 넣음)
                             else:
                                 self.questionList.setItem(row, col, QTableWidgetItem("해결 안됨"))
