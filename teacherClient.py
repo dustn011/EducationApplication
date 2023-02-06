@@ -22,6 +22,9 @@ class WindowClass(QMainWindow, form_class) :
 
         self.stackedWidget.setCurrentIndex(0)
 
+
+
+
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
         ip=input('ip입력')
@@ -41,19 +44,25 @@ class WindowClass(QMainWindow, form_class) :
                 self.received_message = json.loads(buf.decode('utf-8'))
                 print(self.received_message)
                 identifier = self.received_message.pop(0)
-                recv_data=buf.decode()
-                print(recv_data)
+                if identifier == 'teacher_QNA':
+                    print(self.received_message)
 
    # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
+        # print(self.received_message)
         self.stackedWidget.setCurrentIndex(1)
-        QNA=['teacher_QNA']
-        # Q&A 화면 보이게 하기
-        self.client_socket.send((json.dumps(QNA)).encode())
+        # # Q&A 화면 보이게 하기
+        # QNA=['teacher_QNA']
+        # self.client_socket.send((json.dumps(QNA)).encode())
+
         header=['답변상태','작성자명','Q&A제목','Q&A내용','작성일']
-        self.tableWidget.setColumnCount(len(header))
-        self.tableWidget.setRowCount(1)
-        self.tableWidget.setHorizontalHeaderLabels(header)
+        # self.tableWidget.setColumnCount(len(header))
+        # self.tableWidget.setHorizontalHeaderLabels(header)
+        # self.tableWidget.setRowCount(len(qna))
+        # for i in range(len(qna)):
+        #     self.tableWidget.setItem(i,0,QTableWidgetItem(str(qna[i][0])))
+
+
 
     # 출제완료 버튼 눌렀을 때
     def update(self):
