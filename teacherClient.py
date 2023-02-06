@@ -36,9 +36,9 @@ class WindowClass(QMainWindow, form_class) :
     # 출제완료 버튼 눌렀을 때
     def update(self):
         up_field=self.update_comboBox.currentText()
-        up_title=self.update_title.text()
-        up_content=self.update_content.toPlainText()
-        up_answer=self.update_answer.text()
+        up_title=self.update_title.text().strip()
+        up_content=self.update_content.toPlainText().strip()
+        up_answer=self.update_answer.text().strip()
         if up_field == '선택' :
             self.update_label.setText('분야 입력요망')
         elif up_title == '':
@@ -52,13 +52,11 @@ class WindowClass(QMainWindow, form_class) :
             self.update_title_label.setText('')
             self.update_content_label.setText('')
             self.update_answer_label.setText('')
-            self.update_comboBox.clear()
             self.update_title.clear()
             self.update_content.clear()
             self.update_answer.clear()
             update=['teacher_update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
             self.client_socket.send((json.dumps(update)).encode())
-
 
     def receive_message(self,socket):
         while True:
@@ -71,7 +69,6 @@ class WindowClass(QMainWindow, form_class) :
             else:
                 recv_data=buf.decode()
                 # print(recv_data)
-
 
 
 if __name__ == "__main__" :
