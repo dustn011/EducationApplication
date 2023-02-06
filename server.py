@@ -19,7 +19,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
         if client not in MultiServerObj.clients:  # 서버 접속 목록 클라이언트가 아니라면
             MultiServerObj.clients.append(client)  # 서버 접속 목록에 client 변수 정보 저장
-            print(f"{datetime.now().strftime('%D %T')}\n{IP} : {PORT} 가 연결되었습니다.")
+            print(f"{datetime.now().strftime('%D %T')}, {IP} : {PORT} 가 연결되었습니다.")
         MultiServerObj.receive_messages(self.request)  # MultiServer 클래스의 receive_message 함수 실행
 
 
@@ -40,16 +40,37 @@ class MultiServer:
                 incoming_message = client_socket.recv(9999)
                 if not incoming_message:  # 수신 받은 메시지가 없으면 연결이 종료됨
                     break
-            except ConnectionAbortedError as e:
-                print(e)
-                # self.remove_socket(client_socket)     # 연결 오류 뜨면 client_socket 연결 종료시킴
-                break
-            except ConnectionResetError as e:
-                print(e)
-                break
+            except:
+                pass
             else:
                 self.received_message = json.loads(incoming_message.decode('utf-8'))
                 print(self.received_message)
+                identifier = self.received_message.pop(0)     # identifier = 식별자 -> 추출
+                if not incoming_message:     # 연결이 종료됨
+                    print('클라이언트에서 빈 메시지가 왔습니다')
+                    break
+                # 로그인 요청
+                elif identifier == 'plzCheckAccount':
+                    self.method_checkAccount(client_socket)
+                    pass
+                # 클라이언트 종료
+                elif identifier == 'plzDisconnectSocket':
+                    self.disconnect_socket(client_socket)
+
+    # DB에서 account정보와 일치하는지 확인
+    def method_checkAccount(self, sender_socket):
+        print(f'{sender_socket}\n에서 회원 정보 확인 메시지가 왔습니다')
+        pass
+
+    # 클라이언트에서 연결 끊는다고 시그널 보내면 소켓 리스트에서 해당 클라이언트 연결 소켓 지움
+    def disconnect_socket(self, senders_socket):
+        for client in self.clients:
+            socket, (ip, port) = client
+            if socket is senders_socket:
+                self.clients.remove(client)  # 전체 클라이언트 소켓 리스트에서 해당 소켓 제거
+                print(f"{datetime.now().strftime('%D %T')}, {ip} : {port} 연결이 종료되었습니다")
+                socket.close()
+                print(self.clients)
 
 
 if __name__ == "__main__":
