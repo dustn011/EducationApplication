@@ -29,35 +29,6 @@ class WindowClass(QMainWindow, form_class) :
         self.client_socket=socket(AF_INET,SOCK_STREAM)
         self.client_socket.connect((ip,port))
 
-    # 첫번째 페이지에서 메인화면으로 들어옴
-    def main(self):
-        self.stackedWidget.setCurrentIndex(1)
-
-    # 출제완료 버튼 눌렀을 때
-    def update(self):
-        up_field=self.update_comboBox.currentText()
-        up_title=self.update_title.text().strip()
-        up_content=self.update_content.toPlainText().strip()
-        up_answer=self.update_answer.text().strip()
-        if up_field == '선택' :
-            self.update_label.setText('분야 입력요망')
-        elif up_title == '':
-            self.update_title_label.setText('제목 입력요망')
-        elif up_content == '':
-            self.update_content_label.setText('내용 입력요망')
-        elif up_answer == '':
-            self.update_answer_label.setText('정답입력요망')
-        else:
-            self.update_label.setText('')
-            self.update_title_label.setText('')
-            self.update_content_label.setText('')
-            self.update_answer_label.setText('')
-            self.update_title.clear()
-            self.update_content.clear()
-            self.update_answer.clear()
-            update=['teacher_update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
-            self.client_socket.send((json.dumps(update)).encode())
-
     def receive_message(self,socket):
         while True:
             try:
@@ -67,8 +38,52 @@ class WindowClass(QMainWindow, form_class) :
             except Exception as e:
                 print(e)
             else:
+                self.received_message = json.loads(buf.decode('utf-8'))
+                print(self.received_message)
+                identifier = self.received_message.pop(0)
                 recv_data=buf.decode()
-                # print(recv_data)
+                print(recv_data)
+
+   # 첫번째 페이지에서 메인화면으로 들어옴
+    def main(self):
+        self.stackedWidget.setCurrentIndex(1)
+        QNA=['teacher_QNA']
+        # Q&A 화면 보이게 하기
+        self.client_socket.send((json.dumps(QNA)).encode())
+        header=['답변상태','작성자명','Q&A제목','Q&A내용','작성일']
+        self.tableWidget.setColumnCount(len(header))
+        self.tableWidget.setRowCount(1)
+        self.tableWidget.setHorizontalHeaderLabels(header)
+
+    # 출제완료 버튼 눌렀을 때
+    def update(self):
+        # 분야, 제목, 내용, 정답 입력 내용 가져오기
+        up_field=self.update_comboBox.currentText()
+        up_title=self.update_title.text().strip()
+        up_content=self.update_content.toPlainText().strip()
+        up_answer=self.update_answer.text().strip()
+        # 입력 내용들 누락시 알림
+        if up_field == '선택' :
+            self.update_label.setText('분야 입력요망')
+        elif up_title == '':
+            self.update_title_label.setText('제목 입력요망')
+        elif up_content == '':
+            self.update_content_label.setText('내용 입력요망')
+        elif up_answer == '':
+            self.update_answer_label.setText('정답입력요망')
+        # 모두 입력되었을 때
+        else:
+            # 누락시 알림한 내용, 입력내용 clear,
+            self.update_label.setText('')
+            self.update_title_label.setText('')
+            self.update_content_label.setText('')
+            self.update_answer_label.setText('')
+            self.update_title.clear()
+            self.update_content.clear()
+            self.update_answer.clear()
+            # 서버로 전송
+            update=['teacher_update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
+            self.client_socket.send((json.dumps(update)).encode())
 
 
 if __name__ == "__main__" :
