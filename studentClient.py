@@ -137,18 +137,22 @@ class StudentClient(QWidget, student_ui):
         self.row = row
         self.quizText.clear()
         self.answerText.clear()
+        self.exact.clear()
         self.quizText.append(self.questions[row][1] + "\n")
         self.quizText.append(self.questions[row][2])
 
     # 정답 제출
     def answer(self):
-        # 답이 맞으면
-        if self.answerText.text() == self.questions[self.row][3]:
-            int(self.score.text()) + 10
-            self.exact.setText("정답!")
-        # 답이 틀리면
-        else:
-            self.exact.setText("땡!!")
+        if self.questionList.item(self.row, 1).text() == "해결 안됨":
+            # 답이 맞으면
+            if self.answerText.text() == self.questions[self.row][3]:
+                self.score.setText(str(int(self.score.text()) + 10))
+                self.exact.setText("정답!")
+            # 답이 틀리면
+            else:
+                self.exact.setText("땡!!")
+            self.answerText.clear()
+        self.questionList.setItem(self.row, 1, QTableWidgetItem("해결"))
 
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
@@ -181,9 +185,9 @@ class StudentClient(QWidget, student_ui):
                             # 제목 칸에 제목 넣기
                             if col == 0:
                                 self.questionList.setItem(row, col, QTableWidgetItem("%s" % self.questions[row][1]))
-                            # 해결 여부 넣기 (임시로 탭 이름 넣음)
+                            # 해결 여부 넣기 (임시로 탭 '해결 안됨'으로 넣음)
                             else:
-                                self.questionList.setItem(row, col, QTableWidgetItem("%s" % self.questions[row][0]))
+                                self.questionList.setItem(row, col, QTableWidgetItem("해결 안됨"))
                     # 테이블 컬럼 길이 재설정
                     self.questionList.resizeColumnsToContents()
 
