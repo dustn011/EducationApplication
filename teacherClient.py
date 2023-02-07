@@ -22,7 +22,15 @@ class WindowClass(QMainWindow, form_class) :
         self.QA_send_btn.clicked.connect(self.QNA)      # QNA 작성완료버튼 눌렀을 때
         self.tableWidget.cellDoubleClicked.connect(self.qna_doubleclick) # QNA 더블클릭했을 때
 
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)   # 열넓이자동조절
+        # 헤더, 열
+        header=['학생','질문','답변여부']
+        self.tableWidget.setColumnCount(len(header))
+        self.tableWidget.setHorizontalHeaderLabels(header)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
+        self.tableWidget.horizontalHeader().resizeSection(0, 30)
+        self.tableWidget.horizontalHeader().resizeSection(2, 60)
 
         self.stackedWidget.setCurrentIndex(0)
 
@@ -48,7 +56,10 @@ class WindowClass(QMainWindow, form_class) :
                 # QNA 받기
                 if identifier == 'teacher_QNA':
                     self.qna_show()
-
+                elif identifier == 'teacher_consulting_st':
+                    print(self.received_message)
+                    for i in range(len(self.received_message[0])):
+                        self.consulting_combo.addItem(f'{self.received_message[0][i][0]}')
 
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
@@ -57,6 +68,10 @@ class WindowClass(QMainWindow, form_class) :
         # Q&A 화면 보이도록 서버로 보내기
         QNA=['teacher_QNA']
         self.client_socket.send((json.dumps(QNA)).encode())
+
+        # 실시간상담, 학생 선택할 수 있도록 DB에서 목록가져오기
+        consulting_student=['teacher_consulting_st']
+        self.client_socket.send((json.dumps(consulting_student)).encode())
 
     # QNA 작성완료 버튼 눌렀을 때
     def QNA(self):
@@ -70,11 +85,11 @@ class WindowClass(QMainWindow, form_class) :
             # 서버로 전송
             self.client_socket.send((json.dumps(qna_answer_list)).encode())
             # 제목, 작성자, 내용, 답변 초기화
-            self.QA_title.setText('')
-            self.QA_man.setText('')
-            self.QA_1.setText('')
+            self.title_browser.clear()
+            self.man_browser.clear()
+            self.content_browser.clear()
+            self.QA_answer.clear()
             self.alarm_label.setText('')
-            self.QA_answer.setText('')
 
     # qna내역 테이블 위젯에 띄우기
     def qna_show(self):
@@ -89,29 +104,23 @@ class WindowClass(QMainWindow, form_class) :
                     temp1.append(self.received_message[0][i][j])
             self.qna.append(temp1)
         print(self.qna)
-        # 헤더, 열, 행 갯수 셋팅
-        header=['답변\n상태','작성자','Q&A제목','Q&A내용','작성일']
-        self.tableWidget.setColumnCount(len(header))
-        self.tableWidget.setHorizontalHeaderLabels(header)
         self.tableWidget.setRowCount(len(self.qna))
         # 테이블 위젯에 띄우기
         for i in range(len(self.qna)):
-            self.tableWidget.setItem(i,0,QTableWidgetItem(str(self.qna[i][7]))) # 답변상태
-            self.tableWidget.setItem(i,1,QTableWidgetItem(str(self.qna[i][1]))) # 작성자명
-            self.tableWidget.setItem(i,2,QTableWidgetItem(str(self.qna[i][2]))) # QNA제목
-            self.tableWidget.setItem(i,3,QTableWidgetItem(str(self.qna[i][3]))) # QNA내용
-            self.tableWidget.setItem(i,4,QTableWidgetItem(str(self.qna[i][4]))) # 작성일
+            self.tableWidget.setItem(i,0,QTableWidgetItem(str(self.qna[i][1]))) # 작성자명
+            self.tableWidget.setItem(i,1,QTableWidgetItem(str(self.qna[i][2]))) # QNA제목
+            self.tableWidget.setItem(i,2,QTableWidgetItem(str(self.qna[i][7]))) # 답변상태
 
     # qna 셀 더블클릭시
     def qna_doubleclick(self):
-        self.row=self.tableWidget.currentRow()               # 행 번호 가져오기
-        title=self.tableWidget.item(self.row,2).text()       # 행의 제목 가져오기
-        self.QA_title.setText(f'{title}')
-        man=self.tableWidget.item(self.row,1).text()         # 행의 작성자명 가져오기
-        self.QA_man.setText(f'{man}')
-        content=self.tableWidget.item(self.row,3).text()     # 행의 내용 가져오기
-        self.QA_1.setText(f'{content}')
-        answer = self.qna[self.row][5]                       # 행의 답변내용 가져오기
+        self.row=self.tableWidget.currentRow()                 # 행 번호 가져오기
+        title=self.tableWidget.item(self.row,1).text()         # 행의 제목 가져오기
+        self.title_browser.setPlainText(f'{title}')
+        man=self.tableWidget.item(self.row,0).text()           # 행의 작성자명 가져오기
+        self.man_browser.setPlainText(f'{man}')
+        content = self.qna[self.row][3]                        # 행의 내용 가져오기
+        self.content_browser.setPlainText(f'{content}')
+        answer = self.qna[self.row][5]                         # 행의 답변내용 가져오기
         self.QA_answer.setText(f'{answer}')
 
     # 출제완료 버튼 눌렀을 때
