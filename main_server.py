@@ -3,7 +3,7 @@ import socketserver
 import pymysql
 import threading
 import time
-from datetime import timedelta, datetime
+from datetime import datetime
 
 
 # 클라이언트의 요청을 처리하는 핸들러 클래스 socketserver을 사용해서 TCPserver을 만들 때 이용
@@ -17,7 +17,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
 		"""
 		(IP, PORT) = self.client_address  # 클라이언트의 ip, port 저장
 		client = self.request, (IP, PORT)  # client 변수에 self.request, ip, port 저장
-		print(client)
 
 		if client not in MultiServerObj.clients:  # 서버 접속 목록 클라이언트가 아니라면
 			MultiServerObj.clients.append(client)  # 서버 접속 목록에 client 변수 정보 저장
@@ -105,6 +104,18 @@ class MultiServer:
 					qna_list = ['teacher_QNA', qna]
 					client_socket.send((json.dumps(qna_list)).encode())
 					self.disconnect_socket(client_socket)
+				# ---------------------민석---------------------
+				# plzGiveQuiz = 퀴즈 목록 요청 코드
+				elif identifier == "plzGiveQuiz":
+					# 클라이언트의 현재 탭
+					now_tab = self.received_message.pop(0)
+					# 클라이언트에 접속중인 학생
+					account = self.received_message[0]
+					self.send_quiz(client_socket, now_tab, account)
+				# hereAnswer = 학생이 제출한 답과 결과
+				elif identifier == "hereAnswer":
+					self.insert_answer(self.received_message[0], self.received_message[1],
+					                   self.received_message[2], self.received_message[3], self.received_message[4])
 
 	# ---------------------연수---------------------
 	# DB에 학생 상담 채팅 저장하기
@@ -216,11 +227,6 @@ class MultiServer:
 		sender_socket.send(send_accessMessage.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
 
 	# ---------------------성경---------------------
-	# DB에서 account정보와 일치하는지 확인
-	def method_checkAccount(self, sender_socket):
-		print(f'{sender_socket}\n에서 회원 정보 확인 메시지가 왔습니다')
-		pass
-
 	# 클라이언트에서 연결 끊는다고 시그널 보내면 소켓 리스트에서 해당 클라이언트 연결 소켓 지움
 	def disconnect_socket(self, senders_socket):
 		for client in self.clients:
@@ -230,6 +236,44 @@ class MultiServer:
 				print(f"{datetime.now().strftime('%D %T')}, {ip} : {port} 연결이 종료되었습니다")
 				socket.close()
 				print(self.clients)
+
+	# ---------------------민석---------------------
+	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
+	def send_quiz(self, senders_socket, tab, student):
+		class_tab = ''
+		# DB의 과목과 클라이언트의 탭을 맞추기 위한 과정
+		if tab == '곤충':
+			class_tab = 'insect'
+		elif tab == '조류':
+			class_tab = '?'
+		elif tab == '포유류':
+			class_tab = '??'
+		# 해당 과목의 퀴즈 목록
+		conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+		curs = conn.cursor()
+		curs.execute("select * from education_application.question where FIeld = '%s'" % tab)
+		questions = curs.fetchall()
+		senders_socket.sendall(json.dumps(["hereQuiz", questions]).encode('utf-8'))
+		# 접속중인 학생의 퀴즈 진도
+		curs.execute("select * from education_application.%s where student = '%s'" % (class_tab, student))
+		rate = curs.fetchall()
+		senders_socket.sendall(json.dumps(["hereRate", rate]).encode('utf-8'))
+
+	# 데이터베이스에 퀴즈 결과 반영
+	def insert_answer(self, tab, student, q_number, answer, score):
+		class_tab = ''
+		# DB의 과목과 클라이언트의 탭을 맞추기 위한 과정
+		if tab == '곤충':
+			class_tab = 'insect'
+		elif tab == '조류':
+			class_tab = '?'
+		elif tab == '포유류':
+			class_tab = '??'
+		conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+		curs = conn.cursor()
+		curs.execute("update education_application.%s set answer%d = '%s', score = '%s' where student = '%s'" %
+		             (class_tab, q_number, answer, score, student))
+		conn.commit()
 
 
 if __name__ == "__main__":
