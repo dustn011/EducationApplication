@@ -1,6 +1,7 @@
 import json
 import socketserver
 import threading
+import time
 from datetime import timedelta, datetime
 
 import pymysql
@@ -62,8 +63,63 @@ class MultiServer:
                 # 로그아웃 요청
                 elif identifier == 'plzLogoutAccount':
                     self.logoutAccount(client_socket)
+                # 질문 입력 요청
                 elif identifier == 'plzInsertQuestion':
                     self.insertQuestion()
+                # 질문 내역 불러오기 요청
+                elif identifier == 'plzGiveQuestionLog':
+                    self.method_getQuestionLog(client_socket)
+                # 학생 상담 채팅 들어오면 DB에 저장하는 요청
+                elif identifier == 'plzInsertStudentChat':
+                    self.method_insStudentMessage(client_socket)
+
+    # DB에 학생 상담 채팅 저장하기
+    def method_insStudentMessage(self, sender_socket):
+        student_name = self.received_message[0]
+        student_chat = self.received_message[1]
+        # DB 열기
+        ins_ch = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application',
+                                 charset='utf8')
+        # DB와 상호작용하기 위해 연결해주는 cursor 객체 만듬
+        insert_chat = ins_ch.cursor()
+
+        # insert문 넣어주기(언제 누가 메시지를 누구에게 보냇습니다)
+        insert_sql = f"insert into chat VALUES(now(), '{student_name}', '{student_chat}', 'manager')"
+
+        # execute 메서드로 db에 sql 문장 전송
+        insert_chat.execute(insert_sql)
+        # insert문 실행
+        ins_ch.commit()
+        # DB 닫아주기
+        ins_ch.close()
+        print('질문이 등록됐습니다')
+
+    # DB에서 질문 내역 가져오기
+    def method_getQuestionLog(self, sender_socket):
+        print('질문내역 요청 메시지가 왔습니다')
+        qna = pymysql.connect(host='10.10.21.102', user='edu', password='0000', db='education_application',
+                                  charset='utf8')
+        # DB와 상호작용하기 위해 연결해주는 cursor 객체 만듬
+        all_qna = qna.cursor()
+        # 클라이언트가 입력한 계정 정보가 일치하는지 확인
+        sql = f"SELECT * FROM qna"
+        # execute 메서드로 db에 sql 문장 전송
+        all_qna.execute(sql)
+        qna_info = all_qna.fetchall()  # 회원 정보 저장
+        # DB 닫아주기
+        qna.close()
+
+        # DB에서 가져온 튜플 리스트화
+        for i in range(len(qna_info)):
+            all_qna_data = ['send_qna_data']
+            for j in range(len(qna_info[i])):
+                if type(qna_info[i][j]) == datetime:
+                    all_qna_data.append(qna_info[i][j].strftime('%D %T'))
+                else:
+                    all_qna_data.append(qna_info[i][j])
+            send_accessQna = json.dumps(all_qna_data)
+            sender_socket.send(send_accessQna.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
+            time.sleep(0.0000001)
 
     # DB에 질문 등록하기
     def insertQuestion(self):
@@ -78,7 +134,7 @@ class MultiServer:
         insert_question = ins_qu.cursor()
 
         # insert문 넣어주기(누가 (제목과내용으로구성된)질문을 언제 했습니다)
-        insert_sql = f"INSERT INTO qna(student_name, question_title, content, question_dt, state) VALUES ('{student_name}', '{question_title}', '{question_content}', now(), '대기')"
+        insert_sql = f"call insertQna('{student_name}', '{question_title}', '{question_content}')"
 
         # execute 메서드로 db에 sql 문장 전송
         insert_question.execute(insert_sql)
@@ -86,7 +142,7 @@ class MultiServer:
         ins_qu.commit()
         # DB 닫아주기
         ins_qu.close()
-        print('질문등록이 등록됐습니다')
+        print('질문이 등록됐습니다')
 
     # 모든 클라이언트로 갱신된 질문 리스트 보내주기
     def sendallQnA(self):

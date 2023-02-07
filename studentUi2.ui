@@ -29,7 +29,7 @@
     </font>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QLabel" name="label">
@@ -337,7 +337,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>40</y>
+         <y>30</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -358,7 +358,7 @@
        <property name="geometry">
         <rect>
          <x>380</x>
-         <y>70</y>
+         <y>60</y>
          <width>51</width>
          <height>31</height>
         </rect>
@@ -375,26 +375,11 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLineEdit" name="show_question_title">
-       <property name="geometry">
-        <rect>
-         <x>420</x>
-         <y>40</y>
-         <width>301</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
          <x>380</x>
-         <y>250</y>
+         <y>260</y>
          <width>51</width>
          <height>31</height>
         </rect>
@@ -431,9 +416,17 @@
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
        </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
        <property name="selectionBehavior">
         <enum>QAbstractItemView::SelectRows</enum>
        </property>
+       <column>
+        <property name="text">
+         <string>번호</string>
+        </property>
+       </column>
        <column>
         <property name="text">
          <string>학생</string>
@@ -454,20 +447,126 @@
        <property name="geometry">
         <rect>
          <x>380</x>
-         <y>280</y>
+         <y>290</y>
          <width>341</width>
-         <height>151</height>
+         <height>121</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
        </property>
       </widget>
       <widget class="QTextBrowser" name="show_question_content">
        <property name="geometry">
         <rect>
          <x>380</x>
-         <y>100</y>
+         <y>90</y>
          <width>341</width>
-         <height>141</height>
+         <height>121</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="show_question_title">
+       <property name="geometry">
+        <rect>
+         <x>420</x>
+         <y>30</y>
+         <width>301</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="textBrowser">
+       <property name="geometry">
+        <rect>
+         <x>525</x>
+         <y>220</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_13">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>220</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>질문한 날짜</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="textBrowser_3">
+       <property name="geometry">
+        <rect>
+         <x>525</x>
+         <y>420</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_20">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>420</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>답변한 날짜</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </widget>
@@ -533,8 +632,8 @@
     <widget class="QPushButton" name="goMain_4">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>530</y>
+       <x>620</x>
+       <y>30</y>
        <width>160</width>
        <height>40</height>
       </rect>
@@ -546,6 +645,54 @@
      </property>
      <property name="text">
       <string>메인 홈</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="chat_list">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>140</y>
+       <width>511</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="send_chat">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>480</y>
+       <width>351</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_send_chat">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>480</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>전송</string>
      </property>
     </widget>
    </widget>
@@ -664,7 +811,6 @@
   <tabstop>goMain_3</tabstop>
   <tabstop>goMain_4</tabstop>
   <tabstop>question_table</tabstop>
-  <tabstop>show_question_title</tabstop>
  </tabstops>
  <resources/>
  <connections/>

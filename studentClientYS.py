@@ -83,9 +83,25 @@ class StudentClient(QWidget, student_ui):
 
         # 테이블 위젯 너비에 맞추기
         self.question_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
-        self.question_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.question_table.horizontalHeader().resizeSection(0, 60)
-        self.question_table.horizontalHeader().resizeSection(2, 70)
+        self.question_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Fixed)
+        self.question_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.question_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Fixed)
+        self.question_table.horizontalHeader().resizeSection(0, 30)
+        self.question_table.horizontalHeader().resizeSection(1, 30)
+        self.question_table.horizontalHeader().resizeSection(3, 60)
+        # qna 데이터 저장
+        self.list_qna_data = []
+
+        # 질문 제목 글자수 제한하기
+        self.question_title.setMaxLength(22)
+
+        # 질문 클릭하면 질문, 답변 내역 출력
+        self.question_table.cellClicked.connect(self.show_one_qna)
+
+        # 상담 입력하고 엔터
+        self.send_chat.returnPressed.connect(self.method_send_chat)
+        # 상담 입력하고 버튼 클릭
+        self.btn_send_chat.clicked.connect(self.method_send_chat)
 
     # 소켓 설정 메서드
     def initialize_socket(self):
@@ -97,6 +113,36 @@ class StudentClient(QWidget, student_ui):
         # TCP socket을 생성하고 server와 연결
         self.client_socket = socket(AF_INET, SOCK_STREAM)
         self.client_socket.connect((ip, port))
+
+    def go_study(self):
+        self.clPage.setCurrentIndex(1)
+
+    def go_quiz(self):
+        self.clPage.setCurrentIndex(3)
+
+    def go_consult(self):
+        self.clPage.setCurrentIndex(4)
+
+    def go_main(self):
+        self.clPage.setCurrentIndex(0)
+
+    # 상담 보내기
+    def method_send_chat(self):
+        # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
+        chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
+        send_chat = json.dumps(chat)
+        self.client_socket.send(send_chat.encode('utf-8'))
+        print('서버에 상담 채팅 내역을 보냈습니다')
+        self.send_chat.clear()
+
+    # 질문 선택하면 질문 내역, 응답 내역 출력
+    def show_one_qna(self):
+        sele_qna_num = self.question_table.selectedItems()[0].text()
+        print(sele_qna_num)
+        for qna_data in self.list_qna_data:
+            if sele_qna_num is qna_data[0]:
+                print(qna_data)
+                break
 
     # 질문입력 버튼 누르면 실행할 메서드
     def send_question(self):
@@ -113,18 +159,21 @@ class StudentClient(QWidget, student_ui):
             print('서버에 질문등록 요청을 보냈습니다')
             self.question_title.clear()
             self.question_content.clear()
+            QMessageBox.information(self, '등록 완료', '질문을 등록하셨습니다')
 
-    def go_study(self):
-        self.clPage.setCurrentIndex(1)
-
+    # QnA 버튼 누르면 질문 내역 불러오기
     def go_qna(self):
+        # 인덱스 0번에 식별자 'plzGiveQuestionLog' 넣어주고 서버로 요청 전송
+        questionLog = ['plzGiveQuestionLog']
+        send_AccessQuestionLog = json.dumps(questionLog)
+        self.client_socket.send(send_AccessQuestionLog.encode('utf-8'))
+        print('서버에 질문내역 요청을 보냈습니다')
         self.clPage.setCurrentIndex(2)
 
-    def go_quiz(self):
-        self.clPage.setCurrentIndex(3)
+        self.list_qna_data = []
 
-    def go_consult(self):
-        self.clPage.setCurrentIndex(4)
+        # 테이블 위젯 헤더를 제외하고 한 번 초기화
+        self.question_table.clearContents()
 
     # 로그인 버튼 누르면 서버에 요청 보냄
     def log_in(self):
@@ -148,9 +197,6 @@ class StudentClient(QWidget, student_ui):
         self.studentName.clear()
         self.fail_message.clear()
         self.clPage.setCurrentIndex(5)
-
-    def go_main(self):
-        self.clPage.setCurrentIndex(0)
 
     # 메시지를 받는 메서드 스레드로 실행
     def listen_thread(self):
@@ -178,6 +224,24 @@ class StudentClient(QWidget, student_ui):
                     self.clPage.setCurrentIndex(0)
                 elif identifier == 'failed_login':
                     self.fail_message.setText('로그인 실패')
+                elif identifier == 'send_qna_data':
+                    self.show_all_qna(message_log)
+
+    # 서버에서 받아온 qna데이터 불러오기
+    def show_all_qna(self, qna_data):
+        self.list_qna_data.append(qna_data)
+
+        # 테이블 위젯 헤더를 제외하고 한 번 초기화
+        self.question_table.clearContents()
+
+        # 테이블 위젯의 row 개수 정해주기
+        self.question_table.setRowCount(len(self.list_qna_data))
+
+        for i in range(len(self.list_qna_data)):
+            self.question_table.setItem(i, 0, QTableWidgetItem(str(self.list_qna_data[i][0])))
+            self.question_table.setItem(i, 1, QTableWidgetItem(str(self.list_qna_data[i][1])))
+            self.question_table.setItem(i, 2, QTableWidgetItem(str(self.list_qna_data[i][2])))
+            self.question_table.setItem(i, 3, QTableWidgetItem(str(self.list_qna_data[i][7])))
 
     # 유저가 종료했을 경우 (함수를 따로 실행 안해도 종료하면 알아서 실행됨)
     def closeEvent(self, QCloseEvent):
