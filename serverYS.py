@@ -63,12 +63,39 @@ class MultiServer:
                 elif identifier == 'plzLogoutAccount':
                     self.logoutAccount(client_socket)
                 elif identifier == 'plzInsertQuestion':
-                    pass
+                    self.insertQuestion()
+
+    # DB에 질문 등록하기
+    def insertQuestion(self):
+        student_name = self.received_message[0]
+        question_title = self.received_message[1]
+        question_content = self.received_message[2]
+
+        # DB 열기
+        ins_qu = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application',
+                                    charset='utf8')
+        # DB와 상호작용하기 위해 연결해주는 cursor 객체 만듬
+        insert_question = ins_qu.cursor()
+
+        # insert문 넣어주기(누가 (제목과내용으로구성된)질문을 언제 했습니다)
+        insert_sql = f"INSERT INTO qna(student_name, question_title, content, question_dt, state) VALUES ('{student_name}', '{question_title}', '{question_content}', now(), '대기')"
+
+        # execute 메서드로 db에 sql 문장 전송
+        insert_question.execute(insert_sql)
+        # insert문 실행
+        ins_qu.commit()
+        # DB 닫아주기
+        ins_qu.close()
+        print('질문등록이 등록됐습니다')
+
+    # 모든 클라이언트로 갱신된 질문 리스트 보내주기
+    def sendallQnA(self):
+        pass
 
     # 접속중인 account 리스트에서 빼주기
     def logoutAccount(self, sender_socket):
         self.now_connected_account.remove(self.received_message[0])
-        print('현재 접속한 account: ', self.now_connected_account)
+        print('현재 접속한 account:', self.now_connected_account)
 
     # DB에서 account정보와 일치하는지 확인
     def method_checkAccount(self):
@@ -87,7 +114,7 @@ class MultiServer:
         return account_info
 
     def loginAccess_message(self, sender_socket, account_info):
-        print(account_info)
+        # print(account_info[0][0])
         if account_info and (account_info[0][0] not in self.now_connected_account):    # 회원정보를 옳게 입력했다면
             access_message = ['success_login']
             self.now_connected_account.append(account_info[0][0])
@@ -106,7 +133,7 @@ class MultiServer:
                 self.clients.remove(client)  # 전체 클라이언트 소켓 리스트에서 해당 소켓 제거
                 print(f"{datetime.now().strftime('%D %T')}, {ip} : {port} 연결이 종료되었습니다")
                 socket.close()
-                print('현재 연결된 socket', self.clients)
+                print('현재 연결된 socket:', self.clients)
 
 
 if __name__ == "__main__":
