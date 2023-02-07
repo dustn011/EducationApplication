@@ -232,7 +232,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -336,8 +336,8 @@
       <widget class="QLabel" name="label_10">
        <property name="geometry">
         <rect>
-         <x>400</x>
-         <y>30</y>
+         <x>370</x>
+         <y>40</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -357,10 +357,10 @@
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>410</x>
-         <y>60</y>
+         <x>380</x>
+         <y>70</y>
          <width>51</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -378,9 +378,9 @@
       <widget class="QLineEdit" name="show_question_title">
        <property name="geometry">
         <rect>
-         <x>450</x>
-         <y>30</y>
-         <width>251</width>
+         <x>420</x>
+         <y>40</y>
+         <width>301</width>
          <height>21</height>
         </rect>
        </property>
@@ -390,33 +390,13 @@
         </font>
        </property>
       </widget>
-      <widget class="QTextEdit" name="show_question_content">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>90</y>
-         <width>291</width>
-         <height>141</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QTextEdit" name="show_answer">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>270</y>
-         <width>291</width>
-         <height>151</height>
-        </rect>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
-         <x>410</x>
-         <y>240</y>
+         <x>380</x>
+         <y>250</y>
          <width>51</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -434,10 +414,59 @@
       <widget class="QTableWidget" name="question_table">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>371</width>
+         <x>30</x>
+         <y>20</y>
+         <width>321</width>
          <height>421</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="autoScrollMargin">
+        <number>16</number>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <column>
+        <property name="text">
+         <string>학생</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>질문</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>답변여부</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QTextBrowser" name="show_answer">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>280</y>
+         <width>341</width>
+         <height>151</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="show_question_content">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>100</y>
+         <width>341</width>
+         <height>141</height>
         </rect>
        </property>
       </widget>
@@ -605,7 +634,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>16</pointsize>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">
@@ -618,6 +647,25 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>studentName</tabstop>
+  <tabstop>logIn</tabstop>
+  <tabstop>goStudy</tabstop>
+  <tabstop>goQnA</tabstop>
+  <tabstop>goQuiz</tabstop>
+  <tabstop>goConsulting</tabstop>
+  <tabstop>logOut</tabstop>
+  <tabstop>goMain</tabstop>
+  <tabstop>question_title</tabstop>
+  <tabstop>question_content</tabstop>
+  <tabstop>writingComplete</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>goMain_2</tabstop>
+  <tabstop>goMain_3</tabstop>
+  <tabstop>goMain_4</tabstop>
+  <tabstop>question_table</tabstop>
+  <tabstop>show_question_title</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

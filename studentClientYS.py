@@ -1,6 +1,8 @@
 import json
 import requests
 import xmltodict
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import sys
@@ -71,8 +73,19 @@ class StudentClient(QWidget, student_ui):
         # 서버에서 메시지 보내면 응답하는 함수 스레드로 실행
         self.listen_thread()
 
+        # 로그인 칸에는 한글만 입력 가능
+        reg_exp = QRegExp("[가-힣]+")
+        validator = QRegExpValidator(reg_exp, self.studentName)
+        self.studentName.setValidator(validator)
+
         # QnA 질문 입력 버튼
         self.writingComplete.clicked.connect(self.send_question)
+
+        # 테이블 위젯 너비에 맞추기
+        self.question_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
+        self.question_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.question_table.horizontalHeader().resizeSection(0, 60)
+        self.question_table.horizontalHeader().resizeSection(2, 70)
 
     # 소켓 설정 메서드
     def initialize_socket(self):
@@ -89,15 +102,17 @@ class StudentClient(QWidget, student_ui):
     def send_question(self):
         if not self.question_title.text():
             QMessageBox.information(self, '입력오류', '제목을 입력해주세요')
-        elif not self.question_content.text():
+        elif not bool(self.question_content.toPlainText()):
             QMessageBox.information(self, '입력오류', '질문을 입력해주세요')
         else:
-            # 인덱스 0번에 식별자 'plzInsertQuestion' 넣어주고 [질문자 이름, 제목, 질문 내용, 질문한 시간]서버로 전송
+            # 인덱스 0번에 식별자 'plzInsertQuestion' 넣어주고 [질문자 이름, 제목, 질문 내용]서버로 전송
             question = ['plzInsertQuestion', self.studentName.text(), self.question_title.text(),
-                                  self.question_content.text(), datetime.now().strftime('%D %T')]
+                                  self.question_content.toPlainText()]
             send_question = json.dumps(question)
             self.client_socket.send(send_question.encode('utf-8'))
             print('서버에 질문등록 요청을 보냈습니다')
+            self.question_title.clear()
+            self.question_content.clear()
 
     def go_study(self):
         self.clPage.setCurrentIndex(1)
