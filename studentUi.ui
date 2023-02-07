@@ -23,14 +23,14 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>1</number>
    </property>
-   <widget class="QWidget" name="page">
+   <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>80</width>
        <height>40</height>
       </rect>
@@ -135,12 +135,12 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_2">
+   <widget class="QWidget" name="studyPage">
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>120</width>
        <height>40</height>
       </rect>
@@ -172,13 +172,86 @@
       <string>메인 홈</string>
      </property>
     </widget>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>780</width>
+       <height>480</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>곤충</string>
+      </attribute>
+      <widget class="QLabel" name="insectImage">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>400</width>
+         <height>400</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>40</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>아마도 이미지</string>
+       </property>
+      </widget>
+      <widget class="QListWidget" name="insectList">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>30</y>
+         <width>300</width>
+         <height>100</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
+      <widget class="QListWidget" name="insectInfo">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>150</y>
+         <width>300</width>
+         <height>280</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <zorder>tabWidget</zorder>
+    <zorder>label_2</zorder>
+    <zorder>goMain</zorder>
    </widget>
-   <widget class="QWidget" name="page_3">
+   <widget class="QWidget" name="qnaPage">
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>120</width>
        <height>40</height>
       </rect>
@@ -301,12 +374,12 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_4">
+   <widget class="QWidget" name="quizPage">
     <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>120</width>
        <height>40</height>
       </rect>
@@ -342,9 +415,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
-       <width>781</width>
-       <height>471</height>
+       <y>40</y>
+       <width>780</width>
+       <height>480</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -581,12 +654,12 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_5">
+   <widget class="QWidget" name="consultPage">
     <widget class="QLabel" name="label_5">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>120</width>
        <height>40</height>
       </rect>
@@ -619,12 +692,12 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_6">
+   <widget class="QWidget" name="logInPage">
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>120</width>
        <height>40</height>
       </rect>

@@ -2,11 +2,12 @@ import json
 import requests
 import xmltodict
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 from PyQt5 import uic
 import sys
 from socket import *
 from threading import *
-from datetime import datetime
+import urllib.request
 
 student_ui = uic.loadUiType("studentUi.ui")[0]
 
@@ -54,6 +55,12 @@ class StudentClient(QWidget, student_ui):
         # 답 제출
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
+        self.url = 'http://www.nature.go.kr/fileUpload/photo/O1/ZOEC0011_1.jpg'
+        self.insect = urllib.request.urlopen(self.url).read()
+        self.pixmap = QPixmap()
+        self.pixmap.loadFromData(self.insect)
+        self.pixmap = self.pixmap.scaledToHeight(400)
+        self.insectImage.setPixmap(self.pixmap)
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -139,19 +146,19 @@ class StudentClient(QWidget, student_ui):
                 self.score.setText(str(int(self.score.text()) + 10))
                 self.exact.setText("정답!")
                 # 테이블에 바로 결과 반영
-                self.questionList.setItem(self.row, 1, QTableWidgetItem("o"))
+                self.questionList.setItem(self.row, 1, QTableWidgetItem("정답"))
                 # 서버에 데이터 수정을 요청
                 self.client_socket.send(json.dumps(["hereAnswer",
-                                                    now_tab, self.account, self.row + 1, 'o',
+                                                    now_tab, self.account, self.row + 1, '정답',
                                                     self.score.text()]).encode('utf-8'))
             # 답이 틀리면
             else:
                 self.exact.setText("땡!!")
                 # 테이블에 바로 결과 반영
-                self.questionList.setItem(self.row, 1, QTableWidgetItem("x"))
+                self.questionList.setItem(self.row, 1, QTableWidgetItem("오답"))
                 # 서버에 데이터 수정을 요청
                 self.client_socket.send(json.dumps(["hereAnswer",
-                                                    now_tab, self.account, self.row + 1, 'x',
+                                                    now_tab, self.account, self.row + 1, '오답',
                                                     self.score.text()]).encode('utf-8'))
             # 입력했던 답 지우기
             self.answerText.clear()
@@ -221,15 +228,11 @@ class StudentClient(QWidget, student_ui):
         content = requests.get(url).content
         # xmltodict 모듈을 이용해서 딕셔너리화 & 한글화
         diction = xmltodict.parse(content)
-        print(diction)
-        # 아래 과정은 json 기능을 공부해야 이해할 듯
-        # json.dumps를 이용해서 문자열화(데이터를 보낼때 이렇게 바꿔주면 될듯)
-        json_string = json.dumps(diction, ensure_ascii=False)
-        # 데이터 불러올 때(딕셔너리 형태로 받아옴)
-        json_obj = json.loads(json_string)
-        print(json_obj)
-        # diction 과 json_obj의 차이점이 뭔지 모르겠다
-        # print 결과는 똑같아 보이는데
+        # # 아래 과정은 json 기능을 공부해야 이해할 듯
+        # # json.dumps를 이용해서 문자열화(데이터를 보낼때 이렇게 바꿔주면 될듯)
+        # json_string = json.dumps(diction, ensure_ascii=False)
+        # # 데이터 불러올 때(딕셔너리 형태로 받아옴)
+        # json_obj = json.loads(json_string)
 
         # <response> 속 <body> 속 <items> 속 <item> 의 각 요소들
         # response 딕셔너리의 body 딕셔너리의 items 딕셔너리의 item 딕셔너리의 각 key 요소들의 value값을 가져왔음
@@ -243,4 +246,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     studentCl = StudentClient()
     studentCl.show()
+    studentCl.api_test()
     app.exec_()
