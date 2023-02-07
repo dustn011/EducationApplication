@@ -31,6 +31,7 @@ class StudentClient(QWidget, student_ui):
         self.rate = None
         # 퀴즈 테이블에서 선택한 셀의 row값
         self.row = 0
+        self.insects = dict()
         # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
         # QnA 페이지 이동
@@ -55,12 +56,9 @@ class StudentClient(QWidget, student_ui):
         # 답 제출
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
-        self.url = 'http://www.nature.go.kr/fileUpload/photo/O1/ZOEC0011_1.jpg'
-        self.insect = urllib.request.urlopen(self.url).read()
-        self.pixmap = QPixmap()
-        self.pixmap.loadFromData(self.insect)
-        self.pixmap = self.pixmap.scaledToHeight(400)
-        self.insectImage.setPixmap(self.pixmap)
+        # 학습 자료
+        self.study_book()
+        self.insectList.itemClicked.connect(self.insect_info)
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -79,6 +77,7 @@ class StudentClient(QWidget, student_ui):
 
     # 퀴즈 페이지로 이동
     def go_quiz(self):
+        self.show_quiz()
         self.clPage.setCurrentIndex(3)
 
     # 상담 페이지로 이동
@@ -97,7 +96,6 @@ class StudentClient(QWidget, student_ui):
             print('서버에 로그인 요청을 보냈습니다')
             # 유저 이름을 저장하고 퀴즈 목록을 불러옴
             self.account = self.studentName.text()
-            self.show_quiz()
 
     # 로그아웃
     def log_out(self):
@@ -117,6 +115,7 @@ class StudentClient(QWidget, student_ui):
 
     # 퀴즈 목록 받아오기
     def show_quiz(self):
+        self.questionList.setRowCount(0)
         # 현재 탭의 정보 저장
         now_tab = self.classTab.tabText(self.classTab.currentIndex())
         # 요청 코드와 탭 이름, 학생 이름 전달
@@ -162,6 +161,37 @@ class StudentClient(QWidget, student_ui):
                                                     self.score.text()]).encode('utf-8'))
             # 입력했던 답 지우기
             self.answerText.clear()
+
+    # 멸종 위기 곤충 자료
+    def study_book(self):
+        # self.url = 'http://www.nature.go.kr/fileUpload/photo/O1/ZOEC0011_1.jpg'
+        # self.insect = urllib.request.urlopen(self.url).read()
+        # self.pixmap = QPixmap()
+        # self.pixmap.loadFromData(self.insect)
+        # self.pixmap = self.pixmap.scaledToHeight(400)
+        # self.insectImage.setPixmap(self.pixmap)
+        key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
+        url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey=%s' % key
+        content = requests.get(url).content
+        diction = xmltodict.parse(content)
+        for item in diction['response']['body']['items']['item']:
+            self.insectList.addItem(item['insctofnmkrlngnm'])
+            self.insects[item['insctofnmkrlngnm']] = (item['imgUrl'], item['insctFamilyNm'], item['insctPcmtt'])
+
+    def insect_info(self):
+        self.insectInfo.clear()
+        url = self.insects[self.insectList.currentItem().text()][0]
+        insect = urllib.request.urlopen(url).read()
+        pixmap = QPixmap()
+        pixmap.loadFromData(insect)
+        if pixmap.size().width() > pixmap.size().height():
+            pixmap = pixmap.scaledToWidth(400)
+        else:
+            pixmap = pixmap.scaledToHeight(400)
+        self.insectImage.setPixmap(pixmap)
+        self.insectInfo.append(self.insectList.currentItem().text() + "\n")
+        for i in range(1, 3):
+            self.insectInfo.append(self.insects[self.insectList.currentItem().text()][i] + "\n")
 
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
@@ -246,5 +276,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     studentCl = StudentClient()
     studentCl.show()
-    studentCl.api_test()
     app.exec_()
