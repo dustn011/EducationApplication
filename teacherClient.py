@@ -14,16 +14,15 @@ class WindowClass(QMainWindow, form_class) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self)
+        self.initialize_socket()                        # 소켓생성 및 서버와 연결
+        self.start()                                    # 프로그램실행시 서버로 전송해야할 것
 
-        self.initialize_socket()
-
-        self.entrance_btn.clicked.connect(self.main)    # 입장버튼 누르면 메인화면 들어감
-        self.update_btn.clicked.connect(self.update)    # 출제완료버튼 눌렀을 때
+        self.entrance_btn.clicked.connect(self.main)    # 초기화면 입장버튼 누르면 메인화면 들어감
+        self.update_btn.clicked.connect(self.update)    # 문제 update 출제완료버튼 눌렀을 때
+        self.QA_send_btn.clicked.connect(self.QNA)      # QNA 작성완료버튼 눌렀을 때
+        self.tableWidget.cellDoubleClicked.connect(self.qna_doubleclick) # QNA 더블클릭했을 때
 
         self.stackedWidget.setCurrentIndex(0)
-
-
-
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
@@ -44,25 +43,72 @@ class WindowClass(QMainWindow, form_class) :
                 self.received_message = json.loads(buf.decode('utf-8'))
                 print(self.received_message)
                 identifier = self.received_message.pop(0)
+                # QNA 받기
                 if identifier == 'teacher_QNA':
                     print(self.received_message)
 
+    # 프로그램 실행시 미리 서버로 보낼 내용
+    def start(self):
+        # # Q&A 화면 보이도록 서버로 보내기
+        QNA=['teacher_QNA']
+        self.client_socket.send((json.dumps(QNA)).encode())
+
    # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
-        # print(self.received_message)
         self.stackedWidget.setCurrentIndex(1)
-        # # Q&A 화면 보이게 하기
-        # QNA=['teacher_QNA']
-        # self.client_socket.send((json.dumps(QNA)).encode())
+        self.qna_show()
 
-        header=['답변상태','작성자명','Q&A제목','Q&A내용','작성일']
-        # self.tableWidget.setColumnCount(len(header))
-        # self.tableWidget.setHorizontalHeaderLabels(header)
-        # self.tableWidget.setRowCount(len(qna))
-        # for i in range(len(qna)):
-        #     self.tableWidget.setItem(i,0,QTableWidgetItem(str(qna[i][0])))
+    # qna내역 테이블 위젯에 띄우기
+    def qna_show(self):
+        self.qna=self.received_message
+        # 헤더, 열, 행 갯수 셋팅
+        header=['답변\n상태','작성자','Q&A제목','Q&A내용','작성일']
+        self.tableWidget.setColumnCount(len(header))
+        self.tableWidget.setHorizontalHeaderLabels(header)
+        self.tableWidget.setRowCount(len(self.qna[0]))
+        #열 넓이 조절
+        self.tableWidget.setColumnWidth(0,30)
+        self.tableWidget.setColumnWidth(1,50)
+        self.tableWidget.setColumnWidth(2,130)
+        self.tableWidget.setColumnWidth(3,200)
+        self.tableWidget.setColumnWidth(4,130)
+        # 테이블 위젯에 띄우기
+        for i in range(len(self.qna[0])):
+            self.tableWidget.setItem(i,0,QTableWidgetItem(str(self.qna[0][i][7]))) # 답변상태
+            self.tableWidget.setItem(i,1,QTableWidgetItem(str(self.qna[0][i][1]))) # 작성자명
+            self.tableWidget.setItem(i,2,QTableWidgetItem(str(self.qna[0][i][2]))) # QNA제목
+            self.tableWidget.setItem(i,3,QTableWidgetItem(str(self.qna[0][i][3]))) # QNA내용
+            self.tableWidget.setItem(i,4,QTableWidgetItem(str(self.qna[0][i][4]))) # 작성일
 
 
+    # qna 셀 더블클릭시
+    def qna_doubleclick(self):
+        self.row=self.tableWidget.currentRow()               # 행 번호 가져오기
+        title=self.tableWidget.item(self.row,2).text()       # 행의 제목 가져오기
+        self.QA_title.setText(f'{title}')
+        man=self.tableWidget.item(self.row,1).text()         # 행의 작성자명 가져오기
+        self.QA_man.setText(f'{man}')
+        content=self.tableWidget.item(self.row,3).text()     # 행의 내용 가져오기
+        self.QA_1.setText(f'{content}')
+
+    # QNA 작성완료 버튼 눌렀을 때
+    def QNA(self):
+        qna_answer=self.QA_answer.toPlainText().strip()
+        num=self.qna[0][self.row][0]
+        if qna_answer == '':
+            self.alarm_label.setText('답변입력요망')
+        else:
+            self.tableWidget.setItem(self.row,0,QTableWidgetItem('완료'))
+            qna_answer_list=['teacher_qna_answer',f'{qna_answer}','완료',f'{num}']
+            print(qna_answer_list)
+            # 서버로 전송
+            self.client_socket.send((json.dumps(qna_answer_list)).encode())
+            # 제목, 작성자, 내용, 답변 초기화
+            self.QA_title.setText('')
+            self.QA_man.setText('')
+            self.QA_1.setText('')
+            self.alarm_label.setText('')
+            self.QA_answer.setText('')
 
     # 출제완료 버튼 눌렀을 때
     def update(self):
@@ -103,161 +149,6 @@ if __name__ == "__main__" :
     Thread.daemon=True
     Thread.start()
     app.exec_()                         #프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

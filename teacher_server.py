@@ -59,7 +59,7 @@ class MultiServer:
 
 ########################################################################################################################################################
 
-                # 문제출제
+                # 문제 출제 DB 저장
                 elif identifier == 'teacher_update':
                     con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
                     with con:
@@ -68,18 +68,41 @@ class MultiServer:
                             ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
                             cur.execute(sql)
                             con.commit()
-                    self.disconnect_socket(client_socket)
+                    # self.disconnect_socket(client_socket)
 
+                # QNA 클라이언트로 보내기
                 elif identifier =='teacher_QNA':
                     con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
                     with con:
                         with con.cursor() as cur:
                             sql=f"select * from `education_application`.`qna`"
                             cur.execute(sql)
-                            qna=cur.fetchall()
+                            temp=cur.fetchall()
+                    # DB에서 가져온 데이터 datetime 문자열로 바꾸기
+                    qna=[]
+                    for i in range(len(temp)):
+                        temp1=[]
+                        for j in range(len(temp[0])):
+                            if type(temp[i][j]) == datetime:
+                                temp1.append(temp[i][j].strftime('%D,%T'))
+                            else:
+                                temp1.append(temp[i][j])
+                        qna.append(temp1)
+                    print(qna)
                     qna_list=['teacher_QNA',qna]
                     client_socket.send((json.dumps(qna_list)).encode())
-                    self.disconnect_socket(client_socket)
+                    # self.disconnect_socket(client_socket) # 왜 이게 있으면 꺼지지??
+
+                # QNA 답변 저장
+                elif identifier == 'teacher_qna_answer':
+                    print(self.received_message)
+                    con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql=f"update `education_application`.`qna` set answer='{self.received_message[0]}',answer_dt={'now()'}, state='{self.received_message[1]}' where number={self.received_message[2]}"
+                            cur.execute(sql)
+                            con.commit()
+
 
 ########################################################################################################################################################
 
@@ -101,7 +124,7 @@ class MultiServer:
 
 if __name__ == "__main__":
     MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-    host, port = '10.10.21.124', 6666
+    host, port = '10.10.21.124', 9010
     '''
         # 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
         server = ThreadedTCPServer((host, port), TCPHandler)
