@@ -77,6 +77,12 @@ class WindowClass(QMainWindow, form_class) :
                     print(self.received_message)
                     for i in range(len(self.received_message[0])):
                         self.consulting_combo.addItem(f'{self.received_message[0][i][0]}')
+                # 실시간상담 이전내역 불러오기
+                elif identifier == 'teacher_consulting_ch':
+                    self.pre_chat()
+
+    def pre_chat(self):
+        pass
 
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
