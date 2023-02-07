@@ -89,6 +89,17 @@ class MultiServer:
                     print(qna_list)
                     client_socket.send((json.dumps(qna_list)).encode())
 
+                # 실시간 상담, 학생명단 보내기
+                elif identifier == 'teacher_consulting_st':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"select * from `education_application`.`account`"
+                            cur.execute(sql)
+                            temp = cur.fetchall()
+                    name=['teacher_consulting_st',temp]
+                    client_socket.send((json.dumps(name)).encode())
+
     def QNA_DB(self):
         con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         with con:
