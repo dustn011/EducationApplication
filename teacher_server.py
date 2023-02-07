@@ -78,7 +78,6 @@ class MultiServer:
 
                 # QNA 답변 저장 및 QNA 저장된 내역 보내기
                 elif identifier == 'teacher_qna_answer':
-                    print(self.received_message)
                     con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
                     with con:
                         with con.cursor() as cur:
@@ -86,10 +85,9 @@ class MultiServer:
                             cur.execute(sql)
                             con.commit()
                     qna_list=self.QNA_DB()
-                    print(qna_list)
                     client_socket.send((json.dumps(qna_list)).encode())
 
-                # 실시간 상담, 학생명단 보내기
+                # 실시간 상담, 학생명단 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
                 elif identifier == 'teacher_consulting_st':
                     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
                     with con:
@@ -100,6 +98,39 @@ class MultiServer:
                     name=['teacher_consulting_st',temp]
                     client_socket.send((json.dumps(name)).encode())
 
+                # 이전내역 클라이언트로 보내기
+                elif identifier == 'teacher_consulting_ch':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}'"
+                            cur.execute(sql)
+                            temp = cur.fetchall()
+                    print(temp)
+                    consulting = []
+                    for i in range(len(temp)):
+                        temp1 = []
+                        for j in range(len(temp[0])):
+                            if type(temp[i][j]) == datetime:
+                                temp1.append(temp[i][j].strftime('%D,%T'))
+                            else:
+                                temp1.append(temp[i][j])
+                        consulting.append(temp1)
+                    print(consulting)
+                    consulting_chat=['teacher_consulting_ch',consulting]
+                    client_socket.send((json.dumps(consulting_chat)).encode())
+
+                elif identifier == 'teacher_send_message':
+                    con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql=f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+                            cur.execute(sql)
+                            con.commit()
+
+
+
+    #QNA DB 내역 불러오기
     def QNA_DB(self):
         con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         with con:

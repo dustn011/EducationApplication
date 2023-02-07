@@ -4,7 +4,6 @@ from PyQt5 import uic
 from socket import *
 import threading
 import json
-import time
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -21,6 +20,8 @@ class WindowClass(QMainWindow, form_class) :
         self.update_btn.clicked.connect(self.update)    # 문제 update 출제완료버튼 눌렀을 때
         self.QA_send_btn.clicked.connect(self.QNA)      # QNA 작성완료버튼 눌렀을 때
         self.tableWidget.cellDoubleClicked.connect(self.qna_doubleclick) # QNA 더블클릭했을 때
+        self.send_btn.clicked.connect(self.consulting_send)         # 실시간상담에서 전송버튼 눌렀을 떄
+        self.consulting_combo.currentIndexChanged.connect(self.send_stname) # 실시간상담에서 학생이름이 선택되었을때
 
         # 헤더, 열
         header=['학생','질문','답변여부']
@@ -33,6 +34,21 @@ class WindowClass(QMainWindow, form_class) :
         self.tableWidget.horizontalHeader().resizeSection(2, 60)
 
         self.stackedWidget.setCurrentIndex(0)
+
+    # 실시간상담에서 학생이름이 선택되었을때
+    def send_stname(self):
+        # 실시간상담, chat 내역 가져올 수 있도록 서버로 보내기
+        name=self.consulting_combo.currentText()
+        consulting_chat=['teacher_consulting_ch',f'{name}']
+        print(consulting_chat)
+        self.client_socket.send((json.dumps(consulting_chat)).encode())
+
+    # 실시간상담에서 전송눌렀을 떄
+    def consulting_send(self):
+        student = self.consulting_combo.currentText()
+        send_m=self.consulting_line.text()
+        send_message=['teacher_send_message','manager',f'{send_m}',f'{student}']
+        self.client_socket.send((json.dumps(send_message)).encode())
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
@@ -56,6 +72,7 @@ class WindowClass(QMainWindow, form_class) :
                 # QNA 받기
                 if identifier == 'teacher_QNA':
                     self.qna_show()
+                # 실시간상담 학생명단 받아오기 -> 서버연결하면 학생명단받아서 바꿀예정.
                 elif identifier == 'teacher_consulting_st':
                     print(self.received_message)
                     for i in range(len(self.received_message[0])):
@@ -64,12 +81,10 @@ class WindowClass(QMainWindow, form_class) :
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
         self.stackedWidget.setCurrentIndex(1)
-
         # Q&A 화면 보이도록 서버로 보내기
         QNA=['teacher_QNA']
         self.client_socket.send((json.dumps(QNA)).encode())
-
-        # 실시간상담, 학생 선택할 수 있도록 DB에서 목록가져오기
+        # 실시간상담, 학생 선택할 수 있도록 서버로 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
         consulting_student=['teacher_consulting_st']
         self.client_socket.send((json.dumps(consulting_student)).encode())
 

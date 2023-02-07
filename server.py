@@ -2,7 +2,7 @@ import json
 import socketserver
 import threading
 from datetime import timedelta, datetime
-
+import pymysql
 
 # 클라이언트의 요청을 처리하는 핸들러 클래스 socketserver을 사용해서 TCPserver을 만들 때 이용
 class TCPHandler(socketserver.BaseRequestHandler):
@@ -57,6 +57,37 @@ class MultiServer:
                 elif identifier == 'plzDisconnectSocket':
                     self.disconnect_socket(client_socket)
 
+                # 문제출제
+                elif identifier == 'teacher_update':
+                    con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql=f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
+                            ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
+                            cur.execute(sql)
+                            con.commit()
+                    self.disconnect_socket(client_socket)
+
+                elif identifier =='teacher_QNA':
+                    con=pymysql.connect(host='10.10.21.102', user='lilac',password='0000',db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql=f"select * from `education_application`.`qna`"
+                            cur.execute(sql)
+                            temp=cur.fetchall()
+
+                    # DB에서 가져온 데이터 datetime 문자열로 바꾸기
+                    qna=[]
+                    for i in range(len(temp)):
+                        for j in range(len(temp[0])):
+                            if type(temp[i][j]) == datetime:
+                                qna.append(temp[i][j].strftime('%D,%T'))
+                            else:
+                                qna.append(temp[i][j])
+                    qna_list=['teacher_QNA',qna]
+                    client_socket.send((json.dumps(qna_list)).encode())
+                    self.disconnect_socket(client_socket)
+
     # DB에서 account정보와 일치하는지 확인
     def method_checkAccount(self, sender_socket):
         print(f'{sender_socket}\n에서 회원 정보 확인 메시지가 왔습니다')
@@ -75,7 +106,7 @@ class MultiServer:
 
 if __name__ == "__main__":
     MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-    host, port = '10.10.21.102', 6666
+    host, port = '10.10.21.124', 9015
     '''
         # 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
         server = ThreadedTCPServer((host, port), TCPHandler)
