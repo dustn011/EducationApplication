@@ -361,9 +361,9 @@
        <property name="geometry">
         <rect>
          <x>360</x>
-         <y>20</y>
+         <y>70</y>
          <width>400</width>
-         <height>300</height>
+         <height>250</height>
         </rect>
        </property>
        <property name="font">
@@ -417,7 +417,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>정답 제출</string>
+        <string>답 제출</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_9">
@@ -435,7 +435,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>정답</string>
+        <string>답</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -539,7 +539,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>0</string>
+        <string>현재 점수</string>
        </property>
       </widget>
       <widget class="QLabel" name="exact">
@@ -548,6 +548,24 @@ p, li { white-space: pre-wrap; }
          <x>460</x>
          <y>390</y>
          <width>80</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="correct">
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>20</y>
+         <width>300</width>
          <height>40</height>
         </rect>
        </property>
@@ -672,6 +690,28 @@ p, li { white-space: pre-wrap; }
       <font>
        <pointsize>16</pointsize>
       </font>
+     </property>
+    </widget>
+    <widget class="QLabel" name="fail_message">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>340</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>
