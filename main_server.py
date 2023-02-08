@@ -72,38 +72,75 @@ class MultiServer:
 				elif identifier == 'plzInsertStudentChat':
 					self.method_insStudentMessage(client_socket)
 				# ---------------------성경---------------------
-				# 문제출제
+				# 문제 출제 DB 저장
 				elif identifier == 'teacher_update':
-					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-					                      db='education_application')
+					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
 					with con:
 						with con.cursor() as cur:
 							sql = f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
-                            ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
+										   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
 							cur.execute(sql)
 							con.commit()
-					self.disconnect_socket(client_socket)
+					# self.disconnect_socket(client_socket)
 
+				# QNA 클라이언트로 보내기
 				elif identifier == 'teacher_QNA':
-					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-					                      db='education_application')
+					qna_list = self.QNA_DB()
+					client_socket.send((json.dumps(qna_list)).encode())
+				# self.disconnect_socket(client_socket) # 왜 이게 있으면 꺼지지??
+
+				# QNA 답변 저장 및 QNA 저장된 내역 보내기
+				elif identifier == 'teacher_qna_answer':
+					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',db='education_application')
 					with con:
 						with con.cursor() as cur:
-							sql = f"select * from `education_application`.`qna`"
+							sql = f"update `education_application`.`qna` set answer='{self.received_message[0]}',answer_dt={'now()'}, state='{self.received_message[1]}' where number={self.received_message[2]}"
+							cur.execute(sql)
+							con.commit()
+					qna_list = self.QNA_DB()
+					client_socket.send((json.dumps(qna_list)).encode())
+
+				# 실시간 상담, 학생명단 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
+				elif identifier == 'teacher_consulting_st':
+					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',db='education_application')
+					with con:
+						with con.cursor() as cur:
+							sql = f"select * from `education_application`.`account`"
 							cur.execute(sql)
 							temp = cur.fetchall()
+					name = ['teacher_consulting_st', temp]
+					client_socket.send((json.dumps(name)).encode())
 
-					# DB에서 가져온 데이터 datetime 문자열로 바꾸기
-					qna = []
+				# 이전내역 클라이언트로 보내기
+				elif identifier == 'teacher_consulting_ch':
+					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',db='education_application')
+					with con:
+						with con.cursor() as cur:
+							sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}'"
+							cur.execute(sql)
+							temp = cur.fetchall()
+					print(temp)
+					consulting = []
 					for i in range(len(temp)):
+						temp1 = []
 						for j in range(len(temp[0])):
 							if type(temp[i][j]) == datetime:
-								qna.append(temp[i][j].strftime('%D,%T'))
+								temp1.append(temp[i][j].strftime('%D,%T'))
 							else:
-								qna.append(temp[i][j])
-					qna_list = ['teacher_QNA', qna]
-					client_socket.send((json.dumps(qna_list)).encode())
-					self.disconnect_socket(client_socket)
+								temp1.append(temp[i][j])
+						consulting.append(temp1)
+					print(consulting)
+					consulting_chat = ['teacher_consulting_ch', consulting]
+					client_socket.send((json.dumps(consulting_chat)).encode())
+
+				elif identifier == 'teacher_send_message':
+					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+					with con:
+						with con.cursor() as cur:
+							sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+							cur.execute(sql)
+							con.commit()
+
 				# ---------------------민석---------------------
 				# plzGiveQuiz = 퀴즈 목록 요청 코드
 				elif identifier == "plzGiveQuiz":
@@ -236,6 +273,27 @@ class MultiServer:
 				print(f"{datetime.now().strftime('%D %T')}, {ip} : {port} 연결이 종료되었습니다")
 				socket.close()
 				print(self.clients)
+
+	# QNA DB 내역 불러오기
+	def QNA_DB(self):
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"select * from `education_application`.`qna`"
+				cur.execute(sql)
+				temp = cur.fetchall()
+		# DB에서 가져온 데이터 datetime 문자열로 바꾸기
+		qna = []
+		for i in range(len(temp)):
+			temp1 = []
+			for j in range(len(temp[0])):
+				if type(temp[i][j]) == datetime:
+					temp1.append(temp[i][j].strftime('%D,%T'))
+				else:
+					temp1.append(temp[i][j])
+			qna.append(temp1)
+		qna_list = ['teacher_QNA', qna]
+		return qna_list
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
