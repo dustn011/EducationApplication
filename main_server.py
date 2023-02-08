@@ -54,8 +54,8 @@ class MultiServer:
 				# ---------------------연수---------------------
 				# 로그인 요청
 				elif identifier == 'plzCheckAccount':
-					self.method_checkAccount(client_socket)
-					pass
+					account_info = self.method_checkAccount()
+					self.loginAccess_message(client_socket, account_info)
 				# 클라이언트 종료
 				elif identifier == 'plzDisconnectSocket':
 					self.disconnect_socket(client_socket)
@@ -336,7 +336,7 @@ class MultiServer:
 
 if __name__ == "__main__":
 	MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-	host, port = '10.10.21.124', 9015
+	host, port = '10.10.21.129', 9015
 	'''
 		# 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
 		server = ThreadedTCPServer((host, port), TCPHandler)

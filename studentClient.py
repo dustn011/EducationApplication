@@ -21,7 +21,7 @@ class StudentClient(QWidget, student_ui):
         super().__init__()
         self.setupUi(self)
         self.client_socket = None
-        self.initialize_socket('10.10.21.129', 6666)
+        self.initialize_socket('10.10.21.129', 9015)
         self.listen_thread()
         self.clPage.setCurrentIndex(5)
         self.account = ''
@@ -31,7 +31,7 @@ class StudentClient(QWidget, student_ui):
         self.rate = None
         # 퀴즈 테이블에서 선택한 셀의 row값
         self.row = 0
-        self.insects = dict()
+        self.extinctions = dict()
         # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
         # QnA 페이지 이동
@@ -57,8 +57,11 @@ class StudentClient(QWidget, student_ui):
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
         # 학습 자료
-        self.study_book()
-        self.insectList.itemClicked.connect(self.insect_info)
+        # 멸종 위기 곤충
+        self.study_extinction()
+        self.extincList.itemClicked.connect(self.extinc_info)
+        # 곤충 도감
+        self.study_insect()
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -163,24 +166,35 @@ class StudentClient(QWidget, student_ui):
             self.answerText.clear()
 
     # 멸종 위기 곤충 자료
-    def study_book(self):
-        # self.url = 'http://www.nature.go.kr/fileUpload/photo/O1/ZOEC0011_1.jpg'
-        # self.insect = urllib.request.urlopen(self.url).read()
-        # self.pixmap = QPixmap()
-        # self.pixmap.loadFromData(self.insect)
-        # self.pixmap = self.pixmap.scaledToHeight(400)
-        # self.insectImage.setPixmap(self.pixmap)
+    def study_extinction(self):
+        extinc_list = []
+        extinc_cont = []
         key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
         url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey=%s' % key
         content = requests.get(url).content
         diction = xmltodict.parse(content)
         for item in diction['response']['body']['items']['item']:
-            self.insectList.addItem(item['insctofnmkrlngnm'])
-            self.insects[item['insctofnmkrlngnm']] = (item['imgUrl'], item['insctFamilyNm'], item['insctPcmtt'])
+            extinc_list.append(item['insctPilbkNo'])
+        for number in extinc_list:
+            url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrInfo?serviceKey=' \
+                  '%s&q1=%s' % (key, number)
+            content = requests.get(url).content
+            diction = xmltodict.parse(content)['response']['body']['item']
+            self.extincList.addItem(diction['insctOfnmKrlngNm'])
+            extinc_cont.append(diction['imgUrl'])
+            extinc_cont.append(diction['ordKorNm'])
+            extinc_cont.append(diction['familyKorNm'])
+            extinc_cont.append(diction['genusKorNm'])
+            for i in range(0, 9):
+                if isinstance(diction['cont%d' % (i + 1)], str):
+                    extinc_cont.append(diction['cont%d' % (i + 1)])
+            self.extinctions[diction['insctOfnmKrlngNm']] = extinc_cont
+            extinc_cont = []
 
-    def insect_info(self):
-        self.insectInfo.clear()
-        url = self.insects[self.insectList.currentItem().text()][0]
+    # 선택한 멸종 위기 곤충의 정보 출력
+    def extinc_info(self):
+        self.extincInfo.clear()
+        url = self.extinctions[self.extincList.currentItem().text()][0]
         insect = urllib.request.urlopen(url).read()
         pixmap = QPixmap()
         pixmap.loadFromData(insect)
@@ -188,10 +202,21 @@ class StudentClient(QWidget, student_ui):
             pixmap = pixmap.scaledToWidth(400)
         else:
             pixmap = pixmap.scaledToHeight(400)
-        self.insectImage.setPixmap(pixmap)
-        self.insectInfo.append(self.insectList.currentItem().text() + "\n")
-        for i in range(1, 3):
-            self.insectInfo.append(self.insects[self.insectList.currentItem().text()][i] + "\n")
+        self.extincImage.setPixmap(pixmap)
+        self.extincInfo.append(self.extincList.currentItem().text() + "\n")
+        for i in range(1, len(self.extinctions[self.extincList.currentItem().text()]) - 1):
+            self.extincInfo.append(self.extinctions[self.extincList.currentItem().text()][i] + "\n")
+
+    def study_insect(self):
+        key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
+        url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrSearch?serviceKey=' \
+              '%s&st=1&sw=&numOfRows=5&pageNo=1' % key
+        content = requests.get(url).content
+        diction = xmltodict.parse(content)
+        # for item in diction['response']['body']['items']['item']:
+            # print(item)
+            # self.extincList.addItem(item['insctofnmkrlngnm'])
+            # self.extinctions[item['insctofnmkrlngnm']] = (item['imgUrl'], item['insctFamilyNm'], item['insctPcmtt'])
 
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
