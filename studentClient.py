@@ -21,7 +21,7 @@ class StudentClient(QWidget, student_ui):
         super().__init__()
         self.setupUi(self)
         self.client_socket = None
-        self.initialize_socket('10.10.21.129', 9015)
+        self.initialize_socket('10.10.21.102', 6666)
         self.listen_thread()
         self.clPage.setCurrentIndex(5)
         self.account = ''
