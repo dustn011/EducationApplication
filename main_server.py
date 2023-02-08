@@ -136,6 +136,9 @@ class MultiServer:
 					self.insert_answer(self.received_message[0], self.received_message[1],
 					                   self.received_message[2], self.received_message[3], self.received_message[4])
 
+				elif identifier == "giveStudy":
+					self.send_study(client_socket, self.received_message[0], self.received_message[1])
+
 	# ---------------------연수---------------------
 	# 선생 클라에서 학생 클라로 메시지 보내기
 	def send_chat_teacherToStudent(self, sender_socket):
@@ -458,10 +461,28 @@ class MultiServer:
 		             (class_tab, q_number, answer, score, student))
 		conn.commit()
 
+	def send_study(self, senders_socket, student, tab):
+		print(student, str(tab))
+		class_tab = ''
+		if tab == 0:
+			class_tab = 'extinc'
+		elif tab == 1:
+			class_tab = 'insect'
+		elif tab == 2:
+			class_tab = 'bird'
+		elif tab == 3:
+			class_tab = 'mammalia'
+		conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+		curs = conn.cursor()
+		curs.execute("select %s from education_application.study where student = '%s'" % (class_tab, student))
+		index = curs.fetchall()[0][0]
+		print(index)
+		senders_socket.sendall(json.dumps(["hereStudyLoad", index]).encode('utf-8'))
+
 
 if __name__ == "__main__":
 	MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-	host, port = '10.10.21.102', 6666
+	host, port = '10.10.21.129', 6666
 	'''
 		# 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
 		server = ThreadedTCPServer((host, port), TCPHandler)
