@@ -113,7 +113,7 @@ class MultiServer:
 				elif identifier == 'teacher_account':
 					self.teacher_account(client_socket)
 
-				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
+				# 실시간채팅 전송받앗을 때 DB저장 및 학생한테 보내기
 				elif identifier == 'teacher_send_message':
 					# self.received_message = [manager, send_message, student_name]
 					self.send_chat_teacherToStudent(client_socket)
@@ -263,6 +263,23 @@ class MultiServer:
 		self.now_connected_name.remove(self.received_message[0])
 		print('현재 접속한 name:', self.now_connected_name)
 		print('현재 접속한 account:', self.now_connected_account)
+
+		# 학생 접속명단 보내기
+		name = []
+		for i in self.now_connected_name:
+			if i == 'manager':
+				pass
+			else:
+				name.append(i)
+		account = ['teacher_account_delete', name]
+
+		# 종료시 선생클라로 보낼내용
+		for i in self.now_connected_account:
+			if 'manager' in i:
+				i[0].send((json.dumps(account)).encode())
+			else:
+				pass
+		print('선생클라로 보낼내용:', account)
 
 	# DB에서 account정보와 일치하는지 확인
 	def method_checkAccount(self):
