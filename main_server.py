@@ -72,7 +72,6 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					# [self.studentName.text(), self.send_chat.text()]
-					self.chat_te_send()
 					self.method_insStudentMessage(client_socket)
 				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
 				elif identifier == 'plzGiveChattingLog':
@@ -116,8 +115,9 @@ class MultiServer:
 				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
 				elif identifier == 'teacher_send_message':
 					# self.received_message = [manager, send_message, student_name]
-
 					self.chat_dbsave()
+				elif identifier == 'teacher_consulting_st':
+					self.current_state(client_socket)
 
 				# ---------------------민석---------------------
 				# plzGiveQuiz = 퀴즈 목록 요청 코드
@@ -133,6 +133,18 @@ class MultiServer:
 					                   self.received_message[2], self.received_message[3], self.received_message[4])
 
 	# ---------------------연수---------------------
+	# 선생 클라에서 학생 클라로 메시지 보내기
+	def send_chat_teacherToStudent(self, sender_socket):
+		for connected_account in self.now_connected_account:
+			if self.received_message[2] == connected_account[1]:
+				teacher_message = ['send_teacher_message', self.received_message[0], self.received_message[1]]
+				send_teacherMessage = json.dumps(teacher_message)
+				try:
+					connected_account[0].send(send_teacherMessage.encode('utf-8'))  # 선택한 학생에게 데이터 보내주기
+					print('학생에게 메시지를 보냈습니다')
+				except:  # 메시지가 전송되지 않으면 연결 종료된 소켓이므로 지워준다
+					print('어디갔누!')
+
 	# DB에서 상담 채팅 내역 불러오기 해당 학생만
 	def method_getChattingLog(self):
 		print('클라이언트에서 상담채팅 내역 요청이 들어왔습니다')
@@ -242,6 +254,7 @@ class MultiServer:
 	def logoutAccount(self, sender_socket):
 		self.now_connected_account.remove([sender_socket, self.received_message[0]])
 		self.now_connected_name.remove(self.received_message[0])
+		print('현재 접속한 name:', self.now_connected_name)
 		print('현재 접속한 account:', self.now_connected_account)
 
 	# DB에서 account정보와 일치하는지 확인
@@ -315,6 +328,7 @@ class MultiServer:
 				sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}' or sender='{self.received_message[0]}' order by send_dt"
 				cur.execute(sql)
 				temp = cur.fetchall()
+		print(temp)
 		consulting = []
 		for i in range(len(temp)):
 			temp1 = []
@@ -324,8 +338,29 @@ class MultiServer:
 				else:
 					temp1.append(temp[i][j])
 			consulting.append(temp1)
+		print(consulting)
 		consulting_chat = ['teacher_consulting_ch', consulting]
 		sender_socket.send((json.dumps(consulting_chat)).encode())
+
+	# 실시간 상담내역 저장
+	def chat_dbsave(self):
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+							  db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+				cur.execute(sql)
+				con.commit()
+
+	# 실시간채팅 학생한테 받은내용 선생한테 보내기
+	def chat_te_send(self):
+		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+					 datetime.now().strftime('%D %T')]
+		for i in self.now_connected_account:
+			if 'manager' in i:
+				i[0].send((json.dumps(chat_list)).encode())
+			else:
+				pass
 
 	# 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
 	def teacher_account(self, sender_socket):
@@ -340,34 +375,19 @@ class MultiServer:
 		sender_socket.send((json.dumps(qna_list)).encode())
 
 		# 학생접속명단 보내기
-		name=[]
+		self.current_state(sender_socket)
+
+	# 현재접속명단 보내기
+	def current_state(self, sender_socket):
+		# 학생접속명단 보내기
+		name = []
 		for i in self.now_connected_name:
-			if i =='manager':
+			if i == 'manager':
 				pass
 			else:
 				name.append(i)
 		student = ['teacher_consulting_st', name]
 		sender_socket.send((json.dumps(student)).encode())
-
-	# 실시간채팅 학생한테 받은내용 선생한테 보내기
-	def chat_te_send(self):
-		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
-					 datetime.now().strftime('%D %T')]
-		for i in self.now_connected_account:
-			if 'manager' in i:
-				i[0].send((json.dumps(chat_list)).encode())
-			else:
-				pass
-
-	# 실시간 상담내역 저장
-	def chat_dbsave(self):
-		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-							  db='education_application')
-		with con:
-			with con.cursor() as cur:
-				sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
-				cur.execute(sql)
-				con.commit()
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
