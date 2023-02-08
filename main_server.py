@@ -116,6 +116,7 @@ class MultiServer:
 				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
 				elif identifier == 'teacher_send_message':
 					# self.received_message = [manager, send_message, student_name]
+					self.send_chat_teacherToStudent(client_socket)
 					self.chat_dbsave()
 
 				# 새로고침눌렀을 때 현재 접속자수 보내주기
@@ -443,7 +444,7 @@ class MultiServer:
 
 if __name__ == "__main__":
 	MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-	host, port = '10.10.21.129', 9015
+	host, port = '10.10.21.102', 6666
 	'''
 		# 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
 		server = ThreadedTCPServer((host, port), TCPHandler)
