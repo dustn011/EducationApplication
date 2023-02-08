@@ -40,6 +40,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
     def f5(self):
+        self.consulting_show.clear()
         self.send_btn.setEnabled(True)
         message=['teacher_consulting_st']
         self.client_socket.send((json.dumps(message)).encode())
@@ -66,6 +67,7 @@ class WindowClass(QMainWindow, form_class) :
             time=datetime.datetime.now().strftime("%D,%T")
             # 상담화면에 띄우기
             self.consulting_show.addItem(f'[{time}] [manager] {send_m}')
+            self.consulting_show.scrollToBottom()
             # 서버로 보내기
             send_message=['teacher_send_message','manager',f'{send_m}',f'{student}']
             self.client_socket.send((json.dumps(send_message)).encode())
@@ -107,15 +109,37 @@ class WindowClass(QMainWindow, form_class) :
                 # 실시간 상담시 접속종료되면 접속종료시키기
                 elif identifier == 'teacher_account_delete':
                     self.current_delete()
+
+    # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
     def current_delete(self):
-        self.consulting_show.addItem(f'-------------- 상대방이 접속을 종료했습니다 -------------')
-        self.consulting_show.addItem(f'-------------------- 새로고침 하세요 ------------------')
-        self.send_btn.setEnabled(False)
+        print(str(self.received_message[0]))
+        print(self.consulting_combo.currentText())
+        if bool(self.received_message[0])==False:
+            self.consulting_show.addItem(f'----------------------- 상대방이 접속을 종료했습니다 ----------------------')
+            self.consulting_show.addItem(f'------------------------------ 새로고침 하세요 ------------------------------')
+            self.consulting_show.scrollToBottom()
+            self.send_btn.setEnabled(False)
+        else:
+            if str(self.received_message[0]) != self.consulting_combo.currentText():
+                pass
+            else:
+                self.consulting_show.addItem(f'----------------------- 상대방이 접속을 종료했습니다 ----------------------')
+                self.consulting_show.addItem(f'------------------------------ 새로고침 하세요 ------------------------------')
+                self.consulting_show.scrollToBottom()
+                self.send_btn.setEnabled(False)
+                # if bool(self.received_message[0]) == False:
+                #     self.current_man.clear()
+                #     self.man_num.setText(f'[0] 명')
+                # else:
+                #     for i in self.received_message[0]:
+                #         self.current_man.addItem(f'{i}')
+                #     self.man_num.setText(f'[{len(self.received_message)}] 명')
 
     # 접속한 학생으로 명단띄움, 현재 접속자 띄우기
     def chat_state(self):
         self.current_man.clear()
         self.consulting_combo.clear()
+        self.consulting_combo.addItem(f'')
         self.received_message = self.received_message[0]
         for i in range(len(self.received_message)):
             self.consulting_combo.addItem(f'{self.received_message[i]}')
@@ -127,15 +151,23 @@ class WindowClass(QMainWindow, form_class) :
     def chat_st(self):
         # self.received_message = [self.studentName.text(), self.send_chat.text()]
         chat = self.received_message
-        self.consulting_show.addItem(f'[{chat[2]}] [{chat[0]}] {chat[1]}')
+        if self.consulting_combo.currentText() == f'{chat[0]}':
+            self.consulting_show.addItem(f'[{chat[2]}] [{chat[0]}] {chat[1]}')
+            self.consulting_show.scrollToBottom()
+        else:
+            pass
 
     # 이전채팅내역 보여주기
     def pre_chat(self):
         self.received_message=self.received_message[0]              # 이거 민석님 일지보고 배워옴!!!
         print(self.received_message)
-        for i in self.received_message:
-            self.consulting_show.addItem(f'[{i[0]}] [{i[1]}] {i[2]}')
-        self.consulting_show.addItem(f'--------------------------------- 이전내역 ---------------------------------')
+        if self.consulting_combo.currentText() == '':
+            pass
+        else:
+            for i in self.received_message:
+                self.consulting_show.addItem(f'[{i[0]}] [{i[1]}] {i[2]}')
+            self.consulting_show.scrollToBottom()
+            self.consulting_show.addItem(f'--------------------------------- 이전내역 ---------------------------------')
 
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
