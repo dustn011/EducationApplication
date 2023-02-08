@@ -54,8 +54,7 @@ class MultiServer:
 				# ---------------------연수---------------------
 				# 로그인 요청
 				elif identifier == 'plzCheckAccount':
-					account_info = self.method_checkAccount()
-					self.loginAccess_message(client_socket, account_info)
+					self.method_checkAccount()
 				# 클라이언트 종료
 				elif identifier == 'plzDisconnectSocket':
 					self.disconnect_socket(client_socket)
