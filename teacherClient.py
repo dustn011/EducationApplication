@@ -76,8 +76,9 @@ class WindowClass(QMainWindow, form_class) :
                 buf=socket.recv(9999)
                 if not buf:
                     break
-            except Exception as e:
-                print(e)
+            except:
+                print('연결 종료')
+                break
             else:
                 self.received_message = json.loads(buf.decode('utf-8'))
                 print(self.received_message)
@@ -85,11 +86,12 @@ class WindowClass(QMainWindow, form_class) :
                 # QNA 받기
                 if identifier == 'teacher_QNA':
                     self.qna_show()
-                # 실시간상담 학생명단 받아오기 -> 서버연결하면 학생명단받아서 바꿀예정.
+                # 접속한 학생으로 명단띄움.
                 elif identifier == 'teacher_consulting_st':
                     print(self.received_message)
-                    for i in range(len(self.received_message[0])):
-                        self.consulting_combo.addItem(f'{self.received_message[0][i][0]}')
+                    self.received_message=self.received_message[0]
+                    for i in range(len(self.received_message)):
+                        self.consulting_combo.addItem(f'{self.received_message[i]}')
                 # 실시간상담 이전내역 불러오기
                 elif identifier == 'teacher_consulting_ch':
                     self.pre_chat()

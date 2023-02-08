@@ -104,17 +104,6 @@ class MultiServer:
 					qna_list = self.QNA_DB()
 					client_socket.send((json.dumps(qna_list)).encode())
 
-				# 실시간 상담, 학생명단 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
-				elif identifier == 'teacher_consulting_st':
-					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',db='education_application')
-					with con:
-						with con.cursor() as cur:
-							sql = f"select * from `education_application`.`account`"
-							cur.execute(sql)
-							temp = cur.fetchall()
-					name = ['teacher_consulting_st', temp]
-					client_socket.send((json.dumps(name)).encode())
-
 				# 이전내역 클라이언트로 보내기
 				elif identifier == 'teacher_consulting_ch':
 					self.pre_chat_send(client_socket)
@@ -123,6 +112,11 @@ class MultiServer:
 				elif identifier == 'teacher_account':
 					self.teacher_account(client_socket)
 
+				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
+				elif identifier == 'teacher_send_message':
+					# self.received_message = [manager, send_message, student_name]
+
+					self.chat_dbsave()
 
 				# ---------------------민석---------------------
 				# plzGiveQuiz = 퀴즈 목록 요청 코드
@@ -345,9 +339,26 @@ class MultiServer:
 		# QNA리스트 보내기
 		qna_list = self.QNA_DB()
 		sender_socket.send((json.dumps(qna_list)).encode())
+
 		# 학생접속명단 보내기
-		name = ['teacher_consulting_st', self.now_connected_name]
-		sender_socket.send((json.dumps(name)).encode())
+		name=[]
+		for i in self.now_connected_name:
+			if i =='manager':
+				pass
+			else:
+				name.append(i)
+		student = ['teacher_consulting_st', name]
+		sender_socket.send((json.dumps(student)).encode())
+
+	# 실시간 상담내역 저장
+	def chat_dbsave(self):
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+							  db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+				cur.execute(sql)
+				con.commit()
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
