@@ -465,9 +465,9 @@
        <widget class="QListWidget" name="consulting_show">
         <property name="geometry">
          <rect>
-          <x>220</x>
+          <x>150</x>
           <y>120</y>
-          <width>351</width>
+          <width>491</width>
           <height>341</height>
          </rect>
         </property>

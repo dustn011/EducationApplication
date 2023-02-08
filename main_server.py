@@ -34,6 +34,7 @@ class MultiServer:
 		self.clients = []  # 접속된 클라이언트 소켓 목록을 넣을 모든 클라이언트 소켓 저장 리스트
 		self.received_message = None  # self.received_message 대충 정의해놓기
 		self.now_connected_account = []
+		self.now_connected_name = []
 
 	# 클라이언트에서 요청이 오면 실행될 함수
 	def receive_messages(self, client_socket):
@@ -85,13 +86,11 @@ class MultiServer:
 										   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
 							cur.execute(sql)
 							con.commit()
-					# self.disconnect_socket(client_socket)
 
 				# QNA 클라이언트로 보내기
 				elif identifier == 'teacher_QNA':
 					qna_list = self.QNA_DB()
 					client_socket.send((json.dumps(qna_list)).encode())
-				# self.disconnect_socket(client_socket) # 왜 이게 있으면 꺼지지??
 
 				# QNA 답변 저장 및 QNA 저장된 내역 보내기
 				elif identifier == 'teacher_qna_answer':
@@ -117,33 +116,12 @@ class MultiServer:
 
 				# 이전내역 클라이언트로 보내기
 				elif identifier == 'teacher_consulting_ch':
-					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',db='education_application')
-					with con:
-						with con.cursor() as cur:
-							sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}'"
-							cur.execute(sql)
-							temp = cur.fetchall()
-					print(temp)
-					consulting = []
-					for i in range(len(temp)):
-						temp1 = []
-						for j in range(len(temp[0])):
-							if type(temp[i][j]) == datetime:
-								temp1.append(temp[i][j].strftime('%D,%T'))
-							else:
-								temp1.append(temp[i][j])
-						consulting.append(temp1)
-					print(consulting)
-					consulting_chat = ['teacher_consulting_ch', consulting]
-					client_socket.send((json.dumps(consulting_chat)).encode())
+					self.pre_chat_send(client_socket)
 
-				elif identifier == 'teacher_send_message':
-					con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
-					with con:
-						with con.cursor() as cur:
-							sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
-							cur.execute(sql)
-							con.commit()
+				# 선생 접속시 리스트에 소켓내용, 이름 집어넣기
+				elif identifier == 'teacher_account':
+					self.teacher_account(client_socket)
+
 
 				# ---------------------민석---------------------
 				# plzGiveQuiz = 퀴즈 목록 요청 코드
@@ -298,7 +276,7 @@ class MultiServer:
 		send_accessMessage = json.dumps(access_message)
 		sender_socket.send(send_accessMessage.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
 
-	# ---------------------성경---------------------
+
 	# 클라이언트에서 연결 끊는다고 시그널 보내면 소켓 리스트에서 해당 클라이언트 연결 소켓 지움
 	def disconnect_socket(self, senders_socket):
 		for client in self.clients:
@@ -308,6 +286,8 @@ class MultiServer:
 				print(f"{datetime.now().strftime('%D %T')}, {ip} : {port} 연결이 종료되었습니다")
 				socket.close()
 				print(self.clients)
+
+	# ---------------------성경---------------------
 
 	# QNA DB 내역 불러오기
 	def QNA_DB(self):
@@ -329,6 +309,43 @@ class MultiServer:
 			qna.append(temp1)
 		qna_list = ['teacher_QNA', qna]
 		return qna_list
+
+	# 채팅이전내역 보내기
+	def pre_chat_send(self, sender_socket):
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}' or sender='{self.received_message[0]}' order by send_dt"
+				cur.execute(sql)
+				temp = cur.fetchall()
+		print(temp)
+		consulting = []
+		for i in range(len(temp)):
+			temp1 = []
+			for j in range(len(temp[0])):
+				if type(temp[i][j]) == datetime:
+					temp1.append(temp[i][j].strftime('%D,%T'))
+				else:
+					temp1.append(temp[i][j])
+			consulting.append(temp1)
+		print(consulting)
+		consulting_chat = ['teacher_consulting_ch', consulting]
+		sender_socket.send((json.dumps(consulting_chat)).encode())
+
+	# 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
+	def teacher_account(self, sender_socket):
+		self.now_connected_account.append([sender_socket, 'manager'])
+		self.now_connected_name.append('manager')
+		print('로그인 성공')
+		print('현재 접속한 account:', self.now_connected_account)
+		print('현재 접속 명단:', self.now_connected_name)
+
+		# QNA리스트 보내기
+		qna_list = self.QNA_DB()
+		sender_socket.send((json.dumps(qna_list)).encode())
+		# 학생접속명단 보내기
+		name = ['teacher_consulting_st', self.now_connected_name]
+		sender_socket.send((json.dumps(name)).encode())
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달

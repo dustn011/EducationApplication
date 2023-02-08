@@ -4,6 +4,7 @@ from PyQt5 import uic
 from socket import *
 import threading
 import json
+import datetime
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -20,6 +21,7 @@ class WindowClass(QMainWindow, form_class) :
         self.update_btn.clicked.connect(self.update)    # 문제 update 출제완료버튼 눌렀을 때
         self.QA_send_btn.clicked.connect(self.QNA)      # QNA 작성완료버튼 눌렀을 때
         self.tableWidget.cellDoubleClicked.connect(self.qna_doubleclick) # QNA 더블클릭했을 때
+        self.consulting_line.returnPressed.connect(self.consulting_send)
         self.send_btn.clicked.connect(self.consulting_send)         # 실시간상담에서 전송버튼 눌렀을 떄
         self.consulting_combo.currentIndexChanged.connect(self.send_stname) # 실시간상담에서 학생이름이 선택되었을때
 
@@ -37,6 +39,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # 실시간상담에서 학생이름이 선택되었을때
     def send_stname(self):
+        self.consulting_show.clear()
         # 실시간상담, chat 내역 가져올 수 있도록 서버로 보내기
         name=self.consulting_combo.currentText()
         consulting_chat=['teacher_consulting_ch',f'{name}']
@@ -45,10 +48,20 @@ class WindowClass(QMainWindow, form_class) :
 
     # 실시간상담에서 전송눌렀을 떄
     def consulting_send(self):
-        student = self.consulting_combo.currentText()
-        send_m=self.consulting_line.text()
-        send_message=['teacher_send_message','manager',f'{send_m}',f'{student}']
-        self.client_socket.send((json.dumps(send_message)).encode())
+        if self.consulting_line.text() == '':
+            pass
+        else:
+            # 콤보박스 학생이름, 라인에딧 전송한 메시지 가져오기
+            student = self.consulting_combo.currentText()
+            send_m=self.consulting_line.text()
+            time=datetime.datetime.now().strftime("%D,%T")
+            # 상담화면에 띄우기
+            self.consulting_show.addItem(f'[{time}] [manager] {send_m}')
+            # 서버로 보내기
+            send_message=['teacher_send_message','manager',f'{send_m}',f'{student}']
+            self.client_socket.send((json.dumps(send_message)).encode())
+            # 전송한 메시지 삭제
+            self.consulting_line.clear()
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
@@ -81,18 +94,20 @@ class WindowClass(QMainWindow, form_class) :
                 elif identifier == 'teacher_consulting_ch':
                     self.pre_chat()
 
+    # 이전채팅내역 보여주기
     def pre_chat(self):
-        pass
+        self.received_message=self.received_message[0]              # 이거 민석님 일지보고 배워옴!!!
+        print(self.received_message)
+        for i in self.received_message:
+            self.consulting_show.addItem(f'[{i[0]}] [{i[1]}] {i[2]}')
+        self.consulting_show.addItem(f'--------------------------------- 이전내역 ---------------------------------')
 
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
         self.stackedWidget.setCurrentIndex(1)
-        # Q&A 화면 보이도록 서버로 보내기
-        QNA=['teacher_QNA']
-        self.client_socket.send((json.dumps(QNA)).encode())
-        # 실시간상담, 학생 선택할 수 있도록 서버로 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
-        consulting_student=['teacher_consulting_st']
-        self.client_socket.send((json.dumps(consulting_student)).encode())
+        # 교수 접속내용 확인할 수 있도록 서버로 보내기
+        account = ['teacher_account']
+        self.client_socket.send((json.dumps(account)).encode())
 
     # QNA 작성완료 버튼 눌렀을 때
     def QNA(self):
@@ -174,6 +189,14 @@ class WindowClass(QMainWindow, form_class) :
             update=['teacher_update',f'{up_field}',f'{up_title}',f'{up_content}',f'{up_answer}']
             self.client_socket.send((json.dumps(update)).encode())
 
+    # 유저가 종료했을 경우 (함수를 따로 실행 안해도 종료하면 알아서 실행됨)
+    def closeEvent(self, QCloseEvent):
+        # 서버에 소켓을 닫는다고 시그널 보냄
+        exitsocketsignal = ['plzDisconnectSocket']
+        send_exitsocketsignal = json.dumps(exitsocketsignal)  # json.dumps로 리스트의 값들 바이트형으로 바꿔줌
+        self.client_socket.send(send_exitsocketsignal.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
+        self.client_socket.send((json.dumps(['plzLogoutAccount','manager'])).encode('utf-8'))
+        self.client_socket.close()
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)        #QApplication : 프로그램을 실행시켜주는 클래스
