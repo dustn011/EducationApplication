@@ -21,7 +21,7 @@ class StudentClient(QWidget, student_ui):
         super().__init__()
         self.setupUi(self)
         self.client_socket = None
-        self.initialize_socket('10.10.21.129', 6666)
+        self.initialize_socket('10.10.21.129', 9015)
         self.listen_thread()
         self.clPage.setCurrentIndex(5)
         self.account = ''
@@ -31,6 +31,8 @@ class StudentClient(QWidget, student_ui):
         self.rate = None
         # 퀴즈 테이블에서 선택한 셀의 row값
         self.row = 0
+        # 학습 할 내용?
+        self.extinctions = dict()
         self.insects = dict()
         # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
@@ -57,8 +59,12 @@ class StudentClient(QWidget, student_ui):
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
         # 학습 자료
-        self.study_book()
-        self.insectList.itemClicked.connect(self.insect_info)
+        # 멸종 위기 곤충
+        self.study_extinction()
+        self.extincList.itemSelectionChanged.connect(self.extinc_info)
+        # 곤충 도감
+        self.study_insect()
+        self.insectList.itemSelectionChanged.connect(self.insect_info)
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -163,24 +169,32 @@ class StudentClient(QWidget, student_ui):
             self.answerText.clear()
 
     # 멸종 위기 곤충 자료
-    def study_book(self):
-        # self.url = 'http://www.nature.go.kr/fileUpload/photo/O1/ZOEC0011_1.jpg'
-        # self.insect = urllib.request.urlopen(self.url).read()
-        # self.pixmap = QPixmap()
-        # self.pixmap.loadFromData(self.insect)
-        # self.pixmap = self.pixmap.scaledToHeight(400)
-        # self.insectImage.setPixmap(self.pixmap)
+    def study_extinction(self):
+        extinc_cont = []
         key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
         url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey=%s' % key
         content = requests.get(url).content
         diction = xmltodict.parse(content)
         for item in diction['response']['body']['items']['item']:
-            self.insectList.addItem(item['insctofnmkrlngnm'])
-            self.insects[item['insctofnmkrlngnm']] = (item['imgUrl'], item['insctFamilyNm'], item['insctPcmtt'])
+            url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrInfo?serviceKey=' \
+                  '%s&q1=%s' % (key, item['insctPilbkNo'])
+            content = requests.get(url).content
+            extinc = xmltodict.parse(content)['response']['body']['item']
+            self.extincList.addItem(extinc['insctOfnmKrlngNm'])
+            extinc_cont.append(extinc['imgUrl'])
+            extinc_cont.append(extinc['ordKorNm'])
+            extinc_cont.append(extinc['familyKorNm'])
+            extinc_cont.append(extinc['genusKorNm'])
+            for i in range(0, 9):
+                if isinstance(extinc['cont%d' % (i + 1)], str):
+                    extinc_cont.append(extinc['cont%d' % (i + 1)])
+            self.extinctions[extinc['insctOfnmKrlngNm']] = extinc_cont
+            extinc_cont = []
 
-    def insect_info(self):
-        self.insectInfo.clear()
-        url = self.insects[self.insectList.currentItem().text()][0]
+    # 선택한 멸종 위기 곤충의 정보 출력
+    def extinc_info(self):
+        self.extincInfo.clear()
+        url = self.extinctions[self.extincList.currentItem().text()][0]
         insect = urllib.request.urlopen(url).read()
         pixmap = QPixmap()
         pixmap.loadFromData(insect)
@@ -188,9 +202,58 @@ class StudentClient(QWidget, student_ui):
             pixmap = pixmap.scaledToWidth(400)
         else:
             pixmap = pixmap.scaledToHeight(400)
-        self.insectImage.setPixmap(pixmap)
+        self.extincImage.setPixmap(pixmap)
+        self.extincInfo.append(self.extincList.currentItem().text() + "\n")
+        for i in range(1, len(self.extinctions[self.extincList.currentItem().text()])):
+            self.extincInfo.append(self.extinctions[self.extincList.currentItem().text()][i] + "\n")
+
+    # 곤충 도감 10마리 리스트에 추가
+    def study_insect(self):
+        insect_cont = []
+        key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
+        url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrSearch?serviceKey=' \
+              '%s&st=1&sw=&numOfRows=10&pageNo=1' % key
+        content = requests.get(url).content
+        insects_list = xmltodict.parse(content)['response']['body']['items']['item']
+        for insect in insects_list:
+            url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrInfo?serviceKey=' \
+                  '%s&q1=%s' % (key, insect['insctPilbkNo'])
+            content = requests.get(url).content
+            insect = xmltodict.parse(content)['response']['body']['item']
+            self.insectList.addItem(insect['insctOfnmKrlngNm'])
+            if insect['imgUrl'] != 'NONE':
+                insect_cont.append(insect['imgUrl'])
+            else:
+                insect_cont.append('이미지 없음')
+            insect_cont.append(insect['ordKorNm'])
+            insect_cont.append(insect['familyKorNm'])
+            if isinstance(insect['genusKorNm'], str):
+                insect_cont.append(insect['genusKorNm'])
+            for i in range(0, 9):
+                if isinstance(insect['cont%d' % (i + 1)], str):
+                    insect_cont.append(insect['cont%d' % (i + 1)])
+            self.insects[insect['insctOfnmKrlngNm']] = insect_cont
+            insect_cont = []
+        print(self.insects)
+
+    # 선택한 곤충 정보 출력
+    def insect_info(self):
+        self.insectInfo.clear()
+        if self.insects[self.insectList.currentItem().text()][0] != '이미지 없음':
+            url = self.insects[self.insectList.currentItem().text()][0]
+            insect = urllib.request.urlopen(url).read()
+            pixmap = QPixmap()
+            pixmap.loadFromData(insect)
+            if pixmap.size().width() > pixmap.size().height():
+                pixmap = pixmap.scaledToWidth(400)
+            else:
+                pixmap = pixmap.scaledToHeight(400)
+            self.insectImage.setPixmap(pixmap)
+        else:
+            self.insectImage.setText("이미지 없음")
         self.insectInfo.append(self.insectList.currentItem().text() + "\n")
-        for i in range(1, 3):
+        for i in range(1, len(self.insects[self.insectList.currentItem().text()])):
+            print(self.insects[self.insectList.currentItem().text()][i])
             self.insectInfo.append(self.insects[self.insectList.currentItem().text()][i] + "\n")
 
     def listen_thread(self):

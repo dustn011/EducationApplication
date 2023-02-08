@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
@@ -188,7 +188,7 @@
       <attribute name="title">
        <string>멸종 위기 곤충</string>
       </attribute>
-      <widget class="QLabel" name="insectImage">
+      <widget class="QLabel" name="extincImage">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -203,9 +203,48 @@
         </font>
        </property>
        <property name="text">
-        <string>아마도 이미지</string>
+        <string/>
        </property>
       </widget>
+      <widget class="QListWidget" name="extincList">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>30</y>
+         <width>300</width>
+         <height>100</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
+      <widget class="QTextBrowser" name="extincInfo">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>150</y>
+         <width>300</width>
+         <height>280</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>곤충 도감</string>
+      </attribute>
       <widget class="QListWidget" name="insectList">
        <property name="geometry">
         <rect>
@@ -240,11 +279,24 @@
         </font>
        </property>
       </widget>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>곤충 도감</string>
-      </attribute>
+      <widget class="QLabel" name="insectImage">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>400</width>
+         <height>400</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>40</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -434,7 +486,7 @@
       <string notr="true">background-color:rgb(235, 235, 235)</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="insectTab">
       <attribute name="title">
