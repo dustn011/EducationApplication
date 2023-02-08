@@ -95,6 +95,15 @@ class WindowClass(QMainWindow, form_class) :
                 # 실시간상담 이전내역 불러오기
                 elif identifier == 'teacher_consulting_ch':
                     self.pre_chat()
+                # 실시간상담 학생이 보낸 내용 불러오기
+                elif identifier == 'teacher_send_message':
+                    self.chat_st()
+
+    # 학생쪽에서 온 채팅을 받아 띄움
+    def chat_st(self):
+        # self.received_message = [self.studentName.text(), self.send_chat.text()]
+        chat = self.received_message
+        self.consulting_show.addItem(f'[{chat[2]}] [{chat[0]}] {chat[1]}')
 
     # 이전채팅내역 보여주기
     def pre_chat(self):
@@ -193,11 +202,11 @@ class WindowClass(QMainWindow, form_class) :
 
     # 유저가 종료했을 경우 (함수를 따로 실행 안해도 종료하면 알아서 실행됨)
     def closeEvent(self, QCloseEvent):
+        self.client_socket.send((json.dumps(['plzLogoutAccount','manager'])).encode('utf-8'))
         # 서버에 소켓을 닫는다고 시그널 보냄
         exitsocketsignal = ['plzDisconnectSocket']
         send_exitsocketsignal = json.dumps(exitsocketsignal)  # json.dumps로 리스트의 값들 바이트형으로 바꿔줌
         self.client_socket.send(send_exitsocketsignal.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
-        self.client_socket.send((json.dumps(['plzLogoutAccount','manager'])).encode('utf-8'))
         self.client_socket.close()
 
 if __name__ == "__main__" :
