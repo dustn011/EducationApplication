@@ -61,17 +61,16 @@ class StudentClient(QWidget, student_ui):
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
         # 학습 자료
+        self.study_extinction()
+        # 탭을 변경하면 api를 연결
+        self.studyTab.currentChanged.connect(self.study_change)
         # 멸종 위기 곤충
-        # self.study_extinction()
         self.extincList.itemSelectionChanged.connect(self.extinc_info)
         # 곤충 도감
-        # self.study_insect()
         self.insectList.itemSelectionChanged.connect(self.insect_info)
         # 포유류 도감
-        # self.study_mammalia()
         self.mammaliaList.itemSelectionChanged.connect(self.mammalia_info)
         # 조류 도감
-        # self.study_bird()
         self.birdList.itemSelectionChanged.connect(self.bird_info)
 
     def initialize_socket(self, ip, port):
@@ -84,10 +83,16 @@ class StudentClient(QWidget, student_ui):
     # 학습 페이지로 이동
     def go_study(self):
         self.clPage.setCurrentIndex(1)
-        self.study_extinction()
-        self.study_insect()
-        self.study_mammalia()
-        self.study_bird()
+
+    def study_change(self, index):
+        if index == 0:
+            self.study_extinction()
+        elif index == 1:
+            self.study_insect()
+        elif index == 2:
+            self.study_mammalia()
+        elif index == 3:
+            self.study_bird()
 
     # QnA 페이지로 이동
     def go_qna(self):
@@ -392,14 +397,14 @@ class StudentClient(QWidget, student_ui):
                     self.questionList.setRowCount(len(self.questions))
                     for row in range(len(self.questions)):
                         self.questionList.setItem(row, 0, QTableWidgetItem("%s" % self.questions[row][2]))
-                    # 테이블 컬럼 길이 재설정
-                    self.questionList.resizeColumnsToContents()
                 # hereRate = 학생의 퀴즈 진도 코드
                 elif identifier == "hereRate":
                     self.rate = message_log[0][0]
                     self.score.setText(str(self.rate[1]))
                     for row in range(len(self.rate) - 2):
                         self.questionList.setItem(row, 1, QTableWidgetItem("%s" % self.rate[row + 2]))
+                    # 테이블 컬럼 길이 재설정
+                    self.questionList.resizeColumnsToContents()
                 elif identifier == 'success_login':
                     self.clPage.setCurrentIndex(0)
                 elif identifier == 'failed_login':

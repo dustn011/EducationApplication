@@ -195,20 +195,17 @@ class WindowClass(QMainWindow, form_class) :
         up_answer=self.update_answer.text().strip()
         # 입력 내용들 누락시 알림
         if up_field == '선택' :
-            self.update_label.setText('분야 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_title == '':
-            self.update_title_label.setText('제목 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_content == '':
-            self.update_content_label.setText('내용 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_answer == '':
-            self.update_answer_label.setText('정답입력요망')
+            self.check_label.setText('전체내용 입력요망')
         # 모두 입력되었을 때
         else:
             # 누락시 알림한 내용, 입력내용 clear,
-            self.update_label.setText('')
-            self.update_title_label.setText('')
-            self.update_content_label.setText('')
-            self.update_answer_label.setText('')
+            self.check_label.setText('')
             self.update_title.clear()
             self.update_content.clear()
             self.update_answer.clear()
