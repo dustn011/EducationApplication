@@ -120,11 +120,17 @@ class StudentClient(QWidget, student_ui):
     def go_quiz(self):
         self.clPage.setCurrentIndex(3)
 
-    def go_consult(self):
-        self.clPage.setCurrentIndex(4)
-
     def go_main(self):
         self.clPage.setCurrentIndex(0)
+
+    # 상담 내역 불러오기
+    def go_consult(self):
+        # 인덱스 0번에 식별자 'plzGiveChattingLog' 넣어주고 [학생 이름]서버로 전송
+        chat = ['plzGiveChattingLog', self.studentName.text()]
+        send_chatAccess = json.dumps(chat)
+        self.client_socket.send(send_chatAccess.encode('utf-8'))
+        print('서버에 상담 채팅 내역을 요청했습니다')
+        self.clPage.setCurrentIndex(4)
 
     # 상담 보내기
     def method_send_chat(self):
@@ -226,6 +232,12 @@ class StudentClient(QWidget, student_ui):
                     self.fail_message.setText('로그인 실패')
                 elif identifier == 'send_qna_data':
                     self.show_all_qna(message_log)
+                elif identifier == 'send_studentChat_data':
+                    self.show_chattingLog(message_log)
+
+    # 서버에서 받아온 chatting 데이터 불러오기
+    def show_chattingLog(self, chatting_log):
+        print(chatting_log)
 
     # 서버에서 받아온 qna데이터 불러오기
     def show_all_qna(self, qna_data):

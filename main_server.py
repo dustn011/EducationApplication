@@ -71,6 +71,10 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					self.method_insStudentMessage(client_socket)
+				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
+				elif identifier == 'plzGiveChattingLog':
+					student_chatting_log = self.method_getChattingLog()
+					self.method_sendChattingLog(client_socket, student_chatting_log)
 				# ---------------------성경---------------------
 				# 문제 출제 DB 저장
 				elif identifier == 'teacher_update':
@@ -155,6 +159,36 @@ class MultiServer:
 					                   self.received_message[2], self.received_message[3], self.received_message[4])
 
 	# ---------------------연수---------------------
+	# DB에서 상담 채팅 내역 불러오기 해당 학생만
+	def method_getChattingLog(self):
+		print('클라이언트에서 상담채팅 내역 요청이 들어왔습니다')
+		chat = pymysql.connect(host='10.10.21.102', user='edu', password='0000', db='education_application',
+							   charset='utf8')
+		# DB와 상호작용하기 위해 연결해주는 cursor 객체 만듬
+		chattingLog = chat.cursor()
+		# 클라이언트가 요청한 상담채팅 내역 불러오기
+		sql = f"SELECT * FROM chat WHERE receiver='{self.received_message[0]}' OR sender = '{self.received_message[0]}' ORDER BY send_dt"
+		# execute 메서드로 db에 sql 문장 전송
+		chattingLog.execute(sql)
+		qna_info = chattingLog.fetchall()  # 회원 정보 저장
+		# DB 닫아주기
+		chat.close()
+		return qna_info
+
+	# 불러온 상담내역 보내기
+	def method_sendChattingLog(self, sender_socket, student_chatting_log):
+		# DB에서 가져온 튜플 리스트화
+		for i in range(len(student_chatting_log)):
+			student_chat_data = ['send_studentChat_data']
+			for j in range(len(student_chatting_log[i])):
+				if type(student_chatting_log[i][j]) == datetime:
+					student_chat_data.append(student_chatting_log[i][j].strftime('%D %T'))
+				else:
+					student_chat_data.append(student_chatting_log[i][j])
+			send_accessChat = json.dumps(student_chat_data)
+			sender_socket.send(send_accessChat.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
+			time.sleep(0.0000001)
+
 	# DB에 학생 상담 채팅 저장하기
 	def method_insStudentMessage(self, sender_socket):
 		student_name = self.received_message[0]
@@ -232,7 +266,7 @@ class MultiServer:
 
 	# 접속중인 account 리스트에서 빼주기
 	def logoutAccount(self, sender_socket):
-		self.now_connected_account.remove(self.received_message[0])
+		self.now_connected_account.remove([sender_socket, self.received_message[0]])
 		print('현재 접속한 account:', self.now_connected_account)
 
 	# DB에서 account정보와 일치하는지 확인
@@ -255,8 +289,9 @@ class MultiServer:
 		# print(account_info[0][0])
 		if account_info and (account_info[0][0] not in self.now_connected_account):  # 회원정보를 옳게 입력했다면
 			access_message = ['success_login']
-			self.now_connected_account.append(account_info[0][0])
+			self.now_connected_account.append([sender_socket, account_info[0][0]])
 			print('로그인 성공')
+			print('현재 접속한 account:', self.now_connected_account)
 		else:  # 회원정보를 옳게 입력하지 않았다면
 			access_message = ['failed_login']
 			print('로그인 실패')
