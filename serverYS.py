@@ -71,105 +71,106 @@ class MultiServer:
                     self.method_getQuestionLog(client_socket)
                 # 학생 상담 채팅 들어오면 DB에 저장하는 요청
                 elif identifier == 'plzInsertStudentChat':
+                    # [self.studentName.text(), self.send_chat.text()]
                     self.method_insStudentMessage(client_socket)
                 # 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
                 elif identifier == 'plzGiveChattingLog':
                     student_chatting_log = self.method_getChattingLog()
                     self.method_sendChattingLog(client_socket, student_chatting_log)
                 # ---------------------성경---------------------
-                # # 문제 출제 DB 저장
-                # elif identifier == 'teacher_update':
-                #     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                #                           db='education_application')
-                #     with con:
-                #         with con.cursor() as cur:
-                #             sql = f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
-				# 						   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
-                #             cur.execute(sql)
-                #             con.commit()
-                # # self.disconnect_socket(client_socket)
-                #
-                # # QNA 클라이언트로 보내기
-                # elif identifier == 'teacher_QNA':
-                #     qna_list = self.QNA_DB()
-                #     client_socket.send((json.dumps(qna_list)).encode())
-                # # self.disconnect_socket(client_socket) # 왜 이게 있으면 꺼지지??
-                #
-                # # QNA 답변 저장 및 QNA 저장된 내역 보내기
-                # elif identifier == 'teacher_qna_answer':
-                #     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                #                           db='education_application')
-                #     with con:
-                #         with con.cursor() as cur:
-                #             sql = f"update `education_application`.`qna` set answer='{self.received_message[0]}',answer_dt={'now()'}, state='{self.received_message[1]}' where number={self.received_message[2]}"
-                #             cur.execute(sql)
-                #             con.commit()
-                #     qna_list = self.QNA_DB()
-                #     client_socket.send((json.dumps(qna_list)).encode())
-                #
-                # # 실시간 상담, 학생명단 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
-                # elif identifier == 'teacher_consulting_st':
-                #     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                #                           db='education_application')
-                #     with con:
-                #         with con.cursor() as cur:
-                #             sql = f"select * from `education_application`.`account`"
-                #             cur.execute(sql)
-                #             temp = cur.fetchall()
-                #     name = ['teacher_consulting_st', temp]
-                #     client_socket.send((json.dumps(name)).encode())
-                #
-                # # 이전내역 클라이언트로 보내기
-                # elif identifier == 'teacher_consulting_ch':
-                #     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                #                           db='education_application')
-                #     with con:
-                #         with con.cursor() as cur:
-                #             sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}'"
-                #             cur.execute(sql)
-                #             temp = cur.fetchall()
-                #     print(temp)
-                #     consulting = []
-                #     for i in range(len(temp)):
-                #         temp1 = []
-                #         for j in range(len(temp[0])):
-                #             if type(temp[i][j]) == datetime:
-                #                 temp1.append(temp[i][j].strftime('%D,%T'))
-                #             else:
-                #                 temp1.append(temp[i][j])
-                #         consulting.append(temp1)
-                #     print(consulting)
-                #     consulting_chat = ['teacher_consulting_ch', consulting]
-                #     client_socket.send((json.dumps(consulting_chat)).encode())
-                #
-                # elif identifier == 'teacher_send_message':
-                #     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                #                           db='education_application')
-                #     with con:
-                #         with con.cursor() as cur:
-                #             sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
-                #             cur.execute(sql)
-                #             con.commit()
-                #
-                # # ---------------------민석---------------------
-                # # plzGiveQuiz = 퀴즈 목록 요청 코드
-                # elif identifier == "plzGiveQuiz":
-                #     # 클라이언트의 현재 탭
-                #     now_tab = self.received_message.pop(0)
-                #     # 클라이언트에 접속중인 학생
-                #     account = self.received_message[0]
-                #     self.send_quiz(client_socket, now_tab, account)
-                # # hereAnswer = 학생이 제출한 답과 결과
-                # elif identifier == "hereAnswer":
-                #     self.insert_answer(self.received_message[0], self.received_message[1],
-                #                        self.received_message[2], self.received_message[3], self.received_message[4])
+                # 문제 출제 DB 저장
+                elif identifier == 'teacher_update':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                                          db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
+										   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
+                            cur.execute(sql)
+                            con.commit()
+                # self.disconnect_socket(client_socket)
+
+                # QNA 클라이언트로 보내기
+                elif identifier == 'teacher_QNA':
+                    qna_list = self.QNA_DB()
+                    client_socket.send((json.dumps(qna_list)).encode())
+                # self.disconnect_socket(client_socket) # 왜 이게 있으면 꺼지지??
+
+                # QNA 답변 저장 및 QNA 저장된 내역 보내기
+                elif identifier == 'teacher_qna_answer':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                                          db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"update `education_application`.`qna` set answer='{self.received_message[0]}',answer_dt={'now()'}, state='{self.received_message[1]}' where number={self.received_message[2]}"
+                            cur.execute(sql)
+                            con.commit()
+                    qna_list = self.QNA_DB()
+                    client_socket.send((json.dumps(qna_list)).encode())
+
+                # 실시간 상담, 학생명단 보내기 -> 서버연결하면 학생명단받아서 바꿀예정.
+                elif identifier == 'teacher_consulting_st':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                                          db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"select * from `education_application`.`account`"
+                            cur.execute(sql)
+                            temp = cur.fetchall()
+                    name = ['teacher_consulting_st', temp]
+                    client_socket.send((json.dumps(name)).encode())
+
+                # 이전내역 클라이언트로 보내기
+                elif identifier == 'teacher_consulting_ch':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                                          db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}'"
+                            cur.execute(sql)
+                            temp = cur.fetchall()
+                    print(temp)
+                    consulting = []
+                    for i in range(len(temp)):
+                        temp1 = []
+                        for j in range(len(temp[0])):
+                            if type(temp[i][j]) == datetime:
+                                temp1.append(temp[i][j].strftime('%D,%T'))
+                            else:
+                                temp1.append(temp[i][j])
+                        consulting.append(temp1)
+                    print(consulting)
+                    consulting_chat = ['teacher_consulting_ch', consulting]
+                    client_socket.send((json.dumps(consulting_chat)).encode())
+
+                elif identifier == 'teacher_send_message':
+                    con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                                          db='education_application')
+                    with con:
+                        with con.cursor() as cur:
+                            sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+                            cur.execute(sql)
+                            con.commit()
+
+                # ---------------------민석---------------------
+                # plzGiveQuiz = 퀴즈 목록 요청 코드
+                elif identifier == "plzGiveQuiz":
+                    # 클라이언트의 현재 탭
+                    now_tab = self.received_message.pop(0)
+                    # 클라이언트에 접속중인 학생
+                    account = self.received_message[0]
+                    self.send_quiz(client_socket, now_tab, account)
+                # hereAnswer = 학생이 제출한 답과 결과
+                elif identifier == "hereAnswer":
+                    self.insert_answer(self.received_message[0], self.received_message[1],
+                                       self.received_message[2], self.received_message[3], self.received_message[4])
 
     # ---------------------연수---------------------
     # DB에서 상담 채팅 내역 불러오기 해당 학생만
     def method_getChattingLog(self):
         print('클라이언트에서 상담채팅 내역 요청이 들어왔습니다')
         chat = pymysql.connect(host='10.10.21.102', user='edu', password='0000', db='education_application',
-                              charset='utf8')
+                               charset='utf8')
         # DB와 상호작용하기 위해 연결해주는 cursor 객체 만듬
         chattingLog = chat.cursor()
         # 클라이언트가 요청한 상담채팅 내역 불러오기
