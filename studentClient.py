@@ -34,6 +34,8 @@ class StudentClient(QWidget, student_ui):
         # 학습 할 내용?
         self.extinctions = dict()
         self.insects = dict()
+        self.mammalias = dict()
+        self.birds = dict()
         # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
         # QnA 페이지 이동
@@ -60,11 +62,17 @@ class StudentClient(QWidget, student_ui):
         self.answerText.returnPressed.connect(self.answer)
         # 학습 자료
         # 멸종 위기 곤충
-        self.study_extinction()
+        # self.study_extinction()
         self.extincList.itemSelectionChanged.connect(self.extinc_info)
         # 곤충 도감
-        self.study_insect()
+        # self.study_insect()
         self.insectList.itemSelectionChanged.connect(self.insect_info)
+        # 포유류 도감
+        # self.study_mammalia()
+        self.mammaliaList.itemSelectionChanged.connect(self.mammalia_info)
+        # 조류 도감
+        # self.study_bird()
+        self.birdList.itemSelectionChanged.connect(self.bird_info)
 
     def initialize_socket(self, ip, port):
         # TCP socket을 생성하고 server와 연결
@@ -76,6 +84,10 @@ class StudentClient(QWidget, student_ui):
     # 학습 페이지로 이동
     def go_study(self):
         self.clPage.setCurrentIndex(1)
+        self.study_extinction()
+        self.study_insect()
+        self.study_mammalia()
+        self.study_bird()
 
     # QnA 페이지로 이동
     def go_qna(self):
@@ -170,6 +182,7 @@ class StudentClient(QWidget, student_ui):
 
     # 멸종 위기 곤충 자료
     def study_extinction(self):
+        self.extincList.clear()
         extinc_cont = []
         key = "jAB8gOQ%2BEjRxryPTRcGIWjS6sTl2FCowle%2Bb%2FVaRrcoCuQZTgCIEID85tLqWiPIfuY4%2FzUsqf81dQj6dYuTyYg%3D%3D"
         url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctPrtctList?serviceKey=%s' % key
@@ -209,6 +222,7 @@ class StudentClient(QWidget, student_ui):
 
     # 곤충 도감 10마리 리스트에 추가
     def study_insect(self):
+        self.insectList.clear()
         insect_cont = []
         key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
         url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrSearch?serviceKey=' \
@@ -219,22 +233,21 @@ class StudentClient(QWidget, student_ui):
             url = 'http://openapi.nature.go.kr/openapi/service/rest/InsectService/isctIlstrInfo?serviceKey=' \
                   '%s&q1=%s' % (key, insect['insctPilbkNo'])
             content = requests.get(url).content
-            insect = xmltodict.parse(content)['response']['body']['item']
-            self.insectList.addItem(insect['insctOfnmKrlngNm'])
-            if insect['imgUrl'] != 'NONE':
-                insect_cont.append(insect['imgUrl'])
+            insect_info = xmltodict.parse(content)['response']['body']['item']
+            self.insectList.addItem(insect_info['insctOfnmKrlngNm'])
+            if insect_info['imgUrl'] != 'NONE':
+                insect_cont.append(insect_info['imgUrl'])
             else:
                 insect_cont.append('이미지 없음')
-            insect_cont.append(insect['ordKorNm'])
-            insect_cont.append(insect['familyKorNm'])
-            if isinstance(insect['genusKorNm'], str):
-                insect_cont.append(insect['genusKorNm'])
+            insect_cont.append(insect_info['ordKorNm'])
+            insect_cont.append(insect_info['familyKorNm'])
+            if isinstance(insect_info['genusKorNm'], str):
+                insect_cont.append(insect_info['genusKorNm'])
             for i in range(0, 9):
-                if isinstance(insect['cont%d' % (i + 1)], str):
-                    insect_cont.append(insect['cont%d' % (i + 1)])
+                if isinstance(insect_info['cont%d' % (i + 1)], str):
+                    insect_cont.append(insect_info['cont%d' % (i + 1)])
             self.insects[insect['insctOfnmKrlngNm']] = insect_cont
             insect_cont = []
-        print(self.insects)
 
     # 선택한 곤충 정보 출력
     def insect_info(self):
@@ -253,14 +266,109 @@ class StudentClient(QWidget, student_ui):
             self.insectImage.setText("이미지 없음")
         self.insectInfo.append(self.insectList.currentItem().text() + "\n")
         for i in range(1, len(self.insects[self.insectList.currentItem().text()])):
-            print(self.insects[self.insectList.currentItem().text()][i])
             self.insectInfo.append(self.insects[self.insectList.currentItem().text()][i] + "\n")
 
+    # 포유류 도감 10마리 리스트에 추가
+    def study_mammalia(self):
+        self.mammaliaList.clear()
+        mammalia_cont = []
+        key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
+        url = 'http://apis.data.go.kr/1400119/MammService/mammIlstrSearch?serviceKey=%s&st=1&sw=&numOfRows=10&pageNo=1' \
+              % key
+        content = requests.get(url).content
+        mammalias_list = xmltodict.parse(content)['response']['body']['items']['item']
+        for mammalia in mammalias_list:
+            url = 'http://apis.data.go.kr/1400119/MammService/mammIlstrInfo?serviceKey=%s&q1=%s' \
+                  % (key, mammalia['anmlSpecsId'])
+            content = requests.get(url).content
+            mammalia_info = xmltodict.parse(content)['response']['body']['item']
+            self.mammaliaList.addItem(mammalia_info['anmlGnrlNm'])
+            if mammalia_info['imgUrl'] != 'NONE':
+                mammalia_cont.append(mammalia_info['imgUrl'])
+            else:
+                mammalia_cont.append('이미지 없음')
+            mammalia_cont.append(mammalia_info['anmlPhlmKorNm'])
+            mammalia_cont.append(mammalia_info['anmlClsKorNm'])
+            mammalia_cont.append(mammalia_info['anmlOrdKorNm'])
+            mammalia_cont.append(mammalia_info['anmlFmlyKorNm'])
+            mammalia_cont.append(mammalia_info['eclgDpftrCont'])
+            mammalia_cont.append(mammalia_info['gnrlSpftrCont'])
+            self.mammalias[mammalia_info['anmlGnrlNm']] = mammalia_cont
+            mammalia_cont = []
+
+    # 선택한 포유류 정보 출력
+    def mammalia_info(self):
+        self.mammaliaInfo.clear()
+        if self.mammalias[self.mammaliaList.currentItem().text()][0] != '이미지 없음':
+            url = self.mammalias[self.mammaliaList.currentItem().text()][0]
+            mammalia = urllib.request.urlopen(url).read()
+            pixmap = QPixmap()
+            pixmap.loadFromData(mammalia)
+            if pixmap.size().width() > pixmap.size().height():
+                pixmap = pixmap.scaledToWidth(400)
+            else:
+                pixmap = pixmap.scaledToHeight(400)
+            self.mammaliaImage.setPixmap(pixmap)
+        else:
+            self.mammaliaImage.setText("이미지 없음")
+        self.mammaliaInfo.append(self.mammaliaList.currentItem().text() + "\n")
+        for i in range(1, len(self.mammalias[self.mammaliaList.currentItem().text()])):
+            self.mammaliaInfo.append(self.mammalias[self.mammaliaList.currentItem().text()][i] + "\n")
+    
+    # 조류 도감 10마리 리스트에 추가
+    def study_bird(self):
+        self.birdList.clear()
+        bird_cont = []
+        key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
+        url = 'http://apis.data.go.kr/1400119/BirdService/birdIlstrSearch?serviceKey=%s&st=1&sw=&numOfRows=10&pageNo=1'\
+              % key
+        content = requests.get(url).content
+        birds_list = xmltodict.parse(content)['response']['body']['items']['item']
+        for bird in birds_list:
+            url = 'http://apis.data.go.kr/1400119/BirdService/birdIlstrInfo?serviceKey=%s&q1=%s' \
+                  % (key, bird['anmlSpecsId'])
+            content = requests.get(url).content
+            bird_info = xmltodict.parse(content)['response']['body']['item']
+            self.birdList.addItem(bird_info['anmlGnrlNm'])
+            if bird_info['imgUrl'] != 'NONE':
+                bird_cont.append(bird_info['imgUrl'])
+            else:
+                bird_cont.append('이미지 없음')
+            bird_cont.append(bird_info['anmlPhlmKorNm'])
+            bird_cont.append(bird_info['anmlClsKorNm'])
+            bird_cont.append(bird_info['anmlOrdKorNm'])
+            bird_cont.append(bird_info['anmlFmlyKorNm'])
+            bird_cont.append(bird_info['eclgDpftrCont'])
+            bird_cont.append(bird_info['gnrlSpftrCont'])
+            self.birds[bird_info['anmlGnrlNm']] = bird_cont
+            bird_cont = []
+    
+    # 선택한 조류 정보 출력
+    def bird_info(self):
+        self.birdInfo.clear()
+        if self.birds[self.birdList.currentItem().text()][0] != '이미지 없음':
+            url = self.birds[self.birdList.currentItem().text()][0]
+            bird = urllib.request.urlopen(url).read()
+            pixmap = QPixmap()
+            pixmap.loadFromData(bird)
+            if pixmap.size().width() > pixmap.size().height():
+                pixmap = pixmap.scaledToWidth(400)
+            else:
+                pixmap = pixmap.scaledToHeight(400)
+            self.birdImage.setPixmap(pixmap)
+        else:
+            self.birdImage.setText("이미지 없음")
+        self.birdInfo.append(self.birdList.currentItem().text() + "\n")
+        for i in range(1, len(self.birds[self.birdList.currentItem().text()])):
+            self.birdInfo.append(self.birds[self.birdList.currentItem().text()][i] + "\n")
+
+    # 서버에서 데이터 받는 스레드
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
         t = Thread(target=self.receive_message, args=(self.client_socket,))
         t.start()
 
+    # 서버에서 받은 데이터를 처리하는 함수
     def receive_message(self, so):
         while True:
             try:
