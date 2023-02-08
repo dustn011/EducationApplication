@@ -252,6 +252,16 @@ class StudentClient(QWidget, student_ui):
                     self.show_all_qna(message_log)
                 elif identifier == 'send_studentChat_data':
                     self.show_chattingLog(message_log)
+                elif identifier == 'send_teacher_message':
+                    self.show_teacherMessage(message_log)
+
+    # 선생이 메시지 보내면 메시지 창에 띄우기
+    def show_teacherMessage(self, teacher_message):
+        print(teacher_message)
+        one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{teacher_message[0]}] : {teacher_message[1]}"
+        self.chat_list.addItem(one_chat)
+        time.sleep(0.000000000001)
+        self.chat_list.scrollToBottom()
 
     # 서버에서 받아온 chatting 데이터 불러오기
     def show_chattingLog(self, chatting_log):

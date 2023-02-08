@@ -24,6 +24,7 @@ class WindowClass(QMainWindow, form_class) :
         self.consulting_line.returnPressed.connect(self.consulting_send)
         self.send_btn.clicked.connect(self.consulting_send)         # 실시간상담에서 전송버튼 눌렀을 떄
         self.consulting_combo.currentIndexChanged.connect(self.send_stname) # 실시간상담에서 학생이름이 선택되었을때
+        self.f5_btn.clicked.connect(self.f5)                                # 현재접속자에서 새로고침 누르면
 
         # 헤더, 열
         header=['학생','질문','답변여부']
@@ -37,6 +38,11 @@ class WindowClass(QMainWindow, form_class) :
 
         self.stackedWidget.setCurrentIndex(0)
 
+    # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
+    def f5(self):
+        message=['teacher_consulting_st']
+        self.client_socket.send((json.dumps(message)).encode())
+
     # 실시간상담에서 학생이름이 선택되었을때
     def send_stname(self):
         self.consulting_show.clear()
@@ -49,6 +55,8 @@ class WindowClass(QMainWindow, form_class) :
     # 실시간상담에서 전송눌렀을 떄
     def consulting_send(self):
         if self.consulting_line.text() == '':
+            pass
+        elif self.consulting_combo.currentText() == '':
             pass
         else:
             # 콤보박스 학생이름, 라인에딧 전송한 메시지 가져오기
@@ -86,18 +94,26 @@ class WindowClass(QMainWindow, form_class) :
                 # QNA 받기
                 if identifier == 'teacher_QNA':
                     self.qna_show()
-                # 접속한 학생으로 명단띄움.
+                # 접속한 학생으로 명단띄움, 현재 접속자 띄우기
                 elif identifier == 'teacher_consulting_st':
-                    print(self.received_message)
-                    self.received_message=self.received_message[0]
-                    for i in range(len(self.received_message)):
-                        self.consulting_combo.addItem(f'{self.received_message[i]}')
+                    self.chat_state()
                 # 실시간상담 이전내역 불러오기
                 elif identifier == 'teacher_consulting_ch':
                     self.pre_chat()
                 # 실시간상담 학생이 보낸 내용 불러오기
                 elif identifier == 'teacher_send_message':
                     self.chat_st()
+
+    # 접속한 학생으로 명단띄움, 현재 접속자 띄우기
+    def chat_state(self):
+        self.current_man.clear()
+        self.consulting_combo.clear()
+        self.received_message = self.received_message[0]
+        for i in range(len(self.received_message)):
+            self.consulting_combo.addItem(f'{self.received_message[i]}')
+        for i in self.received_message:
+            self.current_man.addItem(f'{i}')
+        self.man_num.setText(f'[{len(self.received_message)}] 명')
 
     # 학생쪽에서 온 채팅을 받아 띄움
     def chat_st(self):
@@ -179,20 +195,17 @@ class WindowClass(QMainWindow, form_class) :
         up_answer=self.update_answer.text().strip()
         # 입력 내용들 누락시 알림
         if up_field == '선택' :
-            self.update_label.setText('분야 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_title == '':
-            self.update_title_label.setText('제목 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_content == '':
-            self.update_content_label.setText('내용 입력요망')
+            self.check_label.setText('전체내용 입력요망')
         elif up_answer == '':
-            self.update_answer_label.setText('정답입력요망')
+            self.check_label.setText('전체내용 입력요망')
         # 모두 입력되었을 때
         else:
             # 누락시 알림한 내용, 입력내용 clear,
-            self.update_label.setText('')
-            self.update_title_label.setText('')
-            self.update_content_label.setText('')
-            self.update_answer_label.setText('')
+            self.check_label.setText('')
             self.update_title.clear()
             self.update_content.clear()
             self.update_answer.clear()

@@ -125,7 +125,8 @@ class MultiServer:
 					self.chat_dbsave()
 ##################################################################################################################
 
-
+				elif identifier == 'teacher_consulting_st':
+					self.current_state(client_socket)
 
 ##################################################################################################################
 
@@ -361,11 +362,6 @@ class MultiServer:
 			else:
 				pass
 
-################################################################################################################
-
-##################################################################################################################
-
-
 	# 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
 	def teacher_account(self, sender_socket):
 		self.now_connected_account.append([sender_socket, 'manager'])
@@ -379,14 +375,26 @@ class MultiServer:
 		sender_socket.send((json.dumps(qna_list)).encode())
 
 		# 학생접속명단 보내기
-		name=[]
+		self.current_state(sender_socket)
+
+
+################################################################################################################
+	# 현재접속명단 보내기
+	def current_state(self, sender_socket):
+		# 학생접속명단 보내기
+		name = []
 		for i in self.now_connected_name:
-			if i =='manager':
+			if i == 'manager':
 				pass
 			else:
 				name.append(i)
 		student = ['teacher_consulting_st', name]
 		sender_socket.send((json.dumps(student)).encode())
+
+##################################################################################################################
+
+
+
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
