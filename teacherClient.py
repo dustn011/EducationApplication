@@ -40,6 +40,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
     def f5(self):
+        self.send_btn.setEnabled(True)
         message=['teacher_consulting_st']
         self.client_socket.send((json.dumps(message)).encode())
 
@@ -103,6 +104,13 @@ class WindowClass(QMainWindow, form_class) :
                 # 실시간상담 학생이 보낸 내용 불러오기
                 elif identifier == 'teacher_send_message':
                     self.chat_st()
+                # 실시간 상담시 접속종료되면 접속종료시키기
+                elif identifier == 'teacher_account_delete':
+                    self.current_delete()
+    def current_delete(self):
+        self.consulting_show.addItem(f'-------------- 상대방이 접속을 종료했습니다 -------------')
+        self.consulting_show.addItem(f'-------------------- 새로고침 하세요 ------------------')
+        self.send_btn.setEnabled(False)
 
     # 접속한 학생으로 명단띄움, 현재 접속자 띄우기
     def chat_state(self):
