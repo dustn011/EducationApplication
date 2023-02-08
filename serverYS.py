@@ -242,7 +242,7 @@ class MultiServer:
                     all_qna_data.append(qna_info[i][j])
             send_accessQna = json.dumps(all_qna_data)
             sender_socket.send(send_accessQna.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
-            time.sleep(0.0000001)
+            time.sleep(0.0000000000001)
 
     # DB에 질문 등록하기
     def insertQuestion(self):
