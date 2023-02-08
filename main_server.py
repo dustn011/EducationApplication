@@ -72,6 +72,7 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					# [self.studentName.text(), self.send_chat.text()]
+					self.chat_te_send()
 					self.method_insStudentMessage(client_socket)
 				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
 				elif identifier == 'plzGiveChattingLog':
@@ -314,7 +315,6 @@ class MultiServer:
 				sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}' or sender='{self.received_message[0]}' order by send_dt"
 				cur.execute(sql)
 				temp = cur.fetchall()
-		print(temp)
 		consulting = []
 		for i in range(len(temp)):
 			temp1 = []
@@ -324,7 +324,6 @@ class MultiServer:
 				else:
 					temp1.append(temp[i][j])
 			consulting.append(temp1)
-		print(consulting)
 		consulting_chat = ['teacher_consulting_ch', consulting]
 		sender_socket.send((json.dumps(consulting_chat)).encode())
 
@@ -349,6 +348,16 @@ class MultiServer:
 				name.append(i)
 		student = ['teacher_consulting_st', name]
 		sender_socket.send((json.dumps(student)).encode())
+
+	# 실시간채팅 학생한테 받은내용 선생한테 보내기
+	def chat_te_send(self):
+		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+					 datetime.now().strftime('%D %T')]
+		for i in self.now_connected_account:
+			if 'manager' in i:
+				i[0].send((json.dumps(chat_list)).encode())
+			else:
+				pass
 
 	# 실시간 상담내역 저장
 	def chat_dbsave(self):
