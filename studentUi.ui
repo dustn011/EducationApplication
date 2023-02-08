@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
@@ -172,7 +172,7 @@
       <string>메인 홈</string>
      </property>
     </widget>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="studyTab">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -413,7 +413,7 @@
       </widget>
      </widget>
     </widget>
-    <zorder>tabWidget</zorder>
+    <zorder>studyTab</zorder>
     <zorder>label_2</zorder>
     <zorder>goMain</zorder>
    </widget>
@@ -595,7 +595,7 @@
       <string notr="true">background-color:rgb(235, 235, 235)</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="insectTab">
       <attribute name="title">
