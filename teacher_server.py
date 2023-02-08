@@ -72,8 +72,13 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					# self.received_message = [self.studentName.text(), self.send_chat.text()]
-
+					self.chat_te_send()
 					self.method_insStudentMessage(client_socket)
+#######################################################################################
+
+
+##########################################################################################
+
 				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
 				elif identifier == 'plzGiveChattingLog':
 					student_chatting_log = self.method_getChattingLog()
@@ -117,18 +122,9 @@ class MultiServer:
 				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
 				elif identifier == 'teacher_send_message':
 					# self.received_message = [manager, send_message, student_name]
-
 					self.chat_dbsave()
-
 ##################################################################################################################
 
-
-					# for i in self.now_connected_account:
-					# 	if self.received_message[2] in i:
-					# 		pass
-					# 	# 	=i[0]
-						# else:
-						# 	pass
 
 
 ##################################################################################################################
@@ -254,9 +250,11 @@ class MultiServer:
 
 	# 접속중인 account 리스트에서 빼주기
 	def logoutAccount(self, sender_socket):
+		print(sender_socket, self.received_message[0])
 		self.now_connected_account.remove([sender_socket, self.received_message[0]])
 		self.now_connected_name.remove(self.received_message[0])
 		print('현재 접속한 account:', self.now_connected_account)
+		print('현재 접속한 name:',self.now_connected_name)
 
 	# DB에서 account정보와 일치하는지 확인
 	def method_checkAccount(self):
@@ -352,6 +350,16 @@ class MultiServer:
 				sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
 				cur.execute(sql)
 				con.commit()
+
+	# 실시간채팅 학생한테 받은내용 선생한테 보내기
+	def chat_te_send(self):
+		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+					 datetime.now().strftime('%D %T')]
+		for i in self.now_connected_account:
+			if 'manager' in i:
+				i[0].send((json.dumps(chat_list)).encode())
+			else:
+				pass
 
 ################################################################################################################
 
