@@ -145,10 +145,6 @@ class StudentClient(QWidget, student_ui):
             send_chat = json.dumps(chat)
             self.client_socket.send(send_chat.encode('utf-8'))
             print('서버에 상담 채팅 내역을 보냈습니다')
-            one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
-            self.chat_list.addItem(one_chat)
-            self.send_chat.clear()
-            self.chat_list.scrollToBottom()
 
     # 질문 선택하면 질문 내역, 응답 내역 출력
     def show_one_qna(self):
@@ -254,6 +250,14 @@ class StudentClient(QWidget, student_ui):
                     self.show_chattingLog(message_log)
                 elif identifier == 'send_teacher_message':
                     self.show_teacherMessage(message_log)
+                elif identifier == 'not_access_counseling':
+                    self.cant_Counseling.setText('선생님이 접속했을 때만 상담 가능합니다')
+                elif identifier == 'access_counseling':
+                    one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
+                    self.chat_list.addItem(one_chat)
+                    self.send_chat.clear()
+                    self.chat_list.scrollToBottom()
+                    self.cant_Counseling.clear()
 
     # 선생이 메시지 보내면 메시지 창에 띄우기
     def show_teacherMessage(self, teacher_message):

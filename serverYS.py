@@ -71,8 +71,21 @@ class MultiServer:
                     self.method_getQuestionLog(client_socket)
                 # 학생 상담 채팅 들어오면 DB에 저장하는 요청
                 elif identifier == 'plzInsertStudentChat':
+                    teacher = False
                     # [self.studentName.text(), self.send_chat.text()]
-                    self.method_insStudentMessage(client_socket)
+                    for name in self.now_connected_name:
+                        if name == 'manager':
+                            self.chat_te_send()
+                            self.method_insStudentMessage(client_socket)
+                            teacher = True
+                    if not teacher:
+                        access_message = ['not_access_counseling']
+                        send_notAccessCounseling = json.dumps(access_message)
+                        client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 못한다고 시그널 보냄
+                    else:
+                        access_message = ['access_counseling']
+                        send_notAccessCounseling = json.dumps(access_message)
+                        client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 가능하다고 시그널 보냄
                 # 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
                 elif identifier == 'plzGiveChattingLog':
                     student_chatting_log = self.method_getChattingLog()
@@ -85,7 +98,7 @@ class MultiServer:
                     with con:
                         with con.cursor() as cur:
                             sql = f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
-                										   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
+										   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
                             cur.execute(sql)
                             con.commit()
 
@@ -113,11 +126,16 @@ class MultiServer:
                 # 선생 접속시 리스트에 소켓내용, 이름 집어넣기
                 elif identifier == 'teacher_account':
                     self.teacher_account(client_socket)
-                # 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
+
+                # 실시간채팅 전송받앗을 때 DB저장 및 학생한테 보내기
                 elif identifier == 'teacher_send_message':
                     # self.received_message = [manager, send_message, student_name]
                     self.send_chat_teacherToStudent(client_socket)
                     self.chat_dbsave()
+
+                # 새로고침눌렀을 때 현재 접속자수 보내주기
+                elif identifier == 'teacher_consulting_st':
+                    self.current_state(client_socket)
 
                 # ---------------------민석---------------------
                 # plzGiveQuiz = 퀴즈 목록 요청 코드
@@ -257,6 +275,23 @@ class MultiServer:
         print('현재 접속한 name:', self.now_connected_name)
         print('현재 접속한 account:', self.now_connected_account)
 
+        # 학생 접속명단 보내기
+        name = []
+        for i in self.now_connected_name:
+            if i == 'manager':
+                pass
+            else:
+                name.append(i)
+        account = ['teacher_account_delete', name]
+
+        # 종료시 선생클라로 보낼내용
+        for i in self.now_connected_account:
+            if 'manager' in i:
+                i[0].send((json.dumps(account)).encode())
+            else:
+                pass
+        print('선생클라로 보낼내용:', account)
+
     # DB에서 account정보와 일치하는지 확인
     def method_checkAccount(self):
         print('회원 정보 확인 메시지가 왔습니다')
@@ -328,7 +363,7 @@ class MultiServer:
                 sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}' or sender='{self.received_message[0]}' order by send_dt"
                 cur.execute(sql)
                 temp = cur.fetchall()
-        # print(temp)
+        print(temp)
         consulting = []
         for i in range(len(temp)):
             temp1 = []
@@ -338,9 +373,29 @@ class MultiServer:
                 else:
                     temp1.append(temp[i][j])
             consulting.append(temp1)
-        # print(consulting)
+        print(consulting)
         consulting_chat = ['teacher_consulting_ch', consulting]
         sender_socket.send((json.dumps(consulting_chat)).encode())
+
+    # 실시간 상담내역 저장
+    def chat_dbsave(self):
+        con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                              db='education_application')
+        with con:
+            with con.cursor() as cur:
+                sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
+                cur.execute(sql)
+                con.commit()
+
+    # 실시간채팅 학생한테 받은내용 선생한테 보내기
+    def chat_te_send(self):
+        chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+                     datetime.now().strftime('%D %T')]
+        for i in self.now_connected_account:
+            if 'manager' in i:
+                i[0].send((json.dumps(chat_list)).encode())
+            else:
+                pass
 
     # 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
     def teacher_account(self, sender_socket):
@@ -355,6 +410,11 @@ class MultiServer:
         sender_socket.send((json.dumps(qna_list)).encode())
 
         # 학생접속명단 보내기
+        self.current_state(sender_socket)
+
+    # 현재접속명단 보내기
+    def current_state(self, sender_socket):
+        # 학생접속명단 보내기
         name = []
         for i in self.now_connected_name:
             if i == 'manager':
@@ -363,16 +423,6 @@ class MultiServer:
                 name.append(i)
         student = ['teacher_consulting_st', name]
         sender_socket.send((json.dumps(student)).encode())
-
-    # 실시간 상담내역 저장
-    def chat_dbsave(self):
-        con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-                              db='education_application')
-        with con:
-            with con.cursor() as cur:
-                sql = f"insert into `education_application`.`chat`(send_dt, sender, chat_content, receiver) values ({'now()'},'{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}')"
-                cur.execute(sql)
-                con.commit()
 
     # ---------------------민석---------------------
     # 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
