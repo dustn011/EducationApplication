@@ -152,12 +152,21 @@ class StudentClient(QWidget, student_ui):
 
     # 질문 선택하면 질문 내역, 응답 내역 출력
     def show_one_qna(self):
-        sele_qna_num = self.question_table.selectedItems()[0].text()
-        print(sele_qna_num)
-        for qna_data in self.list_qna_data:
-            if sele_qna_num is qna_data[0]:
-                print(qna_data)
-                break
+        self.show_question_title.clear()
+        self.show_question_content.clear()
+        self.question_dt.clear()
+        self.show_answer.clear()
+        self.answer_dt.clear()
+
+        sele_qna_num = int(self.question_table.selectedItems()[0].text())
+        for i in range(len(self.list_qna_data)):
+            if sele_qna_num == self.list_qna_data[i][0]:
+                self.show_question_title.setText(self.list_qna_data[i][2])
+                self.show_question_content.setText(self.list_qna_data[i][3])
+                self.question_dt.setText(self.list_qna_data[i][4])
+                self.show_answer.setText(self.list_qna_data[i][5])
+                self.answer_dt.setText(self.list_qna_data[i][6])
+                print(self.list_qna_data[i])
 
     # 질문입력 버튼 누르면 실행할 메서드
     def send_question(self):
