@@ -1,4 +1,6 @@
 import json
+import time
+
 import requests
 import xmltodict
 from PyQt5.QtCore import QRegExp
@@ -120,29 +122,51 @@ class StudentClient(QWidget, student_ui):
     def go_quiz(self):
         self.clPage.setCurrentIndex(3)
 
-    def go_consult(self):
-        self.clPage.setCurrentIndex(4)
-
     def go_main(self):
         self.clPage.setCurrentIndex(0)
 
+    # 상담 내역 불러오기
+    def go_consult(self):
+        # 인덱스 0번에 식별자 'plzGiveChattingLog' 넣어주고 [학생 이름]서버로 전송
+        chat = ['plzGiveChattingLog', self.studentName.text()]
+        send_chatAccess = json.dumps(chat)
+        self.client_socket.send(send_chatAccess.encode('utf-8'))
+        print('서버에 상담 채팅 내역을 요청했습니다')
+        self.chat_list.clear()
+        self.clPage.setCurrentIndex(4)
+
     # 상담 보내기
     def method_send_chat(self):
-        # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
-        chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
-        send_chat = json.dumps(chat)
-        self.client_socket.send(send_chat.encode('utf-8'))
-        print('서버에 상담 채팅 내역을 보냈습니다')
-        self.send_chat.clear()
+        if not self.send_chat.text():
+            QMessageBox.information(self, '입력오류', '내용을 입력해주세요')
+        else:
+            # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
+            chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
+            send_chat = json.dumps(chat)
+            self.client_socket.send(send_chat.encode('utf-8'))
+            print('서버에 상담 채팅 내역을 보냈습니다')
+            one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
+            self.chat_list.addItem(one_chat)
+            self.send_chat.clear()
+            self.chat_list.scrollToBottom()
 
     # 질문 선택하면 질문 내역, 응답 내역 출력
     def show_one_qna(self):
-        sele_qna_num = self.question_table.selectedItems()[0].text()
-        print(sele_qna_num)
-        for qna_data in self.list_qna_data:
-            if sele_qna_num is qna_data[0]:
-                print(qna_data)
-                break
+        self.show_question_title.clear()
+        self.show_question_content.clear()
+        self.question_dt.clear()
+        self.show_answer.clear()
+        self.answer_dt.clear()
+
+        sele_qna_num = int(self.question_table.selectedItems()[0].text())
+        for i in range(len(self.list_qna_data)):
+            if sele_qna_num == self.list_qna_data[i][0]:
+                self.show_question_title.setText(self.list_qna_data[i][2])
+                self.show_question_content.setText(self.list_qna_data[i][3])
+                self.question_dt.setText(self.list_qna_data[i][4])
+                self.show_answer.setText(self.list_qna_data[i][5])
+                self.answer_dt.setText(self.list_qna_data[i][6])
+                print(self.list_qna_data[i])
 
     # 질문입력 버튼 누르면 실행할 메서드
     def send_question(self):
@@ -226,6 +250,15 @@ class StudentClient(QWidget, student_ui):
                     self.fail_message.setText('로그인 실패')
                 elif identifier == 'send_qna_data':
                     self.show_all_qna(message_log)
+                elif identifier == 'send_studentChat_data':
+                    self.show_chattingLog(message_log)
+
+    # 서버에서 받아온 chatting 데이터 불러오기
+    def show_chattingLog(self, chatting_log):
+        one_chat = f"[{chatting_log[0]}]\n[{chatting_log[1]}] : {chatting_log[2]}"
+        self.chat_list.addItem(one_chat)
+        time.sleep(0.000000000001)
+        self.chat_list.scrollToBottom()
 
     # 서버에서 받아온 qna데이터 불러오기
     def show_all_qna(self, qna_data):
