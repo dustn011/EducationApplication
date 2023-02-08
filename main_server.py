@@ -72,6 +72,7 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					# [self.studentName.text(), self.send_chat.text()]
+					self.chat_te_send()
 					self.method_insStudentMessage(client_socket)
 				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
 				elif identifier == 'plzGiveChattingLog':
@@ -115,7 +116,10 @@ class MultiServer:
 				# 실시간채팅 전송받앗을 때 DB저장및 학생한테 보내기
 				elif identifier == 'teacher_send_message':
 					# self.received_message = [manager, send_message, student_name]
+					self.send_chat_teacherToStudent(client_socket)
 					self.chat_dbsave()
+
+				# 새로고침눌렀을 때 현재 접속자수 보내주기
 				elif identifier == 'teacher_consulting_st':
 					self.current_state(client_socket)
 
@@ -389,6 +393,16 @@ class MultiServer:
 		student = ['teacher_consulting_st', name]
 		sender_socket.send((json.dumps(student)).encode())
 
+	# 실시간채팅 학생한테 받은내용 선생한테 보내기
+	def chat_te_send(self):
+		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+					 datetime.now().strftime('%D %T')]
+		for i in self.now_connected_account:
+			if 'manager' in i:
+				i[0].send((json.dumps(chat_list)).encode())
+			else:
+				pass
+
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
 	def send_quiz(self, senders_socket, tab, student):
@@ -430,7 +444,7 @@ class MultiServer:
 
 if __name__ == "__main__":
 	MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-	host, port = '10.10.21.129', 9015
+	host, port = '10.10.21.102', 6666
 	'''
 		# 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
 		server = ThreadedTCPServer((host, port), TCPHandler)
