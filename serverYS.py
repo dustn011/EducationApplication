@@ -34,6 +34,7 @@ class MultiServer:
         self.clients = []  # 접속된 클라이언트 소켓 목록을 넣을 모든 클라이언트 소켓 저장 리스트
         self.received_message = None  # self.received_message 대충 정의해놓기
         self.now_connected_account = []
+        self.now_connected_name = []
 
     # 클라이언트에서 요청이 오면 실행될 함수
     def receive_messages(self, client_socket):
@@ -192,7 +193,7 @@ class MultiServer:
                     student_chat_data.append(student_chatting_log[i][j])
             send_accessChat = json.dumps(student_chat_data)
             sender_socket.send(send_accessChat.encode('utf-8'))  # 연결된 소켓(서버)에 채팅 로그 데이터 보내줌
-            time.sleep(0.0000001)
+            time.sleep(0.00000000000001)
 
     # DB에 학생 상담 채팅 저장하기
     def method_insStudentMessage(self, sender_socket):
@@ -272,6 +273,7 @@ class MultiServer:
     # 접속중인 account 리스트에서 빼주기
     def logoutAccount(self, sender_socket):
         self.now_connected_account.remove([sender_socket, self.received_message[0]])
+        self.now_connected_name.remove(self.received_message[0])
         print('현재 접속한 account:', self.now_connected_account)
 
     # DB에서 account정보와 일치하는지 확인
@@ -292,9 +294,10 @@ class MultiServer:
 
     def loginAccess_message(self, sender_socket, account_info):
         # print(account_info[0][0])
-        if account_info and (account_info[0][0] not in self.now_connected_account):  # 회원정보를 옳게 입력했다면
+        if account_info and (account_info[0][0] not in self.now_connected_name):  # 회원정보를 옳게 입력했다면
             access_message = ['success_login']
             self.now_connected_account.append([sender_socket, account_info[0][0]])
+            self.now_connected_name.append(account_info[0][0])
             print('로그인 성공')
             print('현재 접속한 account:', self.now_connected_account)
         else:  # 회원정보를 옳게 입력하지 않았다면

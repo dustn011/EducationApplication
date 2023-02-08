@@ -1,4 +1,6 @@
 import json
+import time
+
 import requests
 import xmltodict
 from PyQt5.QtCore import QRegExp
@@ -130,16 +132,23 @@ class StudentClient(QWidget, student_ui):
         send_chatAccess = json.dumps(chat)
         self.client_socket.send(send_chatAccess.encode('utf-8'))
         print('서버에 상담 채팅 내역을 요청했습니다')
+        self.chat_list.clear()
         self.clPage.setCurrentIndex(4)
 
     # 상담 보내기
     def method_send_chat(self):
-        # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
-        chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
-        send_chat = json.dumps(chat)
-        self.client_socket.send(send_chat.encode('utf-8'))
-        print('서버에 상담 채팅 내역을 보냈습니다')
-        self.send_chat.clear()
+        if not self.send_chat.text():
+            QMessageBox.information(self, '입력오류', '내용을 입력해주세요')
+        else:
+            # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
+            chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
+            send_chat = json.dumps(chat)
+            self.client_socket.send(send_chat.encode('utf-8'))
+            print('서버에 상담 채팅 내역을 보냈습니다')
+            one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
+            self.chat_list.addItem(one_chat)
+            self.send_chat.clear()
+            self.chat_list.scrollToBottom()
 
     # 질문 선택하면 질문 내역, 응답 내역 출력
     def show_one_qna(self):
@@ -237,7 +246,10 @@ class StudentClient(QWidget, student_ui):
 
     # 서버에서 받아온 chatting 데이터 불러오기
     def show_chattingLog(self, chatting_log):
-        print(chatting_log)
+        one_chat = f"[{chatting_log[0]}]\n[{chatting_log[1]}] : {chatting_log[2]}"
+        self.chat_list.addItem(one_chat)
+        time.sleep(0.000000000001)
+        self.chat_list.scrollToBottom()
 
     # 서버에서 받아온 qna데이터 불러오기
     def show_all_qna(self, qna_data):
