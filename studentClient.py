@@ -425,6 +425,7 @@ class StudentClient(QWidget, student_ui):
             self.mammalias[str(index)] = mammalia_cont
             mammalia_cont = []
             index += 1
+        print(self.mammalias)
 
     # 선택한 포유류 정보 출력
     def mammalia_info(self):
@@ -546,6 +547,15 @@ class StudentClient(QWidget, student_ui):
                 elif identifier == 'hereStudyLoad':
                     self.study_index = message_log[0]
                     self.study_list()
+                elif identifier == 'not_access_counseling':
+                    self.cant_Counseling.setText('지금은 상담 시간이 아닙니다')
+                elif identifier == 'access_counseling':
+                    one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
+                    self.chat_list.addItem(one_chat)
+                    self.send_chat.clear()
+                    self.chat_list.scrollToBottom()
+                    self.cant_Counseling.clear()
+
 
     # 선생이 메시지 보내면 메시지 창에 띄우기
     def show_teacherMessage(self, teacher_message):
