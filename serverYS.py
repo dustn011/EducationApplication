@@ -70,6 +70,7 @@ class MultiServer:
                 elif identifier == 'plzGiveQuestionLog':
                     self.method_getQuestionLog(client_socket)
                 # 학생 상담 채팅 들어오면 DB에 저장하는 요청
+                elif identifier == 'plzInsertStudentChat':
                     # [self.studentName.text(), self.send_chat.text()]
                     teacher = False
                     for name in self.now_connected_name:

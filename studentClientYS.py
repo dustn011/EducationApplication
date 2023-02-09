@@ -544,6 +544,7 @@ class StudentClient(QWidget, student_ui):
                     self.study_list()
                 elif identifier == 'not_access_counseling':
                     self.cant_Counseling.setText('지금은 상담 시간이 아닙니다')
+                    self.send_chat.clear()
                 elif identifier == 'access_counseling':
                     one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
                     self.chat_list.addItem(one_chat)
