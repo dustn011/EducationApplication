@@ -436,14 +436,15 @@ class MultiServer:
         if tab == '곤충':
             class_tab = 'insect'
         elif tab == '조류':
-            class_tab = '?'
+            class_tab = 'bird'
         elif tab == '포유류':
-            class_tab = '??'
+            class_tab = 'mammalia'
         # 해당 과목의 퀴즈 목록
         conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         curs = conn.cursor()
         curs.execute("select * from education_application.question where FIeld = '%s'" % tab)
         questions = curs.fetchall()
+        print(questions)
         senders_socket.sendall(json.dumps(["hereQuiz", questions]).encode('utf-8'))
         # 접속중인 학생의 퀴즈 진도
         curs.execute("select * from education_application.%s where student = '%s'" % (class_tab, student))
@@ -457,9 +458,9 @@ class MultiServer:
         if tab == '곤충':
             class_tab = 'insect'
         elif tab == '조류':
-            class_tab = '?'
+            class_tab = 'bird'
         elif tab == '포유류':
-            class_tab = '??'
+            class_tab = 'mammalia'
         conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         curs = conn.cursor()
         curs.execute("update education_application.%s set answer%d = '%s', score = '%s' where student = '%s'" %

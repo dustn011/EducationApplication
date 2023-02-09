@@ -61,11 +61,18 @@ class StudentClient(QWidget, student_ui):
         self.showQuestions.clicked.connect(self.show_quiz)
         self.showQuestions2.clicked.connect(self.show_quiz)
         self.showQuestions3.clicked.connect(self.show_quiz)
+        self.classTab.currentChanged.connect(self.show_quiz)
         # 퀴즈 선택하기
         self.questionList.cellClicked.connect(self.cell_click)
+        self.questionList2.cellClicked.connect(self.cell_click)
+        self.questionList3.cellClicked.connect(self.cell_click)
         # 답 제출
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
+        self.sendAnswer2.clicked.connect(self.answer)
+        self.answerText2.returnPressed.connect(self.answer)
+        self.sendAnswer3.clicked.connect(self.answer)
+        self.answerText3.returnPressed.connect(self.answer)
         # 탭을 변경하면 api를 연결
         self.studyTab.currentChanged.connect(self.study_change)
         # 멸종 위기 곤충
@@ -252,42 +259,108 @@ class StudentClient(QWidget, student_ui):
     # 테이블에서 셀 클릭했을 때 퀴즈 내용 출력하기
     def cell_click(self, row):
         self.row = row
-        self.quizText.clear()
-        self.answerText.clear()
-        self.exact.clear()
-        self.quizText.append(self.questions[row][2] + "\n")
-        self.quizText.append(self.questions[row][3])
+        if self.classTab.tabText(self.classTab.currentIndex()) == "곤충":
+            self.quizText.clear()
+            self.answerText.clear()
+            self.exact.clear()
+            self.quizText.append(self.questions[row][2] + "\n")
+            self.quizText.append(self.questions[row][3])
+        elif self.classTab.tabText(self.classTab.currentIndex()) == "포유류":
+            self.quizText2.clear()
+            self.answerText2.clear()
+            self.exact2.clear()
+            self.quizText2.append(self.questions[row][2] + "\n")
+            self.quizText2.append(self.questions[row][3])
+        elif self.classTab.tabText(self.classTab.currentIndex()) == "조류":
+            self.quizText3.clear()
+            self.answerText3.clear()
+            self.exact3.clear()
+            self.quizText3.append(self.questions[row][2] + "\n")
+            self.quizText3.append(self.questions[row][3])
 
     # 정답 제출
     def answer(self):
         # 현재 탭 저장
         now_tab = self.classTab.tabText(self.classTab.currentIndex())
         # 풀지 않은 문제였을 때
-        if self.questionList.item(self.row, 1).text() == "-":
-            # 정답을 출력
-            self.correct.setText("정답 : " + self.questions[self.row][4])
-            # 답이 맞으면
-            if self.answerText.text() == self.questions[self.row][4]:
-                # 현재 점수에 점수를 추가 (문제 당 10점)
-                self.score.setText(str(int(self.score.text()) + 10))
-                self.exact.setText("정답!")
-                # 테이블에 바로 결과 반영
-                self.questionList.setItem(self.row, 1, QTableWidgetItem("정답"))
-                # 서버에 데이터 수정을 요청
-                self.client_socket.send(json.dumps(["hereAnswer",
-                                                    now_tab, self.account, self.row + 1, '정답',
-                                                    self.score.text()]).encode('utf-8'))
-            # 답이 틀리면
-            else:
-                self.exact.setText("땡!!")
-                # 테이블에 바로 결과 반영
-                self.questionList.setItem(self.row, 1, QTableWidgetItem("오답"))
-                # 서버에 데이터 수정을 요청
-                self.client_socket.send(json.dumps(["hereAnswer",
-                                                    now_tab, self.account, self.row + 1, '오답',
-                                                    self.score.text()]).encode('utf-8'))
-            # 입력했던 답 지우기
-            self.answerText.clear()
+        if now_tab == "곤충":
+            if self.questionList.item(self.row, 1).text() == "-":
+                # 정답을 출력
+                self.correct.setText("정답 : " + self.questions[self.row][4])
+                # 답이 맞으면
+                if self.answerText.text() == self.questions[self.row][4]:
+                    # 현재 점수에 점수를 추가 (문제 당 10점)
+                    self.score.setText(str(int(self.score.text()) + 10))
+                    self.exact.setText("정답!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList.setItem(self.row, 1, QTableWidgetItem("정답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '정답',
+                                                        self.score.text()]).encode('utf-8'))
+                # 답이 틀리면
+                else:
+                    self.exact.setText("땡!!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList.setItem(self.row, 1, QTableWidgetItem("오답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '오답',
+                                                        self.score.text()]).encode('utf-8'))
+                # 입력했던 답 지우기
+                self.answerText.clear()
+        elif now_tab == "포유류":
+            if self.questionList2.item(self.row, 1).text() == "-":
+                # 정답을 출력
+                self.correct2.setText("정답 : " + self.questions[self.row][4])
+                # 답이 맞으면
+                if self.answerText2.text() == self.questions[self.row][4]:
+                    # 현재 점수에 점수를 추가 (문제 당 10점)
+                    self.score2.setText(str(int(self.score2.text()) + 10))
+                    self.exact2.setText("정답!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList2.setItem(self.row, 1, QTableWidgetItem("정답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '정답',
+                                                        self.score2.text()]).encode('utf-8'))
+                # 답이 틀리면
+                else:
+                    self.exact2.setText("땡!!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList2.setItem(self.row, 1, QTableWidgetItem("오답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '오답',
+                                                        self.score2.text()]).encode('utf-8'))
+                # 입력했던 답 지우기
+                self.answerText2.clear()
+        elif now_tab == "조류":
+            if self.questionList3.item(self.row, 1).text() == "-":
+                # 정답을 출력
+                self.correct3.setText("정답 : " + self.questions[self.row][4])
+                # 답이 맞으면
+                if self.answerText3.text() == self.questions[self.row][4]:
+                    # 현재 점수에 점수를 추가 (문제 당 10점)
+                    self.score3.setText(str(int(self.score3.text()) + 10))
+                    self.exact3.setText("정답!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList3.setItem(self.row, 1, QTableWidgetItem("정답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '정답',
+                                                        self.score3.text()]).encode('utf-8'))
+                # 답이 틀리면
+                else:
+                    self.exact3.setText("땡!!")
+                    # 테이블에 바로 결과 반영
+                    self.questionList3.setItem(self.row, 1, QTableWidgetItem("오답"))
+                    # 서버에 데이터 수정을 요청
+                    self.client_socket.send(json.dumps(["hereAnswer",
+                                                        now_tab, self.account, self.row + 1, '오답',
+                                                        self.score3.text()]).encode('utf-8'))
+                # 입력했던 답 지우기
+                self.answerText3.clear()
 
     # 학습 진도 가져오기
     def load_study(self):
@@ -529,18 +602,44 @@ class StudentClient(QWidget, student_ui):
                 elif identifier == "hereQuiz":
                     # 쓸데없이 3중 리스트로 돼있어서 2중으로 줄임
                     self.questions = message_log[0]
+                    print(self.questions)
                     # 퀴즈 갯수만큼 행 생성
-                    self.questionList.setRowCount(len(self.questions))
-                    for row in range(len(self.questions)):
-                        self.questionList.setItem(row, 0, QTableWidgetItem("%s" % self.questions[row][2]))
+                    if self.classTab.tabText(self.classTab.currentIndex()) == "곤충":
+                        self.questionList.setRowCount(len(self.questions))
+                        for row in range(len(self.questions)):
+                            self.questionList.setItem(row, 0, QTableWidgetItem("%s" % self.questions[row][2]))
+                    elif self.classTab.tabText(self.classTab.currentIndex()) == "포유류":
+                        self.questionList2.setRowCount(len(self.questions))
+                        for row in range(len(self.questions)):
+                            self.questionList2.setItem(row, 0, QTableWidgetItem("%s" % self.questions[row][2]))
+                    elif self.classTab.tabText(self.classTab.currentIndex()) == "조류":
+                        self.questionList3.setRowCount(len(self.questions))
+                        for row in range(len(self.questions)):
+                            self.questionList3.setItem(row, 0, QTableWidgetItem("%s" % self.questions[row][2]))
                 # hereRate = 학생의 퀴즈 진도 코드
                 elif identifier == "hereRate":
                     self.rate = message_log[0][0]
-                    self.score.setText(str(self.rate[1]))
-                    for row in range(len(self.rate) - 2):
-                        self.questionList.setItem(row, 1, QTableWidgetItem("%s" % self.rate[row + 2]))
-                    # 테이블 컬럼 길이 재설정
-                    self.questionList.resizeColumnsToContents()
+                    if self.classTab.tabText(self.classTab.currentIndex()) == "곤충":
+                        self.correct.clear()
+                        self.exact.clear()
+                        self.score.setText(str(self.rate[1]))
+                        for row in range(len(self.rate) - 2):
+                            self.questionList.setItem(row, 1, QTableWidgetItem("%s" % self.rate[row + 2]))
+                        self.questionList.resizeColumnsToContents()
+                    elif self.classTab.tabText(self.classTab.currentIndex()) == "포유류":
+                        self.correct2.clear()
+                        self.exact2.clear()
+                        self.score2.setText(str(self.rate[1]))
+                        for row in range(len(self.rate) - 2):
+                            self.questionList2.setItem(row, 1, QTableWidgetItem("%s" % self.rate[row + 2]))
+                        self.questionList2.resizeColumnsToContents()
+                    elif self.classTab.tabText(self.classTab.currentIndex()) == "조류":
+                        self.correct3.clear()
+                        self.exact3.clear()
+                        self.score3.setText(str(self.rate[1]))
+                        for row in range(len(self.rate) - 2):
+                            self.questionList3.setItem(row, 1, QTableWidgetItem("%s" % self.rate[row + 2]))
+                        self.questionList3.resizeColumnsToContents()
                 elif identifier == 'success_login':
                     self.clPage.setCurrentIndex(0)
                 elif identifier == 'failed_login':
