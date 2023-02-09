@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
@@ -157,8 +157,8 @@
     <widget class="QPushButton" name="goMain">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>530</y>
+       <x>600</x>
+       <y>10</y>
        <width>160</width>
        <height>40</height>
       </rect>
@@ -178,7 +178,7 @@
        <x>10</x>
        <y>40</y>
        <width>780</width>
-       <height>480</height>
+       <height>550</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -240,6 +240,26 @@
         </font>
        </property>
       </widget>
+      <widget class="QPushButton" name="saveStudy">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>460</y>
+         <width>160</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>학습 진도 저장</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -295,6 +315,26 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="saveStudy_2">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>460</y>
+         <width>160</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>학습 진도 저장</string>
        </property>
       </widget>
      </widget>
@@ -354,6 +394,26 @@
         </font>
        </property>
       </widget>
+      <widget class="QPushButton" name="saveStudy_3">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>460</y>
+         <width>160</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>학습 진도 저장</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_6">
       <attribute name="title">
@@ -409,6 +469,26 @@
          <weight>75</weight>
          <bold>true</bold>
         </font>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="saveStudy_4">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>460</y>
+         <width>160</width>
+         <height>40</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>학습 진도 저장</string>
        </property>
       </widget>
      </widget>

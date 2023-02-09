@@ -287,11 +287,13 @@ class StudentClient(QWidget, student_ui):
             # 입력했던 답 지우기
             self.answerText.clear()
 
+    # 학습 진도 가져오기
     def load_study(self):
         print("불러오기")
         print(self.account, self.studyTab.currentIndex())
         self.client_socket.send(json.dumps(["giveStudy", self.account, self.studyTab.currentIndex()]).encode('utf-8'))
 
+    # 받아온 학습 진도까지 교재 출력
     def study_list(self, index):
         for i in range(int(index) + 1):
             if self.studyTab.currentIndex() == 0:
@@ -328,12 +330,11 @@ class StudentClient(QWidget, student_ui):
             self.extinctions[str(index)] = extinc_cont
             extinc_cont = []
             index += 1
-        print(self.extinctions)
 
     # 선택한 멸종 위기 곤충의 정보 출력
     def extinc_info(self):
         self.extincInfo.clear()
-        url = self.extinctions[self.extincList.currentItem().text()][0]
+        url = self.extinctions[str(self.extincList.currentRow())][0]
         insect = urllib.request.urlopen(url).read()
         pixmap = QPixmap()
         pixmap.loadFromData(insect)
@@ -342,9 +343,8 @@ class StudentClient(QWidget, student_ui):
         else:
             pixmap = pixmap.scaledToHeight(400)
         self.extincImage.setPixmap(pixmap)
-        self.extincInfo.append(self.extincList.currentItem().text() + "\n")
-        for i in range(1, len(self.extinctions[self.extincList.currentItem().text()])):
-            self.extincInfo.append(self.extinctions[self.extincList.currentItem().text()][i] + "\n")
+        for i in range(1, len(self.extinctions[str(self.extincList.currentRow())])):
+            self.extincInfo.append(self.extinctions[str(self.extincList.currentRow())][i] + "\n")
 
     # 곤충 도감 10마리 정리
     def study_insect(self):
@@ -376,13 +376,12 @@ class StudentClient(QWidget, student_ui):
             self.insects[str(index)] = insect_cont
             insect_cont = []
             index += 1
-        print(self.insects)
 
     # 선택한 곤충 정보 출력
     def insect_info(self):
         self.insectInfo.clear()
-        if self.insects[self.insectList.currentItem().text()][0] != '이미지 없음':
-            url = self.insects[self.insectList.currentItem().text()][0]
+        if self.insects[str(self.insectList.currentRow())][0] != '이미지 없음':
+            url = self.insects[str(self.insectList.currentRow())][0]
             insect = urllib.request.urlopen(url).read()
             pixmap = QPixmap()
             pixmap.loadFromData(insect)
@@ -393,9 +392,8 @@ class StudentClient(QWidget, student_ui):
             self.insectImage.setPixmap(pixmap)
         else:
             self.insectImage.setText("이미지 없음")
-        self.insectInfo.append(self.insectList.currentItem().text() + "\n")
-        for i in range(1, len(self.insects[self.insectList.currentItem().text()])):
-            self.insectInfo.append(self.insects[self.insectList.currentItem().text()][i] + "\n")
+        for i in range(1, len(self.insects[str(self.insectList.currentRow())])):
+            self.insectInfo.append(self.insects[str(self.insectList.currentRow())][i] + "\n")
 
     # 포유류 도감 10마리 정리
     def study_mammalia(self):
@@ -426,13 +424,12 @@ class StudentClient(QWidget, student_ui):
             self.mammalias[str(index)] = mammalia_cont
             mammalia_cont = []
             index += 1
-        print(self.mammalias)
 
     # 선택한 포유류 정보 출력
     def mammalia_info(self):
         self.mammaliaInfo.clear()
-        if self.mammalias[self.mammaliaList.currentItem().text()][0] != '이미지 없음':
-            url = self.mammalias[self.mammaliaList.currentItem().text()][0]
+        if self.mammalias[str(self.mammaliaList.currentRow())][0] != '이미지 없음':
+            url = self.mammalias[str(self.mammaliaList.currentRow())][0]
             mammalia = urllib.request.urlopen(url).read()
             pixmap = QPixmap()
             pixmap.loadFromData(mammalia)
@@ -443,9 +440,8 @@ class StudentClient(QWidget, student_ui):
             self.mammaliaImage.setPixmap(pixmap)
         else:
             self.mammaliaImage.setText("이미지 없음")
-        self.mammaliaInfo.append(self.mammaliaList.currentItem().text() + "\n")
-        for i in range(1, len(self.mammalias[self.mammaliaList.currentItem().text()])):
-            self.mammaliaInfo.append(self.mammalias[self.mammaliaList.currentItem().text()][i] + "\n")
+        for i in range(1, len(self.mammalias[str(self.mammaliaList.currentRow())])):
+            self.mammaliaInfo.append(self.mammalias[str(self.mammaliaList.currentRow())][i] + "\n")
     
     # 조류 도감 10마리 정리
     def study_bird(self):
@@ -476,13 +472,12 @@ class StudentClient(QWidget, student_ui):
             self.birds[str(index)] = bird_cont
             bird_cont = []
             index += 1
-        print(self.birds)
     
     # 선택한 조류 정보 출력
     def bird_info(self):
         self.birdInfo.clear()
-        if self.birds[self.birdList.currentItem().text()][0] != '이미지 없음':
-            url = self.birds[self.birdList.currentItem().text()][0]
+        if self.birds[str(self.birdList.currentRow())][0] != '이미지 없음':
+            url = self.birds[str(self.birdList.currentRow())][0]
             bird = urllib.request.urlopen(url).read()
             pixmap = QPixmap()
             pixmap.loadFromData(bird)
@@ -493,9 +488,8 @@ class StudentClient(QWidget, student_ui):
             self.birdImage.setPixmap(pixmap)
         else:
             self.birdImage.setText("이미지 없음")
-        self.birdInfo.append(self.birdList.currentItem().text() + "\n")
-        for i in range(1, len(self.birds[self.birdList.currentItem().text()])):
-            self.birdInfo.append(self.birds[self.birdList.currentItem().text()][i] + "\n")
+        for i in range(1, len(self.birds[str(self.birdList.currentRow())])):
+            self.birdInfo.append(self.birds[str(self.birdList.currentRow())][i] + "\n")
 
     # 서버에서 데이터 받는 스레드
     def listen_thread(self):
