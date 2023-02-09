@@ -302,21 +302,21 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>80</y>
+          <y>70</y>
           <width>771</width>
-          <height>481</height>
+          <height>491</height>
          </rect>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_3">
          <widget class="QTableWidget" name="table_st_mammalia">
           <property name="geometry">
            <rect>
-            <x>410</x>
-            <y>40</y>
-            <width>311</width>
+            <x>10</x>
+            <y>250</y>
+            <width>761</width>
             <height>211</height>
            </rect>
           </property>
@@ -324,8 +324,8 @@
          <widget class="QLabel" name="label_20">
           <property name="geometry">
            <rect>
-            <x>530</x>
-            <y>270</y>
+            <x>420</x>
+            <y>10</y>
             <width>101</width>
             <height>16</height>
            </rect>
@@ -337,8 +337,8 @@
          <widget class="QLabel" name="label_21">
           <property name="geometry">
            <rect>
-            <x>520</x>
-            <y>10</y>
+            <x>10</x>
+            <y>220</y>
             <width>101</width>
             <height>16</height>
            </rect>
@@ -350,8 +350,8 @@
          <widget class="QLabel" name="label_22">
           <property name="geometry">
            <rect>
-            <x>120</x>
-            <y>90</y>
+            <x>10</x>
+            <y>10</y>
             <width>151</width>
             <height>16</height>
            </rect>
@@ -365,50 +365,215 @@
          <widget class="QTableWidget" name="table_st_insect">
           <property name="geometry">
            <rect>
-            <x>430</x>
-            <y>40</y>
-            <width>311</width>
-            <height>221</height>
+            <x>400</x>
+            <y>250</y>
+            <width>351</width>
+            <height>201</height>
            </rect>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
           </property>
          </widget>
          <widget class="QLabel" name="label_23">
           <property name="geometry">
            <rect>
-            <x>120</x>
-            <y>90</y>
+            <x>110</x>
+            <y>20</y>
             <width>141</width>
             <height>21</height>
            </rect>
           </property>
           <property name="text">
-           <string>&lt;곤충&gt; 학생별 진도현황</string>
+           <string> 학생별 진도현황</string>
           </property>
          </widget>
          <widget class="QLabel" name="label_24">
           <property name="geometry">
            <rect>
-            <x>540</x>
-            <y>10</y>
+            <x>400</x>
+            <y>220</y>
             <width>101</width>
             <height>16</height>
            </rect>
           </property>
           <property name="text">
-           <string>학생별 세부현황</string>
+           <string>교과별 현황</string>
           </property>
          </widget>
          <widget class="QLabel" name="label_25">
           <property name="geometry">
            <rect>
-            <x>560</x>
-            <y>270</y>
+            <x>400</x>
+            <y>20</y>
             <width>101</width>
             <height>16</height>
            </rect>
           </property>
           <property name="text">
-           <string>문제별 현황</string>
+           <string>오답률</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_26">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>60</y>
+            <width>56</width>
+            <height>12</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;곤충&gt;</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_27">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>240</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;멸종위기 곤충&gt;</string>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="Q1">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>50</y>
+            <width>261</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="Q2">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>80</y>
+            <width>261</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="Q3">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>110</y>
+            <width>261</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_28">
+          <property name="geometry">
+           <rect>
+            <x>440</x>
+            <y>50</y>
+            <width>56</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제1</string>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="Q4">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>140</y>
+            <width>261</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QProgressBar" name="Q5">
+          <property name="geometry">
+           <rect>
+            <x>490</x>
+            <y>170</y>
+            <width>261</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="accessibleName">
+           <string/>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_29">
+          <property name="geometry">
+           <rect>
+            <x>440</x>
+            <y>80</y>
+            <width>56</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제2</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_30">
+          <property name="geometry">
+           <rect>
+            <x>440</x>
+            <y>140</y>
+            <width>56</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제4</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_31">
+          <property name="geometry">
+           <rect>
+            <x>440</x>
+            <y>110</y>
+            <width>56</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_32">
+          <property name="geometry">
+           <rect>
+            <x>440</x>
+            <y>170</y>
+            <width>56</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제5</string>
           </property>
          </widget>
         </widget>
@@ -431,9 +596,9 @@
          <widget class="QTableWidget" name="table_st_bird">
           <property name="geometry">
            <rect>
-            <x>410</x>
-            <y>40</y>
-            <width>341</width>
+            <x>10</x>
+            <y>260</y>
+            <width>751</width>
             <height>201</height>
            </rect>
           </property>
@@ -441,8 +606,8 @@
          <widget class="QLabel" name="label_17">
           <property name="geometry">
            <rect>
-            <x>130</x>
-            <y>70</y>
+            <x>10</x>
+            <y>10</y>
             <width>141</width>
             <height>16</height>
            </rect>
@@ -454,8 +619,8 @@
          <widget class="QLabel" name="label_18">
           <property name="geometry">
            <rect>
-            <x>530</x>
-            <y>10</y>
+            <x>10</x>
+            <y>230</y>
             <width>101</width>
             <height>16</height>
            </rect>
@@ -467,8 +632,8 @@
          <widget class="QLabel" name="label_19">
           <property name="geometry">
            <rect>
-            <x>540</x>
-            <y>260</y>
+            <x>430</x>
+            <y>10</y>
             <width>101</width>
             <height>16</height>
            </rect>

@@ -430,8 +430,10 @@ class MultiServer:
 	# 		else:
 	# 			pass
 
-	# 분야별
+	# 곤충분야 선택했을 때
 	def insect_state(self,sender_socket):
+		wrong = []
+		wrong.insert(0,'teacher_ststate_insect')
 		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
 							  db='education_application')
 		with con:
@@ -439,9 +441,24 @@ class MultiServer:
 				sql = f"select * from `education_application`.`insect`"
 				cur.execute(sql)
 				temp = cur.fetchall()
-		print(temp)
-		message = ['teacher_ststate_insect', temp]
-		sender_socket.send((json.dumps(message)).encode())
+				wrong.insert(1,temp)
+
+				sql =f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
+				convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
+				convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
+				convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
+				convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from insect"
+				cur.execute(sql)
+				temp2 = cur.fetchall()
+				wrong.insert(2, temp2)
+
+				sql = f"select * from `education_application`.`study`"
+				cur.execute(sql)
+				temp3 = cur.fetchall()
+				wrong.insert(3, temp3)
+
+		print(wrong)
+		sender_socket.send((json.dumps(wrong)).encode())
 
 ##############################################################################################
 

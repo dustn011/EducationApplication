@@ -37,7 +37,7 @@ class WindowClass(QMainWindow, form_class) :
         self.tableWidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
         self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
-        self.tableWidget.horizontalHeader().resizeSection(0, 30)
+        self.tableWidget.horizontalHeader().resizeSection(0, 40)
         self.tableWidget.horizontalHeader().resizeSection(2, 60)
 
         # 전체 ui 구성 스텍위젯
@@ -45,6 +45,22 @@ class WindowClass(QMainWindow, form_class) :
 
         # 학습현황 ui 구성 스텍위젯
         self.stackedWidget_2.setCurrentIndex(2)
+
+        # 곤충 교과별 현황 헤더, 열
+        header=['학생','문제1','문제2','문제3','문제4','문제5','점수']
+        self.table_st_insect.setColumnCount(len(header))
+        self.table_st_insect.setHorizontalHeaderLabels(header)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
+        self.table_st_insect.horizontalHeader().resizeSection(0, 50)
+
+
+
 
 
     # 곤충분야눌렀을 때
@@ -131,6 +147,38 @@ class WindowClass(QMainWindow, form_class) :
                 # 실시간 상담시 접속종료되면 접속종료시키기
                 elif identifier == 'teacher_account_delete':
                     self.current_delete()
+                # 학습현황 곤충분야 선택했을 때
+                elif identifier == 'teacher_ststate_insect':
+                    self.insect_state()
+
+    # 곤충학습현황 DB 받아와서 띄우기
+    def insect_state(self):
+        temp=[]
+        state=self.received_message[0]
+        wrong=self.received_message[1]
+        print(state)
+
+        self.table_st_insect.setRowCount(len(state))
+        # 테이블 위젯에 띄우기
+        for i in range(len(state)):
+            self.table_st_insect.setItem(i,0,QTableWidgetItem(str(state[i][0])))  # 학생명
+            self.table_st_insect.setItem(i,1,QTableWidgetItem(str(state[i][2])))  # 문제1
+            self.table_st_insect.setItem(i,2,QTableWidgetItem(str(state[i][3])))  # 문제2
+            self.table_st_insect.setItem(i,3,QTableWidgetItem(str(state[i][4])))  # 문제3
+            self.table_st_insect.setItem(i,4,QTableWidgetItem(str(state[i][5])))  # 문제4
+            self.table_st_insect.setItem(i,5,QTableWidgetItem(str(state[i][6])))  # 문제5
+            self.table_st_insect.setItem(i,6,QTableWidgetItem(str(state[i][1])))  # 점수
+
+        for i in range(len(wrong[0])):
+            temp.append(int(wrong[0][i]/len(state)*100))
+        print(type(temp[0]))
+        print(temp)
+
+        self.Q1.setValue(temp[0])
+        self.Q2.setValue(temp[1])
+        self.Q3.setValue(temp[2])
+        self.Q4.setValue(temp[3])
+        self.Q5.setValue(temp[4])
 
     # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
     def current_delete(self):
