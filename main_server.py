@@ -88,6 +88,11 @@ class MultiServer:
                 elif identifier == 'plzGiveChattingLog':
                     student_chatting_log = self.method_getChattingLog()
                     self.method_sendChattingLog(client_socket, student_chatting_log)
+                elif identifier == 'plzStartConsulting':
+                    for account in self.now_connected_account:
+                        if account[1] == self.received_message[0]:
+                            message = ['startConsulting']
+                            account[0].send((json.dumps(message)).encode())
                 # ---------------------성경---------------------
                 # 문제 출제 DB 저장
                 elif identifier == 'teacher_update':
@@ -367,7 +372,6 @@ class MultiServer:
                 sql = f"select * from `education_application`.`chat` where receiver='{self.received_message[0]}' or sender='{self.received_message[0]}' order by send_dt"
                 cur.execute(sql)
                 temp = cur.fetchall()
-        print(temp)
         consulting = []
         for i in range(len(temp)):
             temp1 = []
@@ -377,7 +381,6 @@ class MultiServer:
                 else:
                     temp1.append(temp[i][j])
             consulting.append(temp1)
-        print(consulting)
         consulting_chat = ['teacher_consulting_ch', consulting]
         sender_socket.send((json.dumps(consulting_chat)).encode())
 

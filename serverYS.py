@@ -89,10 +89,6 @@ class MultiServer:
                     student_chatting_log = self.method_getChattingLog()
                     self.method_sendChattingLog(client_socket, student_chatting_log)
                 elif identifier == 'plzStartConsulting':
-                    print(client_socket)
-                    # self.change_student_consulting_state()
-                    print(self.received_message)
-                    print(self.now_connected_account)
                     for account in self.now_connected_account:
                         if account[1] == self.received_message[0]:
                             message = ['startConsulting']
@@ -158,6 +154,9 @@ class MultiServer:
                                        self.received_message[2], self.received_message[3], self.received_message[4])
 
                 elif identifier == "giveStudy":
+                    self.send_study(client_socket, self.received_message[0], self.received_message[1])
+                elif identifier == "saveStudy":
+                    self.save_study(self.received_message[0], self.received_message[1], self.received_message[2])
                     self.send_study(client_socket, self.received_message[0], self.received_message[1])
 
     # ---------------------연수---------------------
@@ -395,16 +394,6 @@ class MultiServer:
                 cur.execute(sql)
                 con.commit()
 
-    # 실시간채팅 학생한테 받은내용 선생한테 보내기
-    def chat_te_send(self):
-        chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
-                     datetime.now().strftime('%D %T')]
-        for i in self.now_connected_account:
-            if 'manager' in i:
-                i[0].send((json.dumps(chat_list)).encode())
-            else:
-                pass
-
     # 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
     def teacher_account(self, sender_socket):
         self.now_connected_account.append([sender_socket, 'manager'])
@@ -431,6 +420,16 @@ class MultiServer:
                 name.append(i)
         student = ['teacher_consulting_st', name]
         sender_socket.send((json.dumps(student)).encode())
+
+    # 실시간채팅 학생한테 받은내용 선생한테 보내기
+    def chat_te_send(self):
+        chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+                     datetime.now().strftime('%D %T')]
+        for i in self.now_connected_account:
+            if 'manager' in i:
+                i[0].send((json.dumps(chat_list)).encode())
+            else:
+                pass
 
     # ---------------------민석---------------------
     # 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
