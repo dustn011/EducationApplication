@@ -81,7 +81,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -246,6 +246,244 @@
        <attribute name="title">
         <string>학습현황</string>
        </attribute>
+       <widget class="QPushButton" name="insect_btn">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>30</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>곤충</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="mammalia_btn">
+        <property name="geometry">
+         <rect>
+          <x>370</x>
+          <y>30</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>포유류</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="bird_btn">
+        <property name="geometry">
+         <rect>
+          <x>500</x>
+          <y>30</y>
+          <width>71</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>조류</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>0</y>
+          <width>231</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>분야별 학생 학습현황</string>
+        </property>
+       </widget>
+       <widget class="QStackedWidget" name="stackedWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>771</width>
+          <height>481</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="page_3">
+         <widget class="QTableWidget" name="table_st_mammalia">
+          <property name="geometry">
+           <rect>
+            <x>410</x>
+            <y>40</y>
+            <width>311</width>
+            <height>211</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_20">
+          <property name="geometry">
+           <rect>
+            <x>530</x>
+            <y>270</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제별 현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_21">
+          <property name="geometry">
+           <rect>
+            <x>520</x>
+            <y>10</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>학생별 세부현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_22">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>90</y>
+            <width>151</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;포유류&gt; 학생별 진도현황</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page_4">
+         <widget class="QTableWidget" name="table_st_insect">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>40</y>
+            <width>311</width>
+            <height>221</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_23">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>90</y>
+            <width>141</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;곤충&gt; 학생별 진도현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_24">
+          <property name="geometry">
+           <rect>
+            <x>540</x>
+            <y>10</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>학생별 세부현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_25">
+          <property name="geometry">
+           <rect>
+            <x>560</x>
+            <y>270</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제별 현황</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page_6">
+         <widget class="QLabel" name="label_16">
+          <property name="geometry">
+           <rect>
+            <x>310</x>
+            <y>140</y>
+            <width>191</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>확인하고자하는 분야를 선택하세요</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page_5">
+         <widget class="QTableWidget" name="table_st_bird">
+          <property name="geometry">
+           <rect>
+            <x>410</x>
+            <y>40</y>
+            <width>341</width>
+            <height>201</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_17">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>70</y>
+            <width>141</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;조류&gt; 학생별 진도현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_18">
+          <property name="geometry">
+           <rect>
+            <x>530</x>
+            <y>10</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>학생별 세부현황</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_19">
+          <property name="geometry">
+           <rect>
+            <x>540</x>
+            <y>260</y>
+            <width>101</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>문제별 현황</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <zorder>stackedWidget_2</zorder>
+       <zorder>insect_btn</zorder>
+       <zorder>mammalia_btn</zorder>
+       <zorder>bird_btn</zorder>
+       <zorder>label_15</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">

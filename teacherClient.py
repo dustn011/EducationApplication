@@ -26,7 +26,11 @@ class WindowClass(QMainWindow, form_class) :
         self.consulting_combo.currentIndexChanged.connect(self.send_stname) # 실시간상담에서 학생이름이 선택되었을때
         self.f5_btn.clicked.connect(self.f5)                                # 현재접속자에서 새로고침 누르면
 
-        # 헤더, 열
+        self.insect_btn.clicked.connect(self.insect)              # 곤충버튼 눌렀을 때
+        self.mammalia_btn.clicked.connect(self.mammalia)          # 포유류 눌렀을 때
+        self.bird_btn.clicked.connect(self.bird)                  # 조류 눌렀을 때
+
+        # QNA 헤더, 열
         header=['학생','질문','답변여부']
         self.tableWidget.setColumnCount(len(header))
         self.tableWidget.setHorizontalHeaderLabels(header)
@@ -36,7 +40,25 @@ class WindowClass(QMainWindow, form_class) :
         self.tableWidget.horizontalHeader().resizeSection(0, 30)
         self.tableWidget.horizontalHeader().resizeSection(2, 60)
 
+        # 전체 ui 구성 스텍위젯
         self.stackedWidget.setCurrentIndex(0)
+
+        # 학습현황 ui 구성 스텍위젯
+        self.stackedWidget_2.setCurrentIndex(2)
+
+
+    # 곤충분야눌렀을 때
+    def insect(self):
+        self.stackedWidget_2.setCurrentIndex(1)
+        message=['teacher_ststate_insect']
+        self.client_socket.send((json.dumps(message)).encode())
+
+    # 포유류 눌렀을 때
+    def mammalia(self):
+        self.stackedWidget_2.setCurrentIndex(0)
+
+    def bird(self):
+        self.stackedWidget_2.setCurrentIndex(3)
 
     # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
     def f5(self):
@@ -112,28 +134,37 @@ class WindowClass(QMainWindow, form_class) :
 
     # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
     def current_delete(self):
-        print(str(self.received_message[0]))
-        print(self.consulting_combo.currentText())
-        if bool(self.received_message[0])==False:
-            self.consulting_show.addItem(f'----------------------- 상대방이 접속을 종료했습니다 ----------------------')
-            self.consulting_show.addItem(f'------------------------------ 새로고침 하세요 ------------------------------')
-            self.consulting_show.scrollToBottom()
-            self.send_btn.setEnabled(False)
-        else:
-            if str(self.received_message[0]) != self.consulting_combo.currentText():
-                pass
+        self.received_message=self.received_message[0]
+        self.current_num()  # 접속종료시 현재접속인원 바꾸기
+        # 현재 접속한 인원이 아무도 없는경우
+        if len(self.received_message) == 0:
+            if self.consulting_combo.currentText() == '':
+                self.send_btn.setEnabled(False)
             else:
-                self.consulting_show.addItem(f'----------------------- 상대방이 접속을 종료했습니다 ----------------------')
-                self.consulting_show.addItem(f'------------------------------ 새로고침 하세요 ------------------------------')
+                self.consulting_show.addItem(f'---------------------- 상대방이 접속을 종료했습니다 ---------------------')
+                self.consulting_show.addItem(f'----------------------------- 새로고침 하세요 -----------------------------')
                 self.consulting_show.scrollToBottom()
                 self.send_btn.setEnabled(False)
-                # if bool(self.received_message[0]) == False:
-                #     self.current_man.clear()
-                #     self.man_num.setText(f'[0] 명')
-                # else:
-                #     for i in self.received_message[0]:
-                #         self.current_man.addItem(f'{i}')
-                #     self.man_num.setText(f'[{len(self.received_message)}] 명')
+        # 한명이상 접속한 인원이 있는 경우
+        else:
+            for i in range(len(self.received_message)):
+                if self.consulting_combo.currentText() =='':
+                    self.send_btn.setEnabled(False)
+                elif str(self.received_message[i]) != self.consulting_combo.currentText():
+                    self.current_num()  # 접속종료시 현재접속인원 바꾸기
+                    self.consulting_show.addItem(f'---------------------- 상대방이 접속을 종료했습니다 ---------------------')
+                    self.consulting_show.addItem(f'----------------------------- 새로고침 하세요 -----------------------------')
+                    self.consulting_show.scrollToBottom()
+                    self.send_btn.setEnabled(False)
+                else:
+                    pass
+
+    # 접속종료시 현재접속인원 바꾸기, 접속종료안내멘트보내기
+    def current_num(self):
+        self.current_man.clear()
+        for i in self.received_message:
+            self.current_man.addItem(f'{i}')
+        self.man_num.setText(f'[{len(self.received_message)}] 명')
 
     # 접속한 학생으로 명단띄움, 현재 접속자 띄우기
     def chat_state(self):

@@ -123,6 +123,13 @@ class MultiServer:
 				elif identifier == 'teacher_consulting_st':
 					self.current_state(client_socket)
 
+#####################################################################################################################
+				# 학생학습현황 확인위해 곤충분야 눌렀을 때
+				elif identifier == 'teacher_ststate_insect':
+					self.insect_state(client_socket)
+
+####################################################################################################################
+
 				# ---------------------민석---------------------
 				# plzGiveQuiz = 퀴즈 목록 요청 코드
 				elif identifier == "plzGiveQuiz":
@@ -278,10 +285,6 @@ class MultiServer:
 				pass
 		print('선생클라로 보낼내용:', account)
 
-############################################################################################
-
-##############################################################################################
-
 	# DB에서 account정보와 일치하는지 확인
 	def method_checkAccount(self):
 		print('회원 정보 확인 메시지가 왔습니다')
@@ -414,15 +417,33 @@ class MultiServer:
 		student = ['teacher_consulting_st', name]
 		sender_socket.send((json.dumps(student)).encode())
 
-	# 실시간채팅 학생한테 받은내용 선생한테 보내기
-	def chat_te_send(self):
-		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
-					 datetime.now().strftime('%D %T')]
-		for i in self.now_connected_account:
-			if 'manager' in i:
-				i[0].send((json.dumps(chat_list)).encode())
-			else:
-				pass
+############################################################################################
+
+	# 중복으로 들어가있음 삭제해야함.
+	# # 실시간채팅 학생한테 받은내용 선생한테 보내기
+	# def chat_te_send(self):
+	# 	chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
+	# 				 datetime.now().strftime('%D %T')]
+	# 	for i in self.now_connected_account:
+	# 		if 'manager' in i:
+	# 			i[0].send((json.dumps(chat_list)).encode())
+	# 		else:
+	# 			pass
+
+	# 분야별
+	def insect_state(self,sender_socket):
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+							  db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"select * from `education_application`.`insect`"
+				cur.execute(sql)
+				temp = cur.fetchall()
+		print(temp)
+		message = ['teacher_ststate_insect', temp]
+		sender_socket.send((json.dumps(message)).encode())
+
+##############################################################################################
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
