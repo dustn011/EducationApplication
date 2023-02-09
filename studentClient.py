@@ -39,6 +39,7 @@ class StudentClient(QWidget, student_ui):
         self.insects = dict()
         self.mammalias = dict()
         self.birds = dict()
+        self.study_index = ''
         # 학습 페이지 이동
         self.goStudy.clicked.connect(self.go_study)
         # QnA 페이지 이동
@@ -294,8 +295,8 @@ class StudentClient(QWidget, student_ui):
         self.client_socket.send(json.dumps(["giveStudy", self.account, self.studyTab.currentIndex()]).encode('utf-8'))
 
     # 받아온 학습 진도까지 교재 출력
-    def study_list(self, index):
-        for i in range(int(index) + 1):
+    def study_list(self):
+        for i in range(int(self.study_index) + 1):
             if self.studyTab.currentIndex() == 0:
                 self.extincList.addItem(self.extinctions[str(i)][1])
             elif self.studyTab.currentIndex() == 1:
@@ -491,6 +492,10 @@ class StudentClient(QWidget, student_ui):
         for i in range(1, len(self.birds[str(self.birdList.currentRow())])):
             self.birdInfo.append(self.birds[str(self.birdList.currentRow())][i] + "\n")
 
+    def save_study(self):
+        self.client_socket.send(json.dumps
+                                (["saveStudy", self.studyTab.currentIndex(), str(self.study_index)]).encode('utf-8'))
+
     # 서버에서 데이터 받는 스레드
     def listen_thread(self):
         # 데이터 수신 Tread를 생성하고 시작한다
@@ -539,7 +544,8 @@ class StudentClient(QWidget, student_ui):
                 elif identifier == 'send_teacher_message':
                     self.show_teacherMessage(message_log)
                 elif identifier == 'hereStudyLoad':
-                    self.study_list(message_log[0])
+                    self.study_index = message_log[0]
+                    self.study_list()
 
     # 선생이 메시지 보내면 메시지 창에 띄우기
     def show_teacherMessage(self, teacher_message):
