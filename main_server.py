@@ -72,8 +72,18 @@ class MultiServer:
 				# 학생 상담 채팅 들어오면 DB에 저장하는 요청
 				elif identifier == 'plzInsertStudentChat':
 					# [self.studentName.text(), self.send_chat.text()]
-					self.chat_te_send()
-					self.method_insStudentMessage(client_socket)
+					teacher = False
+					for name in self.now_connected_name:
+						if name == 'manager':
+							self.chat_te_send()
+							self.method_insStudentMessage(client_socket)
+							teacher = True
+					if not teacher:
+						access_message = ['not_access_counseling']
+					else:
+						access_message = ['access_counseling']
+					send_notAccessCounseling = json.dumps(access_message)
+					client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 가능하다고 시그널 보냄
 				# 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
 				elif identifier == 'plzGiveChattingLog':
 					student_chatting_log = self.method_getChattingLog()
@@ -376,16 +386,6 @@ class MultiServer:
 				cur.execute(sql)
 				con.commit()
 
-	# 실시간채팅 학생한테 받은내용 선생한테 보내기
-	def chat_te_send(self):
-		chat_list = ['teacher_send_message', self.received_message[0], self.received_message[1],
-					 datetime.now().strftime('%D %T')]
-		for i in self.now_connected_account:
-			if 'manager' in i:
-				i[0].send((json.dumps(chat_list)).encode())
-			else:
-				pass
-
 	# 선생클라이언트로 입장눌렀을 때 리스트에 집어넣기 QNA 리스트, 학생접속명단 보내기
 	def teacher_account(self, sender_socket):
 		self.now_connected_account.append([sender_socket, 'manager'])
@@ -482,7 +482,7 @@ class MultiServer:
 
 if __name__ == "__main__":
 	MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-	host, port = '10.10.21.129', 6666
+	host, port = '10.10.21.102', 6666
 	'''
 		# 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
 		server = ThreadedTCPServer((host, port), TCPHandler)

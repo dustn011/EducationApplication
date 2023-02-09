@@ -156,10 +156,6 @@ class StudentClient(QWidget, student_ui):
             send_chat = json.dumps(chat)
             self.client_socket.send(send_chat.encode('utf-8'))
             print('서버에 상담 채팅 내역을 보냈습니다')
-            one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
-            self.chat_list.addItem(one_chat)
-            self.send_chat.clear()
-            self.chat_list.scrollToBottom()
 
     # 질문 선택하면 질문 내역, 응답 내역 출력
     def show_one_qna(self):
@@ -177,7 +173,6 @@ class StudentClient(QWidget, student_ui):
                 self.question_dt.setText(self.list_qna_data[i][4])
                 self.show_answer.setText(self.list_qna_data[i][5])
                 self.answer_dt.setText(self.list_qna_data[i][6])
-                print(self.list_qna_data[i])
 
     # 질문입력 버튼 누르면 실행할 메서드
     def send_question(self):
@@ -188,7 +183,7 @@ class StudentClient(QWidget, student_ui):
         else:
             # 인덱스 0번에 식별자 'plzInsertQuestion' 넣어주고 [질문자 이름, 제목, 질문 내용]서버로 전송
             question = ['plzInsertQuestion', self.studentName.text(), self.question_title.text(),
-                                  self.question_content.toPlainText()]
+                        self.question_content.toPlainText()]
             send_question = json.dumps(question)
             self.client_socket.send(send_question.encode('utf-8'))
             print('서버에 질문등록 요청을 보냈습니다')
@@ -444,13 +439,13 @@ class StudentClient(QWidget, student_ui):
             self.mammaliaImage.setText("이미지 없음")
         for i in range(1, len(self.mammalias[str(self.mammaliaList.currentRow())])):
             self.mammaliaInfo.append(self.mammalias[str(self.mammaliaList.currentRow())][i] + "\n")
-    
+
     # 조류 도감 10마리 정리
     def study_bird(self):
         self.birdList.clear()
         bird_cont = []
         key = "XHef%2BpLCxnzMTQsT2fS%2BVkJ9blytTOQ28QVlhrTlfvBkNZaPyFGO6JYanPWEwzvo1%2B2I%2FIBuK1Bmm5FLk5Q0kw%3D%3D"
-        url = 'http://apis.data.go.kr/1400119/BirdService/birdIlstrSearch?serviceKey=%s&st=1&sw=&numOfRows=10&pageNo=1'\
+        url = 'http://apis.data.go.kr/1400119/BirdService/birdIlstrSearch?serviceKey=%s&st=1&sw=&numOfRows=10&pageNo=1' \
               % key
         content = requests.get(url).content
         birds_list = xmltodict.parse(content)['response']['body']['items']['item']
@@ -474,7 +469,7 @@ class StudentClient(QWidget, student_ui):
             self.birds[str(index)] = bird_cont
             bird_cont = []
             index += 1
-    
+
     # 선택한 조류 정보 출력
     def bird_info(self):
         self.birdInfo.clear()
@@ -555,7 +550,6 @@ class StudentClient(QWidget, student_ui):
                     self.send_chat.clear()
                     self.chat_list.scrollToBottom()
                     self.cant_Counseling.clear()
-
 
     # 선생이 메시지 보내면 메시지 창에 띄우기
     def show_teacherMessage(self, teacher_message):

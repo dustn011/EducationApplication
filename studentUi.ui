@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
@@ -1702,6 +1702,28 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>전송</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="cant_Counseling">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>510</y>
+       <width>301</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

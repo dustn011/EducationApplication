@@ -71,21 +71,9 @@ class MultiServer:
                     self.method_getQuestionLog(client_socket)
                 # 학생 상담 채팅 들어오면 DB에 저장하는 요청
                 elif identifier == 'plzInsertStudentChat':
-                    teacher = False
                     # [self.studentName.text(), self.send_chat.text()]
-                    for name in self.now_connected_name:
-                        if name == 'manager':
-                            self.chat_te_send()
-                            self.method_insStudentMessage(client_socket)
-                            teacher = True
-                    if not teacher:
-                        access_message = ['not_access_counseling']
-                        send_notAccessCounseling = json.dumps(access_message)
-                        client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 못한다고 시그널 보냄
-                    else:
-                        access_message = ['access_counseling']
-                        send_notAccessCounseling = json.dumps(access_message)
-                        client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 가능하다고 시그널 보냄
+                    self.chat_te_send()
+                    self.method_insStudentMessage(client_socket)
                 # 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
                 elif identifier == 'plzGiveChattingLog':
                     student_chatting_log = self.method_getChattingLog()
@@ -149,6 +137,9 @@ class MultiServer:
                 elif identifier == "hereAnswer":
                     self.insert_answer(self.received_message[0], self.received_message[1],
                                        self.received_message[2], self.received_message[3], self.received_message[4])
+
+                elif identifier == "giveStudy":
+                    self.send_study(client_socket, self.received_message[0], self.received_message[1])
 
     # ---------------------연수---------------------
     # 선생 클라에서 학생 클라로 메시지 보내기
@@ -461,6 +452,24 @@ class MultiServer:
         curs.execute("update education_application.%s set answer%d = '%s', score = '%s' where student = '%s'" %
                      (class_tab, q_number, answer, score, student))
         conn.commit()
+
+    def send_study(self, senders_socket, student, tab):
+        print(student, str(tab))
+        class_tab = ''
+        if tab == 0:
+            class_tab = 'extinc'
+        elif tab == 1:
+            class_tab = 'insect'
+        elif tab == 2:
+            class_tab = 'bird'
+        elif tab == 3:
+            class_tab = 'mammalia'
+        conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
+        curs = conn.cursor()
+        curs.execute("select %s from education_application.study where student = '%s'" % (class_tab, student))
+        index = curs.fetchall()[0][0]
+        print(index)
+        senders_socket.sendall(json.dumps(["hereStudyLoad", index]).encode('utf-8'))
 
 
 if __name__ == "__main__":
