@@ -59,6 +59,8 @@ class StudentClient(QWidget, student_ui):
         self.goMain_5.clicked.connect(self.go_main)
         # 퀴즈 목록 가져오기
         self.showQuestions.clicked.connect(self.show_quiz)
+        self.showQuestions2.clicked.connect(self.show_quiz)
+        self.showQuestions3.clicked.connect(self.show_quiz)
         # 퀴즈 선택하기
         self.questionList.cellClicked.connect(self.cell_click)
         # 답 제출
