@@ -309,16 +309,7 @@ class WindowClass(QMainWindow, form_class) :
         self.in_m.setText(f'{jindo2[0][0]}%')
         self.in_s.setText(f'{jindo2[2][0]}%')
         self.in_y.setText(f'{jindo2[1][0]}%')
-        # time.sleep(0.1)
-        # self.Q1.setValue(temp[0])
-        # time.sleep(0.1)
-        # self.Q2.setValue(temp[1])
-        # time.sleep(0.1)
-        # self.Q3.setValue(temp[2])
-        # time.sleep(0.1)
-        # self.Q4.setValue(temp[3])
-        # time.sleep(0.1)
-        # self.Q5.setValue(temp[4])
+
 
 
     # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
