@@ -150,6 +150,9 @@ class StudentClient(QWidget, student_ui):
     def method_send_chat(self):
         if not self.send_chat.text():
             QMessageBox.information(self, '입력오류', '내용을 입력해주세요')
+        elif self.consulting_state.text() == '상담 off':
+            QMessageBox.information(self, '시간 오류', '상담 시간이 아닙니다')
+            self.send_chat.clear()
         else:
             # 인덱스 0번에 식별자 'plzInsertStudentChat' 넣어주고 [학생 이름, 상담 내용]서버로 전송
             chat = ['plzInsertStudentChat', self.studentName.text(), self.send_chat.text()]
@@ -226,6 +229,8 @@ class StudentClient(QWidget, student_ui):
         self.client_socket.send(send_logoutSignal.encode('utf-8'))
         print('서버에 로그아웃 요청을 보냈습니다')
 
+        self.consulting_state.setText('상담 off')
+        self.consulting_color.setStyleSheet("background-color: red; border-radius: 8px")
         self.studentName.clear()
         self.fail_message.clear()
         self.clPage.setCurrentIndex(5)
@@ -546,11 +551,14 @@ class StudentClient(QWidget, student_ui):
                     self.cant_Counseling.setText('지금은 상담 시간이 아닙니다')
                     self.send_chat.clear()
                 elif identifier == 'access_counseling':
-                    one_chat = f"[{datetime.now().strftime('%D %T')}]\n[{self.studentName.text()}] : {self.send_chat.text()}"
+                    one_chat = f"[{datetime.now().strftime('%D %T')}] [{self.studentName.text()}] : {self.send_chat.text()}"
                     self.chat_list.addItem(one_chat)
                     self.send_chat.clear()
                     self.chat_list.scrollToBottom()
                     self.cant_Counseling.clear()
+                elif identifier == 'startConsulting':
+                    self.consulting_color.setStyleSheet("background-color: green; border-radius: 8px")
+                    self.consulting_state.setText('상담 on')
 
     # 선생이 메시지 보내면 메시지 창에 띄우기
     def show_teacherMessage(self, teacher_message):
@@ -559,6 +567,7 @@ class StudentClient(QWidget, student_ui):
         self.chat_list.addItem(one_chat)
         time.sleep(0.000000000001)
         self.chat_list.scrollToBottom()
+        self.cant_Counseling.clear()
 
     # 서버에서 받아온 chatting 데이터 불러오기
     def show_chattingLog(self, chatting_log):
