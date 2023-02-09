@@ -261,7 +261,6 @@ class MultiServer:
 		print('현재 접속한 name:', self.now_connected_name)
 		print('현재 접속한 account:', self.now_connected_account)
 
-############################################################################################
 		# 학생 접속명단 보내기
 		name = []
 		for i in self.now_connected_name:
@@ -270,6 +269,7 @@ class MultiServer:
 			else:
 				name.append(i)
 		account = ['teacher_account_delete', name]
+
 		# 종료시 선생클라로 보낼내용
 		for i in self.now_connected_account:
 			if 'manager' in i:
@@ -277,6 +277,9 @@ class MultiServer:
 			else:
 				pass
 		print('선생클라로 보낼내용:', account)
+
+############################################################################################
+
 ##############################################################################################
 
 	# DB에서 account정보와 일치하는지 확인
