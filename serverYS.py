@@ -70,10 +70,19 @@ class MultiServer:
                 elif identifier == 'plzGiveQuestionLog':
                     self.method_getQuestionLog(client_socket)
                 # 학생 상담 채팅 들어오면 DB에 저장하는 요청
-                elif identifier == 'plzInsertStudentChat':
                     # [self.studentName.text(), self.send_chat.text()]
-                    self.chat_te_send()
-                    self.method_insStudentMessage(client_socket)
+                    teacher = False
+                    for name in self.now_connected_name:
+                        if name == 'manager':
+                            self.chat_te_send()
+                            self.method_insStudentMessage(client_socket)
+                            teacher = True
+                    if not teacher:
+                        access_message = ['not_access_counseling']
+                    else:
+                        access_message = ['access_counseling']
+                    send_notAccessCounseling = json.dumps(access_message)
+                    client_socket.send(send_notAccessCounseling.encode('utf-8'))  # 연결된 소켓(서버)에 님 상담 가능하다고 시그널 보냄
                 # 상담 로그 요청 들어오면 DB에서 꺼내서 보내주기
                 elif identifier == 'plzGiveChattingLog':
                     student_chatting_log = self.method_getChattingLog()
