@@ -64,8 +64,6 @@ class StudentClient(QWidget, student_ui):
         # 답 제출
         self.sendAnswer.clicked.connect(self.answer)
         self.answerText.returnPressed.connect(self.answer)
-        # 학습 자료
-        self.study_extinction()
         # 탭을 변경하면 api를 연결
         self.studyTab.currentChanged.connect(self.study_change)
         # 멸종 위기 곤충
@@ -76,6 +74,11 @@ class StudentClient(QWidget, student_ui):
         self.mammaliaList.itemSelectionChanged.connect(self.mammalia_info)
         # 조류 도감
         self.birdList.itemSelectionChanged.connect(self.bird_info)
+        # 학습 진도 저장
+        self.saveStudy.clicked.connect(self.save_study)
+        self.saveStudy_2.clicked.connect(self.save_study)
+        self.saveStudy_3.clicked.connect(self.save_study)
+        self.saveStudy_4.clicked.connect(self.save_study)
 
         # 연수's
         # 로그인 칸에는 한글만 입력 가능
@@ -217,6 +220,7 @@ class StudentClient(QWidget, student_ui):
             self.client_socket.send(send_accountSignal.encode('utf-8'))
             print('서버에 로그인 요청을 보냈습니다')
             self.account = self.studentName.text()
+            self.study_change(0)
 
     # 로그아웃
     def log_out(self):
@@ -291,6 +295,10 @@ class StudentClient(QWidget, student_ui):
 
     # 받아온 학습 진도까지 교재 출력
     def study_list(self):
+        self.extincList.clear()
+        self.insectList.clear()
+        self.mammaliaList.clear()
+        self.birdList.clear()
         for i in range(int(self.study_index) + 1):
             if self.studyTab.currentIndex() == 0:
                 self.extincList.addItem(self.extinctions[str(i)][1])
@@ -489,8 +497,10 @@ class StudentClient(QWidget, student_ui):
             self.birdInfo.append(self.birds[str(self.birdList.currentRow())][i] + "\n")
 
     def save_study(self):
+        print("진도 저장")
         self.client_socket.send(json.dumps
-                                (["saveStudy", self.studyTab.currentIndex(), str(self.study_index)]).encode('utf-8'))
+                                (["saveStudy", self.account, self.studyTab.currentIndex(),
+                                  str(self.study_index)]).encode('utf-8'))
 
     # 서버에서 데이터 받는 스레드
     def listen_thread(self):
