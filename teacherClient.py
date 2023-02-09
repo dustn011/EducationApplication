@@ -59,8 +59,16 @@ class WindowClass(QMainWindow, form_class) :
         self.table_st_insect.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
         self.table_st_insect.horizontalHeader().resizeSection(0, 50)
 
+        # 상담 시작 버튼
+        self.btn_startConsulting.clicked.connect(self.method_start_consulting)
 
-
+    # 상담 시작 버튼
+    def method_start_consulting(self):
+        if self.consulting_combo.currentText():
+            message = ['plzStartConsulting', self.consulting_combo.currentText()]
+            self.client_socket.send((json.dumps(message)).encode())
+        else:
+            QMessageBox.information(self, '선택오류', '상담할 학생을 선택해주세요')
 
 
     # 곤충분야눌렀을 때
