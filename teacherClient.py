@@ -119,7 +119,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
-        ip='10.10.21.129'
+        ip='10.10.21.124'
         port=6666
         self.client_socket=socket(AF_INET,SOCK_STREAM)
         self.client_socket.connect((ip,port))
@@ -150,7 +150,7 @@ class WindowClass(QMainWindow, form_class) :
         message = ['teacher_ststate_bird']
         self.client_socket.send((json.dumps(message)).encode())
 
-    # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
+    # 새로고침버튼 눌렀을 때 서버로 식별자 전송
     def f5(self):
         self.consulting_show.clear()
         self.send_btn.setEnabled(True)
@@ -252,7 +252,7 @@ class WindowClass(QMainWindow, form_class) :
 
         # 오답률 보이기
         for i in range(len(wrong[0])):
-            temp.append(int(wrong[0][i] / len(state) * 100))
+            temp.append(int(wrong[0][i]/ len(state) * 100))
         self.state_list[num+1].setText(f'{temp[0]}%')
         self.state_list[num+2].setText(f'{temp[1]}%')
         self.state_list[num+3].setText(f'{temp[2]}%')
@@ -408,6 +408,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # qna내역 테이블 위젯에 띄우기
     def qna_show(self):
+        self.tableWidget.clearContents()
         # DB에서 가져온 데이터 None값 바꾸기
         self.qna = []
         for i in range(len(self.received_message[0])):
@@ -418,7 +419,6 @@ class WindowClass(QMainWindow, form_class) :
                 else:
                     temp1.append(self.received_message[0][i][j])
             self.qna.append(temp1)
-        print(self.qna)
         self.tableWidget.setRowCount(len(self.qna))
         # 테이블 위젯에 띄우기
         for i in range(len(self.qna)):
@@ -477,6 +477,7 @@ class WindowClass(QMainWindow, form_class) :
 if __name__ == "__main__" :
     app = QApplication(sys.argv)        #QApplication : 프로그램을 실행시켜주는 클래스
     myWindow = WindowClass()            #WindowClass의 인스턴스 생성
+    myWindow.setWindowTitle('교사용 학생관리프로그램')
     myWindow.show()                     #프로그램 화면을 보여주는 코드
     Thread=threading.Thread(target=myWindow.receive_message, args=(myWindow.client_socket,))
     Thread.daemon=True

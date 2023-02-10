@@ -23,6 +23,9 @@
       <height>571</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
     <property name="currentIndex">
      <number>1</number>
     </property>
@@ -31,7 +34,7 @@
       <property name="geometry">
        <rect>
         <x>290</x>
-        <y>170</y>
+        <y>180</y>
         <width>251</width>
         <height>81</height>
        </rect>
@@ -76,12 +79,12 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>791</width>
+        <width>801</width>
         <height>571</height>
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
@@ -90,7 +93,7 @@
        <widget class="QLabel" name="label_20">
         <property name="geometry">
          <rect>
-          <x>260</x>
+          <x>270</x>
           <y>230</y>
           <width>301</width>
           <height>41</height>
@@ -235,8 +238,8 @@
          <rect>
           <x>200</x>
           <y>400</y>
-          <width>56</width>
-          <height>12</height>
+          <width>41</width>
+          <height>16</height>
          </rect>
         </property>
         <property name="text">
@@ -259,6 +262,17 @@
          <string/>
         </property>
        </widget>
+       <zorder>label_7</zorder>
+       <zorder>label_8</zorder>
+       <zorder>label_9</zorder>
+       <zorder>label_10</zorder>
+       <zorder>update_title</zorder>
+       <zorder>update_comboBox</zorder>
+       <zorder>update_content</zorder>
+       <zorder>update_btn</zorder>
+       <zorder>label_11</zorder>
+       <zorder>check_label</zorder>
+       <zorder>update_answer</zorder>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -326,7 +340,7 @@
          </rect>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page_3">
          <widget class="QTableWidget" name="table_st_mammalia">
