@@ -22,86 +22,122 @@
      <height>600</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>맑은 고딕</family>
+    </font>
+   </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QPushButton" name="goQnA">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>180</y>
+       <x>40</x>
+       <y>220</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;
+</string>
+     </property>
      <property name="text">
-      <string>QnA</string>
+      <string>선생님! 궁금해요!</string>
      </property>
     </widget>
     <widget class="QPushButton" name="goQuiz">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>270</y>
+       <x>40</x>
+       <y>280</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;
+</string>
+     </property>
      <property name="text">
-      <string>Quiz</string>
+      <string>퀴즈퀴즈!</string>
      </property>
     </widget>
     <widget class="QPushButton" name="goConsulting">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>360</y>
+       <x>40</x>
+       <y>160</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;
+</string>
+     </property>
      <property name="text">
-      <string>상담</string>
+      <string>선생님과 함께 공부</string>
      </property>
     </widget>
     <widget class="QPushButton" name="goStudy">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>90</y>
+       <x>40</x>
+       <y>100</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
+     </property>
      <property name="text">
-      <string>개인 학습</string>
+      <string>혼자서 공부</string>
      </property>
     </widget>
     <widget class="QPushButton" name="logOut">
      <property name="geometry">
       <rect>
-       <x>570</x>
+       <x>40</x>
        <y>530</y>
        <width>160</width>
        <height>40</height>
@@ -109,38 +145,91 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;
+</string>
      </property>
      <property name="text">
       <string>로그아웃</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_22">
+    <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
        <width>801</width>
-       <height>601</height>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>메인화면</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>200</y>
+       <width>481</width>
+       <height>391</height>
       </rect>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>메인화면.png</pixmap>
+      <pixmap>mainpage.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
-    <zorder>label_22</zorder>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>801</width>
+       <height>541</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <zorder>label_5</zorder>
+    <zorder>label_4</zorder>
     <zorder>goQnA</zorder>
     <zorder>goQuiz</zorder>
     <zorder>goConsulting</zorder>
     <zorder>goStudy</zorder>
     <zorder>logOut</zorder>
+    <zorder>label_3</zorder>
    </widget>
    <widget class="QWidget" name="studyPage">
     <widget class="QPushButton" name="goMain">
@@ -154,20 +243,25 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;
+border-radius: 10px;</string>
+     </property>
      <property name="text">
-      <string>메인 홈</string>
+      <string>메인 화면으로</string>
      </property>
     </widget>
     <widget class="QTabWidget" name="studyTab">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>70</y>
        <width>780</width>
-       <height>550</height>
+       <height>521</height>
       </rect>
      </property>
      <property name="currentIndex">
@@ -233,17 +327,21 @@
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>460</y>
+         <y>440</y>
          <width>160</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>학습 진도 저장</string>
@@ -310,17 +408,22 @@
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>460</y>
+         <y>440</y>
          <width>160</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <family>맑은 고딕</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>학습 진도 저장</string>
@@ -387,17 +490,22 @@
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>460</y>
+         <y>440</y>
          <width>160</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <family>맑은 고딕</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>학습 진도 저장</string>
@@ -464,17 +572,22 @@
        <property name="geometry">
         <rect>
          <x>590</x>
-         <y>460</y>
+         <y>440</y>
          <width>160</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <family>맑은 고딕</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>학습 진도 저장</string>
@@ -482,26 +595,51 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QLabel" name="label_23">
+    <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
        <width>801</width>
-       <height>601</height>
+       <height>62</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>혼자서 공부해봐요!</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_21">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>801</width>
+       <height>541</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>학습페이지.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
     </widget>
-    <zorder>label_23</zorder>
+    <zorder>label_21</zorder>
+    <zorder>label_6</zorder>
     <zorder>studyTab</zorder>
     <zorder>goMain</zorder>
    </widget>
@@ -516,7 +654,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
@@ -571,6 +709,10 @@
         <font>
          <pointsize>12</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>작성완료</string>
@@ -862,40 +1004,70 @@
      <property name="geometry">
       <rect>
        <x>600</x>
-       <y>30</y>
+       <y>10</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;
+border-radius: 10px;</string>
      </property>
      <property name="text">
       <string>메인 홈</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_24">
+    <widget class="QLabel" name="label_22">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
        <width>801</width>
-       <height>601</height>
+       <height>61</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>선생님! 궁금해요!</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>801</width>
+       <height>541</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>QnA.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
     </widget>
-    <zorder>label_24</zorder>
+    <zorder>label_23</zorder>
+    <zorder>label_22</zorder>
     <zorder>tabWidget</zorder>
     <zorder>goMain_2</zorder>
    </widget>
@@ -903,16 +1075,21 @@
     <widget class="QPushButton" name="goMain_3">
      <property name="geometry">
       <rect>
-       <x>570</x>
-       <y>530</y>
+       <x>600</x>
+       <y>10</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;
+border-radius: 10px;</string>
      </property>
      <property name="text">
       <string>메인 홈</string>
@@ -922,13 +1099,19 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>80</y>
        <width>780</width>
        <height>480</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="styleSheet">
-      <string notr="true">background-color:rgb(235, 235, 235)</string>
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -975,7 +1158,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -993,8 +1177,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>답 제출</string>
@@ -1011,7 +1200,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1032,7 +1222,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1053,8 +1244,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>목록 보기</string>
@@ -1097,7 +1293,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1107,7 +1304,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="score">
        <property name="geometry">
         <rect>
-         <x>130</x>
+         <x>100</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1115,7 +1312,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1133,7 +1331,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1151,7 +1350,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1174,8 +1374,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>답 제출</string>
@@ -1219,7 +1424,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1237,7 +1443,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1255,7 +1462,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -1273,7 +1481,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1294,8 +1503,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>목록 보기</string>
@@ -1330,7 +1544,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="score2">
        <property name="geometry">
         <rect>
-         <x>130</x>
+         <x>100</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1338,7 +1552,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1356,7 +1571,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1366,15 +1582,16 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="label_14">
        <property name="geometry">
         <rect>
-         <x>370</x>
+         <x>419</x>
          <y>340</y>
-         <width>80</width>
+         <width>31</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1400,8 +1617,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>답 제출</string>
@@ -1445,7 +1667,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1463,7 +1686,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1481,7 +1705,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -1499,7 +1724,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1520,8 +1746,13 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
        </property>
        <property name="text">
         <string>목록 보기</string>
@@ -1556,7 +1787,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="score3">
        <property name="geometry">
         <rect>
-         <x>130</x>
+         <x>100</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1564,7 +1795,8 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1576,13 +1808,14 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>20</x>
          <y>400</y>
-         <width>100</width>
+         <width>81</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1592,15 +1825,16 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="label_16">
        <property name="geometry">
         <rect>
-         <x>370</x>
+         <x>410</x>
          <y>340</y>
-         <width>80</width>
+         <width>41</width>
          <height>40</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <pointsize>20</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>16</pointsize>
         </font>
        </property>
        <property name="text">
@@ -1612,26 +1846,51 @@ p, li { white-space: pre-wrap; }
       </widget>
      </widget>
     </widget>
+    <widget class="QLabel" name="label_24">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>801</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>퀴즈퀴즈!</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
     <widget class="QLabel" name="label_25">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>-9</y>
+       <y>60</y>
        <width>801</width>
-       <height>611</height>
+       <height>541</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>Quiz.png</pixmap>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
     </widget>
     <zorder>label_25</zorder>
+    <zorder>label_24</zorder>
     <zorder>goMain_3</zorder>
     <zorder>classTab</zorder>
    </widget>
@@ -1640,7 +1899,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>480</y>
+       <y>430</y>
        <width>351</width>
        <height>21</height>
       </rect>
@@ -1654,16 +1913,21 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="goMain_5">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>30</y>
+       <x>600</x>
+       <y>10</y>
        <width>160</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: white;
+border-radius: 10px;</string>
      </property>
      <property name="text">
       <string>메인 홈</string>
@@ -1673,7 +1937,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>140</y>
+       <y>90</y>
        <width>511</width>
        <height>321</height>
       </rect>
@@ -1688,7 +1952,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>560</x>
-       <y>480</y>
+       <y>430</y>
        <width>61</width>
        <height>23</height>
       </rect>
@@ -1698,6 +1962,10 @@ p, li { white-space: pre-wrap; }
        <pointsize>11</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;</string>
+     </property>
      <property name="text">
       <string>전송</string>
      </property>
@@ -1706,7 +1974,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>510</y>
+       <y>460</y>
        <width>301</width>
        <height>41</height>
       </rect>
@@ -1728,14 +1996,14 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>118</y>
+       <y>68</y>
        <width>61</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
+       <family>맑은 고딕</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -1750,7 +2018,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>120</y>
+       <y>70</y>
        <width>16</width>
        <height>16</height>
       </rect>
@@ -1770,19 +2038,63 @@ border-radius:8px
        <x>0</x>
        <y>0</y>
        <width>801</width>
-       <height>601</height>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>선생님과 함께 공부해요!</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_27">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>60</y>
+       <width>801</width>
+       <height>541</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_28">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>500</y>
+       <width>361</width>
+       <height>81</height>
       </rect>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>상담.png</pixmap>
+      <pixmap>mainpage2.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>label_27</zorder>
     <zorder>label_26</zorder>
     <zorder>send_chat</zorder>
     <zorder>goMain_5</zorder>
@@ -1791,21 +2103,28 @@ border-radius:8px
     <zorder>cant_Counseling</zorder>
     <zorder>consulting_state</zorder>
     <zorder>consulting_color</zorder>
+    <zorder>label_28</zorder>
    </widget>
    <widget class="QWidget" name="logInPage">
     <widget class="QPushButton" name="logIn">
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>380</y>
-       <width>160</width>
+       <y>210</y>
+       <width>161</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>14</pointsize>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);
+border-radius: 10px;
+</string>
      </property>
      <property name="text">
       <string>로그인</string>
@@ -1814,36 +2133,41 @@ border-radius:8px
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>290</y>
-       <width>120</width>
+       <x>280</x>
+       <y>90</y>
+       <width>261</width>
        <height>40</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>12</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
      <property name="text">
-      <string>이름</string>
+      <string>등록된 이름을 입력하세요!</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="studentName">
      <property name="geometry">
       <rect>
        <x>310</x>
-       <y>290</y>
+       <y>140</y>
        <width>200</width>
-       <height>40</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>16</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>14</pointsize>
       </font>
      </property>
     </widget>
@@ -1851,15 +2175,15 @@ border-radius:8px
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>350</y>
+       <y>180</y>
        <width>161</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Arial</family>
-       <pointsize>16</pointsize>
+       <family>맑은 고딕</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -1869,30 +2193,58 @@ border-radius:8px
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_21">
+    <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>-5</x>
-       <y>1</y>
-       <width>811</width>
-       <height>601</height>
+       <x>0</x>
+       <y>0</y>
+       <width>801</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(157, 210, 70);</string>
+     </property>
+     <property name="text">
+      <string>자연을 알아봐요</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>50</y>
+       <width>801</width>
+       <height>551</height>
       </rect>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>로그인화면.png</pixmap>
+      <pixmap>login1.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
-    <zorder>label_21</zorder>
+    <zorder>label_2</zorder>
     <zorder>logIn</zorder>
     <zorder>label_7</zorder>
     <zorder>studentName</zorder>
     <zorder>fail_message</zorder>
+    <zorder>label</zorder>
    </widget>
   </widget>
  </widget>
