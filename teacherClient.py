@@ -46,8 +46,16 @@ class WindowClass(QMainWindow, form_class) :
         # 학습현황 ui 구성 스텍위젯
         self.stackedWidget_2.setCurrentIndex(2)
 
+        # 상담 시작 버튼
+        self.btn_startConsulting.clicked.connect(self.method_start_consulting)
+
+        # 곤충, 포유류, 조류 헤더, 열
+        self.header_col()
+
+    # 곤충, 포유류, 조류 헤더, 열
+    def header_col(self):
         # 곤충 교과별 현황 헤더, 열
-        header=['학생','문제1','문제2','문제3','문제4','문제5','점수']
+        header = ['학생', '문제1', '문제2', '문제3', '문제4', '문제5', '점수']
         self.table_st_insect.setColumnCount(len(header))
         self.table_st_insect.setHorizontalHeaderLabels(header)
         self.table_st_insect.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
@@ -59,8 +67,31 @@ class WindowClass(QMainWindow, form_class) :
         self.table_st_insect.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
         self.table_st_insect.horizontalHeader().resizeSection(0, 50)
 
-        # 상담 시작 버튼
-        self.btn_startConsulting.clicked.connect(self.method_start_consulting)
+        # 포유류 교과별 현황 헤더, 열
+        header = ['학생', '문제1', '문제2', '문제3', '문제4', '문제5', '점수']
+        self.table_st_mammalia.setColumnCount(len(header))
+        self.table_st_mammalia.setHorizontalHeaderLabels(header)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
+        self.table_st_mammalia.horizontalHeader().resizeSection(0, 50)
+
+        # 조류 교과별 현황 헤더, 열
+        header = ['학생', '문제1', '문제2', '문제3', '문제4', '문제5', '점수']
+        self.table_st_bird.setColumnCount(len(header))
+        self.table_st_bird.setHorizontalHeaderLabels(header)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
+        self.table_st_bird.horizontalHeader().resizeSection(0, 50)
 
     # 상담 시작 버튼
     def method_start_consulting(self):
@@ -80,9 +111,14 @@ class WindowClass(QMainWindow, form_class) :
     # 포유류 눌렀을 때
     def mammalia(self):
         self.stackedWidget_2.setCurrentIndex(0)
+        message=['teacher_ststate_mammalia']
+        self.client_socket.send((json.dumps(message)).encode())
 
+    # 조류 눌렀을 때
     def bird(self):
         self.stackedWidget_2.setCurrentIndex(3)
+        message=['teacher_ststate_bird']
+        self.client_socket.send((json.dumps(message)).encode())
 
     # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
     def f5(self):
@@ -122,8 +158,8 @@ class WindowClass(QMainWindow, form_class) :
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
-        ip=input('ip입력')
-        port=int(input('port입력'))
+        ip='10.10.21.124'
+        port=6666
         self.client_socket=socket(AF_INET,SOCK_STREAM)
         self.client_socket.connect((ip,port))
 
@@ -158,13 +194,89 @@ class WindowClass(QMainWindow, form_class) :
                 # 학습현황 곤충분야 선택했을 때
                 elif identifier == 'teacher_ststate_insect':
                     self.insect_state()
+                # 학습현황 포유류분야 선택했을 때
+                elif identifier == 'teacher_ststate_mammalia':
+                    self.mammalia_state()
+                # 학습현황 조류분야 선택했을 때
+                elif identifier == 'teacher_ststate_bird':
+                    self.bird_state()
+
+    # 학습현황 포유류분야 선택했을 때
+    def mammalia_state(self):
+        temp = []
+        state = self.received_message[0]
+        wrong = self.received_message[1]
+        jindo = self.received_message[2]
+
+        self.table_st_mammalia.setRowCount(len(state))
+        # 테이블 위젯에 띄우기
+        for i in range(len(state)):
+            self.table_st_mammalia.setItem(i, 0, QTableWidgetItem(str(state[i][0])))  # 학생명
+            self.table_st_mammalia.setItem(i, 1, QTableWidgetItem(str(state[i][2])))  # 문제1
+            self.table_st_mammalia.setItem(i, 2, QTableWidgetItem(str(state[i][3])))  # 문제2
+            self.table_st_mammalia.setItem(i, 3, QTableWidgetItem(str(state[i][4])))  # 문제3
+            self.table_st_mammalia.setItem(i, 4, QTableWidgetItem(str(state[i][5])))  # 문제4
+            self.table_st_mammalia.setItem(i, 5, QTableWidgetItem(str(state[i][6])))  # 문제5
+            self.table_st_mammalia.setItem(i, 6, QTableWidgetItem(str(state[i][1])))  # 점수
+
+        # 오답률 보이기
+        for i in range(len(wrong[0])):
+            temp.append(int(wrong[0][i] / len(state) * 100))
+        print(type(temp[0]))
+        print(temp)
+        self.Q1_2.setText(f'{temp[0]}%')
+        self.Q2_2.setText(f'{temp[1]}%')
+        self.Q3_2.setText(f'{temp[2]}%')
+        self.Q4_2.setText(f'{temp[3]}%')
+        self.Q5_2.setText(f'{temp[4]}%')
+
+        # 라벨에 현재 진행현황 보이기(멸종위기)
+        self.m_m.setText(f'{jindo[0][0]}%')
+        self.m_s.setText(f'{jindo[2][0]}%')
+        self.m_y.setText(f'{jindo[1][0]}%')
+
+    # 학습현황 조류분야 선택했을 때
+    def bird_state(self):
+        temp = []
+        state = self.received_message[0]
+        wrong = self.received_message[1]
+        jindo = self.received_message[2]
+
+        self.table_st_bird.setRowCount(len(state))
+        # 테이블 위젯에 띄우기
+        for i in range(len(state)):
+            self.table_st_bird.setItem(i, 0, QTableWidgetItem(str(state[i][0])))  # 학생명
+            self.table_st_bird.setItem(i, 1, QTableWidgetItem(str(state[i][2])))  # 문제1
+            self.table_st_bird.setItem(i, 2, QTableWidgetItem(str(state[i][3])))  # 문제2
+            self.table_st_bird.setItem(i, 3, QTableWidgetItem(str(state[i][4])))  # 문제3
+            self.table_st_bird.setItem(i, 4, QTableWidgetItem(str(state[i][5])))  # 문제4
+            self.table_st_bird.setItem(i, 5, QTableWidgetItem(str(state[i][6])))  # 문제5
+            self.table_st_bird.setItem(i, 6, QTableWidgetItem(str(state[i][1])))  # 점수
+
+        # 오답률 보이기
+        for i in range(len(wrong[0])):
+            temp.append(int(wrong[0][i] / len(state) * 100))
+        print(type(temp[0]))
+        print(temp)
+        self.Q1_3.setText(f'{temp[0]}%')
+        self.Q2_3.setText(f'{temp[1]}%')
+        self.Q3_3.setText(f'{temp[2]}%')
+        self.Q4_3.setText(f'{temp[3]}%')
+        self.Q5_3.setText(f'{temp[4]}%')
+
+        # 라벨에 현재 진행현황 보이기(멸종위기)
+        self.j_m.setText(f'{jindo[0][0]}%')
+        self.j_s.setText(f'{jindo[2][0]}%')
+        self.j_y.setText(f'{jindo[1][0]}%')
+
 
     # 곤충학습현황 DB 받아와서 띄우기
     def insect_state(self):
         temp=[]
         state=self.received_message[0]
         wrong=self.received_message[1]
-        print(state)
+        jindo=self.received_message[2]
+        jindo2=self.received_message[3]
 
         self.table_st_insect.setRowCount(len(state))
         # 테이블 위젯에 띄우기
@@ -177,16 +289,28 @@ class WindowClass(QMainWindow, form_class) :
             self.table_st_insect.setItem(i,5,QTableWidgetItem(str(state[i][6])))  # 문제5
             self.table_st_insect.setItem(i,6,QTableWidgetItem(str(state[i][1])))  # 점수
 
+        # 오답률 보이기
         for i in range(len(wrong[0])):
             temp.append(int(wrong[0][i]/len(state)*100))
-        print(type(temp[0]))
-        print(temp)
 
-        self.Q1.setValue(temp[0])
-        self.Q2.setValue(temp[1])
-        self.Q3.setValue(temp[2])
-        self.Q4.setValue(temp[3])
-        self.Q5.setValue(temp[4])
+        self.Q1.setText(f'{temp[0]}%')
+        self.Q2.setText(f'{temp[1]}%')
+        self.Q3.setText(f'{temp[2]}%')
+        self.Q4.setText(f'{temp[3]}%')
+        self.Q5.setText(f'{temp[4]}%')
+
+        # 라벨에 현재 진행현황 보이기(멸종위기)
+        self.insect_m.setText(f'{jindo[0][0]}%')
+        self.insect_s.setText(f'{jindo[2][0]}%')
+        self.insect_y.setText(f'{jindo[1][0]}%')
+
+        # 라벨에 현재 진행현황 보이기(곤충)
+
+        self.in_m.setText(f'{jindo2[0][0]}%')
+        self.in_s.setText(f'{jindo2[2][0]}%')
+        self.in_y.setText(f'{jindo2[1][0]}%')
+
+
 
     # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
     def current_delete(self):

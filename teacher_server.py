@@ -128,6 +128,14 @@ class MultiServer:
 				elif identifier == 'teacher_ststate_insect':
 					self.insect_state(client_socket)
 
+				# 학생학습현황 확인위해 포유류분야 눌렀을 때
+				elif identifier == 'teacher_ststate_mammalia':
+					self.mammalia_state(client_socket)
+
+				# 학생학습현황 확인위해 조류분야 눌렀을 때
+				elif identifier == 'teacher_ststate_bird':
+					self.bird_state(client_socket)
+
 ####################################################################################################################
 
 				# ---------------------민석---------------------
@@ -452,12 +460,74 @@ class MultiServer:
 				temp2 = cur.fetchall()
 				wrong.insert(2, temp2)
 
-				sql = f"select * from `education_application`.`study`"
+				sql = f"select convert((extinc*10), signed integer) as '멸종위기' from study "
 				cur.execute(sql)
 				temp3 = cur.fetchall()
 				wrong.insert(3, temp3)
 
-		print(wrong)
+				sql = f"select convert((insect*10), signed integer) as '곤충'  from study "
+				cur.execute(sql)
+				temp4 = cur.fetchall()
+				wrong.insert(4, temp4)
+
+		sender_socket.send((json.dumps(wrong)).encode())
+
+	# 포유류 현황조회눌럿을 때
+	def mammalia_state(self,sender_socket):
+		wrong = []
+		wrong.insert(0, 'teacher_ststate_mammalia')
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+							  db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"select * from `education_application`.`mammalia`"
+				cur.execute(sql)
+				temp = cur.fetchall()
+				wrong.insert(1, temp)
+
+				sql = f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
+						convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
+						convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
+						convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
+						convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from mammalia"
+				cur.execute(sql)
+				temp2 = cur.fetchall()
+				wrong.insert(2, temp2)
+
+				sql = f"select convert((mammalia*10), signed integer) as '포유류' from study "
+				cur.execute(sql)
+				temp3 = cur.fetchall()
+				wrong.insert(3, temp3)
+
+		sender_socket.send((json.dumps(wrong)).encode())
+
+	# 조류 현황조회눌럿을 때
+	def	bird_state(self, sender_socket):
+		wrong = []
+		wrong.insert(0, 'teacher_ststate_bird')
+		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+							  db='education_application')
+		with con:
+			with con.cursor() as cur:
+				sql = f"select * from `education_application`.`bird`"
+				cur.execute(sql)
+				temp = cur.fetchall()
+				wrong.insert(1, temp)
+
+				sql = f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
+						convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
+						convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
+						convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
+						convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from bird"
+				cur.execute(sql)
+				temp2 = cur.fetchall()
+				wrong.insert(2, temp2)
+
+				sql = f"select convert((bird*10), signed integer) as '조류' from study "
+				cur.execute(sql)
+				temp3 = cur.fetchall()
+				wrong.insert(3, temp3)
+
 		sender_socket.send((json.dumps(wrong)).encode())
 
 ##############################################################################################
