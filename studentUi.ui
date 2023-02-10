@@ -26,24 +26,6 @@
     <number>5</number>
    </property>
    <widget class="QWidget" name="mainPage">
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>80</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Main</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="goQnA">
      <property name="geometry">
       <rect>
@@ -147,14 +129,13 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/메인화면.png</pixmap>
+      <pixmap>메인화면.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
     <zorder>label_22</zorder>
-    <zorder>label</zorder>
     <zorder>goQnA</zorder>
     <zorder>goQuiz</zorder>
     <zorder>goConsulting</zorder>
@@ -162,24 +143,6 @@
     <zorder>logOut</zorder>
    </widget>
    <widget class="QWidget" name="studyPage">
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>120</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>개인 학습</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="goMain">
      <property name="geometry">
       <rect>
@@ -208,7 +171,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -532,7 +495,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/학습페이지.png</pixmap>
+      <pixmap>학습페이지.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -540,7 +503,6 @@
     </widget>
     <zorder>label_23</zorder>
     <zorder>studyTab</zorder>
-    <zorder>label_2</zorder>
     <zorder>goMain</zorder>
    </widget>
    <widget class="QWidget" name="qnaPage">
@@ -554,7 +516,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
@@ -896,27 +858,6 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>120</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string>QnA</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="goMain_2">
      <property name="geometry">
       <rect>
@@ -948,7 +889,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/QnA.png</pixmap>
+      <pixmap>QnA.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -956,28 +897,9 @@
     </widget>
     <zorder>label_24</zorder>
     <zorder>tabWidget</zorder>
-    <zorder>label_3</zorder>
     <zorder>goMain_2</zorder>
    </widget>
    <widget class="QWidget" name="quizPage">
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>120</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Quiz</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="goMain_3">
      <property name="geometry">
       <rect>
@@ -1009,7 +931,7 @@
       <string notr="true">background-color:rgb(235, 235, 235)</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="insectTab">
       <attribute name="title">
@@ -1169,7 +1091,7 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>20</x>
          <y>400</y>
-         <width>80</width>
+         <width>100</width>
          <height>40</height>
         </rect>
        </property>
@@ -1179,13 +1101,13 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>점수 :</string>
+        <string>포인트 :</string>
        </property>
       </widget>
       <widget class="QLabel" name="score">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>130</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1408,7 +1330,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="score2">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>130</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1428,7 +1350,7 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>20</x>
          <y>400</y>
-         <width>80</width>
+         <width>100</width>
          <height>40</height>
         </rect>
        </property>
@@ -1438,7 +1360,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>점수 :</string>
+        <string>포인트 :</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_14">
@@ -1634,7 +1556,7 @@ p, li { white-space: pre-wrap; }
       <widget class="QLabel" name="score3">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>130</x>
          <y>400</y>
          <width>160</width>
          <height>40</height>
@@ -1654,7 +1576,7 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>20</x>
          <y>400</y>
-         <width>80</width>
+         <width>100</width>
          <height>40</height>
         </rect>
        </property>
@@ -1664,7 +1586,7 @@ p, li { white-space: pre-wrap; }
         </font>
        </property>
        <property name="text">
-        <string>점수 :</string>
+        <string>포인트 :</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_16">
@@ -1703,39 +1625,17 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/Quiz.png</pixmap>
+      <pixmap>Quiz.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
     <zorder>label_25</zorder>
-    <zorder>label_4</zorder>
     <zorder>goMain_3</zorder>
     <zorder>classTab</zorder>
    </widget>
    <widget class="QWidget" name="consultPage">
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>120</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string>상담</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="send_chat">
      <property name="geometry">
       <rect>
@@ -1877,14 +1777,13 @@ border-radius:8px
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/상담.png</pixmap>
+      <pixmap>상담.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
     <zorder>label_26</zorder>
-    <zorder>label_5</zorder>
     <zorder>send_chat</zorder>
     <zorder>goMain_5</zorder>
     <zorder>chat_list</zorder>
@@ -1894,27 +1793,6 @@ border-radius:8px
     <zorder>consulting_color</zorder>
    </widget>
    <widget class="QWidget" name="logInPage">
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>120</width>
-       <height>40</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="text">
-      <string>로그인</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="logIn">
      <property name="geometry">
       <rect>
@@ -2004,14 +1882,13 @@ border-radius:8px
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../../Users/2352/Desktop/교육어플리케이션/로그인화면.png</pixmap>
+      <pixmap>로그인화면.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
      </property>
     </widget>
     <zorder>label_21</zorder>
-    <zorder>label_6</zorder>
     <zorder>logIn</zorder>
     <zorder>label_7</zorder>
     <zorder>studentName</zorder>
