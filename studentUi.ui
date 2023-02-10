@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="mainPage">
     <widget class="QLabel" name="label">
@@ -1724,6 +1724,43 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="consulting_state">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>118</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>상담 off</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="consulting_color">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>120</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 0, 4);
+border-radius:8px
+</string>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
