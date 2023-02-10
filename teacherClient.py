@@ -70,19 +70,13 @@ class WindowClass(QMainWindow, form_class) :
         self.verticalLayout_2.addWidget(self.canvas2)
         self.verticalLayout_3.addWidget(self.canvas3)
 
-        # 함수돌리기 위한 준비..
-        self.state_list = [self.table_st_mammalia, \
-                      self.Q1_2, self.Q2_2, self.Q3_2, self.Q4_2, self.Q5_2, \
-                      self.m_m, self.m_s, self.m_y, self.table_st_bird, \
-                      self.Q1_3, self.Q2_3, self.Q3_3, self.Q4_3, self.Q5_3, \
-                      self.j_m, self.j_s, self.j_y, \
-                      self.table_st_insect, \
-                      self.Q1, self.Q2, self.Q3, self.Q4, self.Q5, \
-                      self.insect_m, self.insect_s, self.insect_y, \
-                      self.in_m, self.in_s, self.in_y]
+        # 학생들 학습현황 보여주기 위해 함수를 돌리기 위한 준비
+        self.state_list = [self.table_st_mammalia, self.Q1_2, self.Q2_2, self.Q3_2, self.Q4_2, self.Q5_2, \
+                      self.m_m, self.m_s, self.m_y, self.table_st_bird, self.Q1_3, self.Q2_3, self.Q3_3, self.Q4_3, self.Q5_3, \
+                      self.j_m, self.j_s, self.j_y, self.table_st_insect, self.Q1, self.Q2, self.Q3, self.Q4, self.Q5, \
+                      self.insect_m, self.insect_s, self.insect_y, self.in_m, self.in_s, self.in_y]
 
-
-    # 곤충, 포유류, 조류 헤더, 열
+    # 곤충, 포유류, 조류 헤더, 열(이건 도저히 못바꾸겠다... 어떻게 해야하지..)
     def header_col(self):
         # 곤충 교과별 현황 헤더, 열
         header = ['학생', '문제1', '문제2', '문제3', '문제4', '문제5', '점수']
@@ -123,6 +117,13 @@ class WindowClass(QMainWindow, form_class) :
         self.table_st_bird.horizontalHeader().setSectionResizeMode(6, QHeaderView.Stretch)
         self.table_st_bird.horizontalHeader().resizeSection(0, 50)
 
+    # 소켓생성 및 서버와 연결
+    def initialize_socket(self):
+        ip='10.10.21.124'
+        port=6666
+        self.client_socket=socket(AF_INET,SOCK_STREAM)
+        self.client_socket.connect((ip,port))
+
     # 상담 시작 버튼
     def method_start_consulting(self):
         if self.consulting_combo.currentText():
@@ -130,7 +131,6 @@ class WindowClass(QMainWindow, form_class) :
             self.client_socket.send((json.dumps(message)).encode())
         else:
             QMessageBox.information(self, '선택오류', '상담할 학생을 선택해주세요')
-
 
     # 곤충분야눌렀을 때
     def insect(self):
@@ -141,13 +141,13 @@ class WindowClass(QMainWindow, form_class) :
     # 포유류 눌렀을 때
     def mammalia(self):
         self.stackedWidget_2.setCurrentIndex(0)
-        message=['teacher_ststate_mammalia']
+        message = ['teacher_ststate_mammalia']
         self.client_socket.send((json.dumps(message)).encode())
 
     # 조류 눌렀을 때
     def bird(self):
         self.stackedWidget_2.setCurrentIndex(3)
-        message=['teacher_ststate_bird']
+        message = ['teacher_ststate_bird']
         self.client_socket.send((json.dumps(message)).encode())
 
     # 새로고침버튼 눌렀을 때 현재접속자 수, 실시간상담 학생 수 바꾸기
@@ -185,13 +185,6 @@ class WindowClass(QMainWindow, form_class) :
             self.client_socket.send((json.dumps(send_message)).encode())
             # 전송한 메시지 삭제
             self.consulting_line.clear()
-
-    # 소켓생성 및 서버와 연결
-    def initialize_socket(self):
-        ip='10.10.21.124'
-        port=6666
-        self.client_socket=socket(AF_INET,SOCK_STREAM)
-        self.client_socket.connect((ip,port))
 
     def receive_message(self,socket):
         while True:

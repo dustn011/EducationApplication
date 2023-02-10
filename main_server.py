@@ -35,6 +35,7 @@ class MultiServer:
         self.received_message = None  # self.received_message 대충 정의해놓기
         self.now_connected_account = []
         self.now_connected_name = []
+        self.state = ['teacher_ststate_mammalia', 'teacher_ststate_bird', 'teacher_ststate_insect', 'mammalia', 'bird','insect', 'extinc']
 
     # 클라이언트에서 요청이 오면 실행될 함수
     def receive_messages(self, client_socket):
@@ -101,15 +102,13 @@ class MultiServer:
                     with con:
                         with con.cursor() as cur:
                             sql = f"insert into `education_application`.`question`(FIeld, Title, Content, Answer) values \
-                                           ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
+                                                   ('{self.received_message[0]}','{self.received_message[1]}','{self.received_message[2]}','{self.received_message[3]}')"
                             cur.execute(sql)
                             con.commit()
-
                 # QNA 클라이언트로 보내기
                 elif identifier == 'teacher_QNA':
                     qna_list = self.QNA_DB()
                     client_socket.send((json.dumps(qna_list)).encode())
-
                 # QNA 답변 저장 및 QNA 저장된 내역 보내기
                 elif identifier == 'teacher_qna_answer':
                     con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
@@ -121,25 +120,29 @@ class MultiServer:
                             con.commit()
                     qna_list = self.QNA_DB()
                     client_socket.send((json.dumps(qna_list)).encode())
-
                 # 이전내역 클라이언트로 보내기
                 elif identifier == 'teacher_consulting_ch':
                     self.pre_chat_send(client_socket)
-
                 # 선생 접속시 리스트에 소켓내용, 이름 집어넣기
                 elif identifier == 'teacher_account':
                     self.teacher_account(client_socket)
-
                 # 실시간채팅 전송받앗을 때 DB저장 및 학생한테 보내기
                 elif identifier == 'teacher_send_message':
                     # self.received_message = [manager, send_message, student_name]
                     self.send_chat_teacherToStudent(client_socket)
                     self.chat_dbsave()
-
                 # 새로고침눌렀을 때 현재 접속자수 보내주기
                 elif identifier == 'teacher_consulting_st':
                     self.current_state(client_socket)
-
+                # 학생학습현황 확인위해 곤충분야 눌렀을 때
+                elif identifier == 'teacher_ststate_insect':
+                    self.m_b_state(client_socket, 2)
+                # 학생학습현황 확인위해 포유류분야 눌렀을 때
+                elif identifier == 'teacher_ststate_mammalia':
+                    self.m_b_state(client_socket, 0)
+                # 학생학습현황 확인위해 조류분야 눌렀을 때
+                elif identifier == 'teacher_ststate_bird':
+                    self.m_b_state(client_socket, 1)
                 # ---------------------민석---------------------
                 # plzGiveQuiz = 퀴즈 목록 요청 코드
                 elif identifier == "plzGiveQuiz":
@@ -364,7 +367,6 @@ class MultiServer:
         qna_list = ['teacher_QNA', qna]
         return qna_list
 
-    # 채팅이전내역 보내기
     def pre_chat_send(self, sender_socket):
         con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         with con:
@@ -430,6 +432,45 @@ class MultiServer:
                 i[0].send((json.dumps(chat_list)).encode())
             else:
                 pass
+
+    # 곤충, 포유류, 조류 현황 보내기
+    def m_b_state(self, sender_socket, num):
+        wrong = []
+        wrong.insert(0, self.state[num])
+        con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
+                              db='education_application')
+        with con:
+            with con.cursor() as cur:
+                sql = f"select * from `education_application`.`{self.state[num + 3]}`"
+                cur.execute(sql)
+                temp = cur.fetchall()
+                wrong.insert(1, temp)
+
+                sql = f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
+                                convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
+                                convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
+                                convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
+                                convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from {self.state[num + 3]}"
+                cur.execute(sql)
+                temp2 = cur.fetchall()
+                wrong.insert(2, temp2)
+
+                sql = f"select convert(({self.state[num + 3]}*10), signed integer) as '{self.state[num + 3]}' from study "
+                cur.execute(sql)
+                temp3 = cur.fetchall()
+                wrong.insert(3, temp3)
+
+                if num == 2:
+
+                    sql = f"select convert(({self.state[num + 4]}*10), signed integer) as '{self.state[num + 4]}'  from study "
+                    cur.execute(sql)
+                    temp4 = cur.fetchall()
+                    wrong.insert(4, temp4)
+
+                else:
+                    pass
+
+        sender_socket.send((json.dumps(wrong)).encode())
 
     # ---------------------민석---------------------
     # 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
@@ -508,7 +549,7 @@ class MultiServer:
 
 if __name__ == "__main__":
     MultiServerObj = MultiServer()  # MultiServer클래스의 객체 생성
-    host, port = '10.10.21.129', 6666
+    host, port = '10.10.21.124', 6666
     '''
         # 아래 코드와 비슷하게 돌아감. with를 사용해서 만들어보고 싶었음
         server = ThreadedTCPServer((host, port), TCPHandler)
