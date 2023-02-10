@@ -677,6 +677,7 @@ class StudentClient(QWidget, student_ui):
         self.chat_list.addItem(one_chat)
         time.sleep(0.000000000001)
         self.chat_list.scrollToBottom()
+        self.cant_Counseling.clear()
 
     # 서버에서 받아온 chatting 데이터 불러오기
     def show_chattingLog(self, chatting_log):
