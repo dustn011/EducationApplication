@@ -119,7 +119,7 @@ class WindowClass(QMainWindow, form_class) :
 
     # 소켓생성 및 서버와 연결
     def initialize_socket(self):
-        ip='10.10.21.124'
+        ip='10.10.21.129'
         port=6666
         self.client_socket=socket(AF_INET,SOCK_STREAM)
         self.client_socket.connect((ip,port))
