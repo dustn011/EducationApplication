@@ -657,6 +657,8 @@ class StudentClient(QWidget, student_ui):
                     self.show_teacherMessage(message_log)
                 elif identifier == 'hereStudyLoad':
                     self.study_index = message_log[0]
+                    if int(self.study_index) > 9:
+                        self.study_index = '9'
                     self.study_list()
                 elif identifier == 'not_access_counseling':
                     self.cant_Counseling.setText('지금은 상담 시간이 아닙니다')

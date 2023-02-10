@@ -539,7 +539,7 @@ class MultiServer:
             class_tab = 'bird'
         elif tab == 3:
             class_tab = 'mammalia'
-        if int(study_index) < 9:
+        if int(study_index) < 10:
             study_index = str(int(study_index) + 1)
         conn = pymysql.connect(host='10.10.21.102', user='lilac', password='0000', db='education_application')
         curs = conn.cursor()
