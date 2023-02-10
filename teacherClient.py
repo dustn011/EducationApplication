@@ -57,6 +57,7 @@ class WindowClass(QMainWindow, form_class) :
         # 곤충, 포유류, 조류 헤더, 열
         self.header_col()
 
+        # 그래프 그리기
         self.fig = plt.Figure()
         self.fig2 = plt.Figure()
         self.fig3 = plt.Figure()
@@ -69,6 +70,7 @@ class WindowClass(QMainWindow, form_class) :
         self.verticalLayout_2.addWidget(self.canvas2)
         self.verticalLayout_3.addWidget(self.canvas3)
 
+        # 함수돌리기 위한 준비..
         self.state_list = [self.table_st_mammalia, \
                       self.Q1_2, self.Q2_2, self.Q3_2, self.Q4_2, self.Q5_2, \
                       self.m_m, self.m_s, self.m_y, self.table_st_bird, \
