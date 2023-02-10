@@ -6,6 +6,11 @@ import threading
 import json
 import datetime
 
+from matplotlib import font_manager,rc
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import numpy as np
+
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("teacher.ui")[0]
@@ -51,6 +56,29 @@ class WindowClass(QMainWindow, form_class) :
 
         # 곤충, 포유류, 조류 헤더, 열
         self.header_col()
+
+        self.fig = plt.Figure()
+        self.fig2 = plt.Figure()
+        self.fig3 = plt.Figure()
+
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas2 = FigureCanvas(self.fig2)
+        self.canvas3 = FigureCanvas(self.fig3)
+
+        self.verticalLayout.addWidget(self.canvas)
+        self.verticalLayout_2.addWidget(self.canvas2)
+        self.verticalLayout_3.addWidget(self.canvas3)
+
+        self.state_list = [self.table_st_mammalia, \
+                      self.Q1_2, self.Q2_2, self.Q3_2, self.Q4_2, self.Q5_2, \
+                      self.m_m, self.m_s, self.m_y, self.table_st_bird, \
+                      self.Q1_3, self.Q2_3, self.Q3_3, self.Q4_3, self.Q5_3, \
+                      self.j_m, self.j_s, self.j_y, \
+                      self.table_st_insect, \
+                      self.Q1, self.Q2, self.Q3, self.Q4, self.Q5, \
+                      self.insect_m, self.insect_s, self.insect_y, \
+                      self.in_m, self.in_s, self.in_y]
+
 
     # 곤충, 포유류, 조류 헤더, 열
     def header_col(self):
@@ -193,124 +221,101 @@ class WindowClass(QMainWindow, form_class) :
                     self.current_delete()
                 # 학습현황 곤충분야 선택했을 때
                 elif identifier == 'teacher_ststate_insect':
-                    self.insect_state()
+                    print(type(self.table_st_insect))
+                    # self.insect_state()
+                    self.i_m_b_state(18)
                 # 학습현황 포유류분야 선택했을 때
                 elif identifier == 'teacher_ststate_mammalia':
-                    self.mammalia_state()
+                    # self.mammalia_state()
+                    self.i_m_b_state(0)
                 # 학습현황 조류분야 선택했을 때
                 elif identifier == 'teacher_ststate_bird':
-                    self.bird_state()
+                    # self.bird_state()
+                    self.i_m_b_state(9)
 
-    # 학습현황 포유류분야 선택했을 때
-    def mammalia_state(self):
+    # 곤충, 포유류, 조류 선택했을 때
+    def i_m_b_state(self,num):
+        font_path = "C:\\Windows\\Fonts\\gulim.ttc"
+        font = font_manager.FontProperties(fname=font_path).get_name()
+        rc('font', family=font)
+
         temp = []
         state = self.received_message[0]
         wrong = self.received_message[1]
         jindo = self.received_message[2]
 
-        self.table_st_mammalia.setRowCount(len(state))
+        self.state_list[num].setRowCount(len(state))
         # 테이블 위젯에 띄우기
         for i in range(len(state)):
-            self.table_st_mammalia.setItem(i, 0, QTableWidgetItem(str(state[i][0])))  # 학생명
-            self.table_st_mammalia.setItem(i, 1, QTableWidgetItem(str(state[i][2])))  # 문제1
-            self.table_st_mammalia.setItem(i, 2, QTableWidgetItem(str(state[i][3])))  # 문제2
-            self.table_st_mammalia.setItem(i, 3, QTableWidgetItem(str(state[i][4])))  # 문제3
-            self.table_st_mammalia.setItem(i, 4, QTableWidgetItem(str(state[i][5])))  # 문제4
-            self.table_st_mammalia.setItem(i, 5, QTableWidgetItem(str(state[i][6])))  # 문제5
-            self.table_st_mammalia.setItem(i, 6, QTableWidgetItem(str(state[i][1])))  # 점수
+            self.state_list[num].setItem(i, 0, QTableWidgetItem(str(state[i][0])))  # 학생명
+            self.state_list[num].setItem(i, 1, QTableWidgetItem(str(state[i][2])))  # 문제1
+            self.state_list[num].setItem(i, 2, QTableWidgetItem(str(state[i][3])))  # 문제2
+            self.state_list[num].setItem(i, 3, QTableWidgetItem(str(state[i][4])))  # 문제3
+            self.state_list[num].setItem(i, 4, QTableWidgetItem(str(state[i][5])))  # 문제4
+            self.state_list[num].setItem(i, 5, QTableWidgetItem(str(state[i][6])))  # 문제5
+            self.state_list[num].setItem(i, 6, QTableWidgetItem(str(state[i][1])))  # 점수
 
         # 오답률 보이기
         for i in range(len(wrong[0])):
             temp.append(int(wrong[0][i] / len(state) * 100))
-        print(type(temp[0]))
-        print(temp)
-        self.Q1_2.setText(f'{temp[0]}%')
-        self.Q2_2.setText(f'{temp[1]}%')
-        self.Q3_2.setText(f'{temp[2]}%')
-        self.Q4_2.setText(f'{temp[3]}%')
-        self.Q5_2.setText(f'{temp[4]}%')
+        self.state_list[num+1].setText(f'{temp[0]}%')
+        self.state_list[num+2].setText(f'{temp[1]}%')
+        self.state_list[num+3].setText(f'{temp[2]}%')
+        self.state_list[num+4].setText(f'{temp[3]}%')
+        self.state_list[num+5].setText(f'{temp[4]}%')
 
-        # 라벨에 현재 진행현황 보이기(멸종위기)
-        self.m_m.setText(f'{jindo[0][0]}%')
-        self.m_s.setText(f'{jindo[2][0]}%')
-        self.m_y.setText(f'{jindo[1][0]}%')
+        # 라벨에 현재 진행현황 보이기
+        self.state_list[num+6].setText(f'{jindo[0][0]}%')
+        self.state_list[num+7].setText(f'{jindo[2][0]}%')
+        self.state_list[num+8].setText(f'{jindo[1][0]}%')
 
-    # 학습현황 조류분야 선택했을 때
-    def bird_state(self):
-        temp = []
-        state = self.received_message[0]
-        wrong = self.received_message[1]
-        jindo = self.received_message[2]
+        # 포유류 그래프 넣기
+        if num == 0:
+            ax3 = self.fig3.add_subplot(111)  # 버티컬 레이아웃에 딱맞게 들어감.
+            # ax3.set_xlabel("QUiZ NUMBER", size=10)
+            # ax3.set_ylabel("%", size=10)
+            ax3.set_xlim([0, 6])
+            ax3.set_ylim([0, 120])
+            ax3.set_title("포유류 오답률 그래프")
 
-        self.table_st_bird.setRowCount(len(state))
-        # 테이블 위젯에 띄우기
-        for i in range(len(state)):
-            self.table_st_bird.setItem(i, 0, QTableWidgetItem(str(state[i][0])))  # 학생명
-            self.table_st_bird.setItem(i, 1, QTableWidgetItem(str(state[i][2])))  # 문제1
-            self.table_st_bird.setItem(i, 2, QTableWidgetItem(str(state[i][3])))  # 문제2
-            self.table_st_bird.setItem(i, 3, QTableWidgetItem(str(state[i][4])))  # 문제3
-            self.table_st_bird.setItem(i, 4, QTableWidgetItem(str(state[i][5])))  # 문제4
-            self.table_st_bird.setItem(i, 5, QTableWidgetItem(str(state[i][6])))  # 문제5
-            self.table_st_bird.setItem(i, 6, QTableWidgetItem(str(state[i][1])))  # 점수
+            x = np.array([1, 2, 3, 4, 5])
+            y = np.array([temp[0], temp[1], temp[2], temp[3], temp[4]])
 
-        # 오답률 보이기
-        for i in range(len(wrong[0])):
-            temp.append(int(wrong[0][i] / len(state) * 100))
-        print(type(temp[0]))
-        print(temp)
-        self.Q1_3.setText(f'{temp[0]}%')
-        self.Q2_3.setText(f'{temp[1]}%')
-        self.Q3_3.setText(f'{temp[2]}%')
-        self.Q4_3.setText(f'{temp[3]}%')
-        self.Q5_3.setText(f'{temp[4]}%')
+            ax3.scatter(x, y, marker='*', color='black')
+            self.canvas3.draw()
 
-        # 라벨에 현재 진행현황 보이기(멸종위기)
-        self.j_m.setText(f'{jindo[0][0]}%')
-        self.j_s.setText(f'{jindo[2][0]}%')
-        self.j_y.setText(f'{jindo[1][0]}%')
+        # 조류 그래프 넣기
+        if num == 9:
+            ax = self.fig.add_subplot(111)  # 버티컬 레이아웃에 딱맞게 들어감.
+            ax.set_xlim([0, 6])
+            ax.set_ylim([0, 120])
+            ax.set_title("조류 오답률 그래프")
 
+            x = np.array([1, 2, 3, 4, 5])
+            y = np.array([temp[0], temp[1], temp[2], temp[3], temp[4]])
 
-    # 곤충학습현황 DB 받아와서 띄우기
-    def insect_state(self):
-        temp=[]
-        state=self.received_message[0]
-        wrong=self.received_message[1]
-        jindo=self.received_message[2]
-        jindo2=self.received_message[3]
+            ax.scatter(x, y, marker='*', color='black')
+            self.canvas.draw()
 
-        self.table_st_insect.setRowCount(len(state))
-        # 테이블 위젯에 띄우기
-        for i in range(len(state)):
-            self.table_st_insect.setItem(i,0,QTableWidgetItem(str(state[i][0])))  # 학생명
-            self.table_st_insect.setItem(i,1,QTableWidgetItem(str(state[i][2])))  # 문제1
-            self.table_st_insect.setItem(i,2,QTableWidgetItem(str(state[i][3])))  # 문제2
-            self.table_st_insect.setItem(i,3,QTableWidgetItem(str(state[i][4])))  # 문제3
-            self.table_st_insect.setItem(i,4,QTableWidgetItem(str(state[i][5])))  # 문제4
-            self.table_st_insect.setItem(i,5,QTableWidgetItem(str(state[i][6])))  # 문제5
-            self.table_st_insect.setItem(i,6,QTableWidgetItem(str(state[i][1])))  # 점수
+        # 곤충 그래프 넣기
+        if num == 18:
 
-        # 오답률 보이기
-        for i in range(len(wrong[0])):
-            temp.append(int(wrong[0][i]/len(state)*100))
+            jindo2 = self.received_message[3]
 
-        self.Q1.setText(f'{temp[0]}%')
-        self.Q2.setText(f'{temp[1]}%')
-        self.Q3.setText(f'{temp[2]}%')
-        self.Q4.setText(f'{temp[3]}%')
-        self.Q5.setText(f'{temp[4]}%')
+            self.state_list[num+9].setText(f'{jindo2[0][0]}%')
+            self.state_list[num+10].setText(f'{jindo2[2][0]}%')
+            self.state_list[num+11].setText(f'{jindo2[1][0]}%')
 
-        # 라벨에 현재 진행현황 보이기(멸종위기)
-        self.insect_m.setText(f'{jindo[0][0]}%')
-        self.insect_s.setText(f'{jindo[2][0]}%')
-        self.insect_y.setText(f'{jindo[1][0]}%')
+            ax2 = self.fig2.add_subplot(111)  # 버티컬 레이아웃에 딱맞게 들어감.
+            ax2.set_xlim([0, 6])
+            ax2.set_ylim([0, 120])
+            ax2.set_title("곤충 오답률 그래프")
 
-        # 라벨에 현재 진행현황 보이기(곤충)
+            x = np.array([1, 2, 3, 4, 5])
+            y = np.array([temp[0], temp[1], temp[2], temp[3], temp[4]])
 
-        self.in_m.setText(f'{jindo2[0][0]}%')
-        self.in_s.setText(f'{jindo2[2][0]}%')
-        self.in_y.setText(f'{jindo2[1][0]}%')
-
-
+            ax2.scatter(x, y, marker='*', color='black')
+            self.canvas2.draw()
 
     # 상대방 접속종료시 전송버튼 안눌리도록 함, 접속종료안내멘트 전달
     def current_delete(self):
@@ -383,6 +388,7 @@ class WindowClass(QMainWindow, form_class) :
     # 첫번째 페이지에서 메인화면으로 들어옴
     def main(self):
         self.stackedWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         # 교수 접속내용 확인할 수 있도록 서버로 보내기
         account = ['teacher_account']
         self.client_socket.send((json.dumps(account)).encode())

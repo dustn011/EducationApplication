@@ -35,7 +35,11 @@ class MultiServer:
 		self.received_message = None  # self.received_message 대충 정의해놓기
 		self.now_connected_account = []
 		self.now_connected_name = []
+		##########################################################################
 
+		self.state=['teacher_ststate_mammalia','teacher_ststate_bird','teacher_ststate_insect','mammalia','bird','insect','extinc']
+
+		###########################################################################
 	# 클라이언트에서 요청이 오면 실행될 함수
 	def receive_messages(self, client_socket):
 		while True:
@@ -126,16 +130,15 @@ class MultiServer:
 #####################################################################################################################
 				# 학생학습현황 확인위해 곤충분야 눌렀을 때
 				elif identifier == 'teacher_ststate_insect':
-					self.insect_state(client_socket)
-
+					# self.insect_state(client_socket)
+					self.m_b_state(client_socket,2)
 				# 학생학습현황 확인위해 포유류분야 눌렀을 때
 				elif identifier == 'teacher_ststate_mammalia':
-					self.mammalia_state(client_socket)
+					self.m_b_state(client_socket,0)
 
 				# 학생학습현황 확인위해 조류분야 눌렀을 때
 				elif identifier == 'teacher_ststate_bird':
-					self.bird_state(client_socket)
-
+					self.m_b_state(client_socket,1)
 ####################################################################################################################
 
 				# ---------------------민석---------------------
@@ -438,99 +441,46 @@ class MultiServer:
 	# 		else:
 	# 			pass
 
-	# 곤충분야 선택했을 때
-	def insect_state(self,sender_socket):
+	# 곤충, 포유류, 조류 현황 보내기
+	def m_b_state(self,sender_socket,num):
 		wrong = []
-		wrong.insert(0,'teacher_ststate_insect')
+		wrong.insert(0, self.state[num])
 		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
 							  db='education_application')
 		with con:
 			with con.cursor() as cur:
-				sql = f"select * from `education_application`.`insect`"
-				cur.execute(sql)
-				temp = cur.fetchall()
-				wrong.insert(1,temp)
-
-				sql =f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
-				convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
-				convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
-				convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
-				convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from insect"
-				cur.execute(sql)
-				temp2 = cur.fetchall()
-				wrong.insert(2, temp2)
-
-				sql = f"select convert((extinc*10), signed integer) as '멸종위기' from study "
-				cur.execute(sql)
-				temp3 = cur.fetchall()
-				wrong.insert(3, temp3)
-
-				sql = f"select convert((insect*10), signed integer) as '곤충'  from study "
-				cur.execute(sql)
-				temp4 = cur.fetchall()
-				wrong.insert(4, temp4)
-
-		sender_socket.send((json.dumps(wrong)).encode())
-
-	# 포유류 현황조회눌럿을 때
-	def mammalia_state(self,sender_socket):
-		wrong = []
-		wrong.insert(0, 'teacher_ststate_mammalia')
-		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-							  db='education_application')
-		with con:
-			with con.cursor() as cur:
-				sql = f"select * from `education_application`.`mammalia`"
+				sql = f"select * from `education_application`.`{self.state[num+3]}`"
 				cur.execute(sql)
 				temp = cur.fetchall()
 				wrong.insert(1, temp)
 
 				sql = f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
-						convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
-						convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
-						convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
-						convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from mammalia"
+								convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
+								convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
+								convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
+								convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from {self.state[num+3]}"
 				cur.execute(sql)
 				temp2 = cur.fetchall()
 				wrong.insert(2, temp2)
 
-				sql = f"select convert((mammalia*10), signed integer) as '포유류' from study "
+				sql = f"select convert(({self.state[num+3]}*10), signed integer) as '{self.state[num+3]}' from study "
 				cur.execute(sql)
 				temp3 = cur.fetchall()
 				wrong.insert(3, temp3)
 
-		sender_socket.send((json.dumps(wrong)).encode())
+				if num == 2:
 
-	# 조류 현황조회눌럿을 때
-	def	bird_state(self, sender_socket):
-		wrong = []
-		wrong.insert(0, 'teacher_ststate_bird')
-		con = pymysql.connect(host='10.10.21.102', user='lilac', password='0000',
-							  db='education_application')
-		with con:
-			with con.cursor() as cur:
-				sql = f"select * from `education_application`.`bird`"
-				cur.execute(sql)
-				temp = cur.fetchall()
-				wrong.insert(1, temp)
+					sql = f"select convert(({self.state[num+4]}*10), signed integer) as '{self.state[num+4]}'  from study "
+					cur.execute(sql)
+					temp4 = cur.fetchall()
+					wrong.insert(4, temp4)
 
-				sql = f"SELECT convert(sum(case when answer1 ='오답' then 1 else 0 end), signed integer) answer1, \
-						convert(sum(case when answer2 ='오답' then 1 else 0 end), signed integer) answer2, \
-						convert(sum(case when answer3 ='오답' then 1 else 0 end), signed integer) answer3, \
-						convert(sum(case when answer4 ='오답' then 1 else 0 end), signed integer) answer4, \
-						convert(sum(case when answer5 ='오답' then 1 else 0 end), signed integer) answer5 from bird"
-				cur.execute(sql)
-				temp2 = cur.fetchall()
-				wrong.insert(2, temp2)
-
-				sql = f"select convert((bird*10), signed integer) as '조류' from study "
-				cur.execute(sql)
-				temp3 = cur.fetchall()
-				wrong.insert(3, temp3)
+				else:
+					pass
 
 		sender_socket.send((json.dumps(wrong)).encode())
 
-##############################################################################################
+	##############################################################################################
 
 	# ---------------------민석---------------------
 	# 요청한 클라이언트에 해당 탭의 퀴즈 목록 전달
